@@ -48,8 +48,21 @@ def generate_launch_description():
         #            for connecting from WSL2 to Windows host.
     )
 
+    get_up_node = Node(
+        package='op3_get_up_behavior', # The new package name
+        executable='get_up_node',      # The executable name from setup.py
+        name='op3_get_up_node',        # Optional instance name
+        output='screen',
+        parameters=[
+        {'imu_topic': '/robotis_op3/imu'}, # <<< ADD THIS LINE
+        # You can also override other params here if needed:
+        # {'fallen_back_pitch_threshold_rad': 1.2}
+        ]
+    )
+
     # Add the actions to the launch description
     # ld.add_action(webots) # REMOVE OR COMMENT OUT THIS LINE
     ld.add_action(op3_controller_node)
+    # ld.add_action(get_up_node) # Add the new get_up_node
 
     return ld
