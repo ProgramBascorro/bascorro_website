@@ -155,7 +155,10 @@ void OP3Localization::process()
   pelvis_trans_.transform.rotation = pelvis_pose_.pose.orientation;
 
   rclcpp::Duration transform_tolerance = rclcpp::Duration::from_seconds(transform_tolerance_);
-  rclcpp::Time transform_expiration = (pelvis_pose_.header.stamp + transform_tolerance);
+  // rclcpp::Time transform_expiration = (pelvis_pose_.header.stamp + transform_tolerance);
+  rclcpp::Time stamp_rclcpp_time(pelvis_pose_.header.stamp);
+  rclcpp::Time transform_expiration = stamp_rclcpp_time + transform_tolerance;
+
 
   geometry_msgs::msg::TransformStamped tmp_tf_stamped;
   tmp_tf_stamped.header.stamp = transform_expiration;
