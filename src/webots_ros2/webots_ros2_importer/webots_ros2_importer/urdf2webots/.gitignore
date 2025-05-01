@@ -1,6 +1,0 @@
-*.pyc
-
-/urdf2webots.egg-info
-/dist
-.vscode/launch.json
-.vscode/settings.json
