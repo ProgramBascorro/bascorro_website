@@ -50,17 +50,17 @@ include_directories(
   ${angles_INCLUDE_DIRS}
   ${gridmap_2d_INCLUDE_DIRS}
   ${SBPL_INCLUDE_DIRS}
-  ${CMAKE_SOURCE_DIR}/geometry2/tf2_geometry_msgs/include/tf2_geometry_msgs
+  # ${CMAKE_SOURCE_DIR}/geometry2/tf2_geometry_msgs/include/tf2_geometry_msgs
 )
 
 
 
 add_library(${PROJECT_NAME} SHARED ${FOOTSTEP_PLANNER_FILES})
-ament_target_dependencies(${PROJECT_NAME} rclcpp rclpy rclcpp_action action_msgs std_msgs sensor_msgs geometry_msgs nav_msgs tf2 tf2_ros OpenCV humanoid_nav_msgs angles sbpl visualization_msgs)
+ament_target_dependencies(${PROJECT_NAME} rclcpp rclpy rclcpp_action action_msgs std_msgs sensor_msgs geometry_msgs nav_msgs tf2_geometry_msgs tf2 tf2_ros OpenCV humanoid_nav_msgs angles sbpl visualization_msgs)
 target_link_libraries(${PROJECT_NAME} xmlrpc_compatibility ${gridmap_2d_LIBRARIES} ${SBPL_LIBRARIES})
 
 add_executable(footstep_planner_node src/footstep_planner.cpp)
-ament_target_dependencies(footstep_planner_node rclcpp rclpy rclcpp_action action_msgs std_msgs sensor_msgs geometry_msgs nav_msgs tf2 tf2_ros OpenCV humanoid_nav_msgs angles sbpl visualization_msgs)
+ament_target_dependencies(footstep_planner_node rclcpp rclpy rclcpp_action action_msgs std_msgs sensor_msgs geometry_msgs nav_msgs tf2_geometry_msgs tf2 tf2_ros OpenCV humanoid_nav_msgs angles sbpl visualization_msgs)
 target_link_libraries(footstep_planner_node ${PROJECT_NAME} xmlrpc_compatibility ${gridmap_2d_LIBRARIES} ${SBPL_LIBRARIES})
 
 add_executable(footstep_planner_walls src/footstep_planner_walls.cpp)
