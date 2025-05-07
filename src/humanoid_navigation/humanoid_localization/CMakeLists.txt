@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 project(humanoid_localization)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)

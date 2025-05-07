@@ -146,7 +146,7 @@ HumanoidLocalization::HumanoidLocalization(unsigned randomSeed)
           this->globalLocalizationCallback(request_header, req, res);
       });
 
-  m_laserSub = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::LaserScan>>(m_nh, "scan", 100);
+  m_laserSub = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::LaserScan>>(m_nh, "scan", rclcpp::QoS(100).get_rmw_qos_profile());
   m_laserFilter = std::make_shared<tf2_ros::MessageFilter<sensor_msgs::msg::LaserScan>>(
       *m_laserSub, 
       *m_tfBuffer, 
@@ -160,7 +160,7 @@ HumanoidLocalization::HumanoidLocalization(unsigned randomSeed)
           this->laserCallback(msg);
       });
 
-  m_pointCloudSub = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>>(m_nh, "point_cloud", 100);
+  m_pointCloudSub = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>>(m_nh, "point_cloud", rclcpp::QoS(100).get_rmw_qos_profile());
   m_pointCloudFilter = std::make_shared<tf2_ros::MessageFilter<sensor_msgs::msg::PointCloud2>>(
       *m_pointCloudSub, 
       *m_tfBuffer, 
@@ -171,7 +171,7 @@ HumanoidLocalization::HumanoidLocalization(unsigned randomSeed)
   );
   m_pointCloudFilter->registerCallback(std::bind(&HumanoidLocalization::pointCloudCallback, this, std::placeholders::_1));
 
-  m_initPoseSub = std::make_shared<message_filters::Subscriber<geometry_msgs::msg::PoseWithCovarianceStamped>>(m_nh, "initialpose", 2);
+  m_initPoseSub = std::make_shared<message_filters::Subscriber<geometry_msgs::msg::PoseWithCovarianceStamped>>(m_nh, "initialpose", rclcpp::QoS(2).get_rmw_qos_profile());
   m_initPoseFilter = std::make_shared<tf2_ros::MessageFilter<geometry_msgs::msg::PoseWithCovarianceStamped>>(
       *m_initPoseSub,
       *m_tfBuffer, 
