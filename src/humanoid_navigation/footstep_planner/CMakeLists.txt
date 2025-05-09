@@ -1,6 +1,20 @@
 cmake_minimum_required(VERSION 3.5)
 project(footstep_planner)
 
+# Tambahkan baris ini untuk build tipe Debug
+# Ini akan mengaktifkan flag seperti -g
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug)
+endif()
+
+# Atau, Anda bisa memaksa Debug:
+# set(CMAKE_BUILD_TYPE Debug)
+
+# Anda juga bisa menambahkan flag compiler secara eksplisit jika perlu,
+# meskipun CMAKE_BUILD_TYPE Debug biasanya sudah cukup.
+add_compile_options(-g -Wall -Wextra) # -Wall dan -Wextra untuk warning tambahan
+
+
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}/../humanoid_nav_msgs")
 set(humanoid_nav_msgs_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../install/humanoid_nav_msgs/share/humanoid_nav_msgs/cmake")
 
@@ -71,7 +85,13 @@ add_executable(footstep_navigation_node src/footstep_navigation.cpp)
 ament_target_dependencies(footstep_navigation_node rclcpp rclpy rclcpp_action action_msgs std_msgs sensor_msgs geometry_msgs nav_msgs tf2 tf2_ros OpenCV humanoid_nav_msgs angles sbpl visualization_msgs)
 target_link_libraries(footstep_navigation_node ${PROJECT_NAME} xmlrpc_compatibility ${tf2_geometry_msgs_LIBRARIES} ${gridmap_2d_LIBRARIES} ${SBPL_LIBRARIES})
 
-install(TARGETS ${PROJECT_NAME} footstep_planner_node footstep_planner_walls footstep_navigation_node
+# Instalasi Library
+install(TARGETS ${PROJECT_NAME}
+  LIBRARY DESTINATION lib  # Akan ke install/footstep_planner/lib/libfootstep_planner.so
+  ARCHIVE DESTINATION lib  # Untuk file .a jika ada (biasanya tidak untuk SHARED di Linux)
+)
+
+install(TARGETS footstep_planner_node footstep_planner_walls footstep_navigation_node
   DESTINATION lib/${PROJECT_NAME}
 )
 install(DIRECTORY include/${PROJECT_NAME}/
