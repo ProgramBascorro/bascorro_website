@@ -40,11 +40,34 @@ ament_target_dependencies(${PROJECT_NAME}
   Eigen3
 )
 
+# Add executable node
+add_executable(open_cr_node src/open_cr_node.cpp)
+ament_target_dependencies(open_cr_node
+  rclcpp
+  std_msgs
+  sensor_msgs
+  dynamixel_sdk
+  robotis_controller_msgs
+  robotis_framework_common
+  robotis_device
+  robotis_math
+  Eigen3
+)
+target_link_libraries(open_cr_node ${PROJECT_NAME})
+
+# Add reader node
+add_executable(open_cr_reader src/open_cr_reader.cpp)
+ament_target_dependencies(open_cr_reader
+  rclcpp
+  sensor_msgs
+  std_msgs
+)
+
 # Install
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME} open_cr_node open_cr_reader
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 install(DIRECTORY include/${PROJECT_NAME}/
