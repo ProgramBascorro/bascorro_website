@@ -128,9 +128,22 @@ void OpenCRModule::process(std::map<std::string, robotis_framework::Dynamixel *>
   int16_t acc_z = sensors["open-cr"]->sensor_state_->bulk_read_table_["acc_z"];
   
   // Get magnetometer raw values (new for MPU9250)
-  int16_t mag_x = sensors["open-cr"]->sensor_state_->bulk_read_table_["mag_x"];
-  int16_t mag_y = sensors["open-cr"]->sensor_state_->bulk_read_table_["mag_y"];
-  int16_t mag_z = sensors["open-cr"]->sensor_state_->bulk_read_table_["mag_z"];
+  // int16_t mag_x = sensors["open-cr"]->sensor_state_->bulk_read_table_["mag_x"];
+  // int16_t mag_y = sensors["open-cr"]->sensor_state_->bulk_read_table_["mag_y"];
+  // int16_t mag_z = sensors["open-cr"]->sensor_state_->bulk_read_table_["mag_z"];
+  int16_t mag_x = 0, mag_y = 0, mag_z = 0;
+  
+  // Try to get magnetometer values or provide debug info if missing
+  try {
+    mag_x = sensors["open-cr"]->sensor_state_->bulk_read_table_["mag_x"];
+    mag_y = sensors["open-cr"]->sensor_state_->bulk_read_table_["mag_y"];
+    mag_z = sensors["open-cr"]->sensor_state_->bulk_read_table_["mag_z"];
+  } catch (const std::exception& e) {
+    // If keys don't exist, provide dummy values
+    RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 5000, 
+                         "Magnetometer data not available, using dummy values");
+    mag_x = 100; mag_y = 100; mag_z = 100; // Dummy values for testing
+  }
 
   uint16_t present_volt = sensors["open-cr"]->sensor_state_->bulk_read_table_["present_voltage"];
 
@@ -346,10 +359,10 @@ void OpenCRModule::publishMagneticField()
   mag_msg_.header.stamp = this->get_clock()->now();
   mag_msg_.header.frame_id = "body_link";
   
-  // Convert to Tesla (from microTesla)
-  mag_msg_.magnetic_field.x = result_["mag_x"] * 1e-6;
-  mag_msg_.magnetic_field.y = result_["mag_y"] * 1e-6;
-  mag_msg_.magnetic_field.z = result_["mag_z"] * 1e-6;
+  // Convert to Tesla (from microTesla) -> still using microTesla
+  mag_msg_.magnetic_field.x = result_["mag_x"]; // hapus * 1e-6
+  mag_msg_.magnetic_field.y = result_["mag_y"]; // hapus * 1e-6
+  mag_msg_.magnetic_field.z = result_["mag_z"]; // hapus * 1e-6
   
   // Set covariance (reasonable defaults)
   for (int i = 0; i < 9; i++) {
