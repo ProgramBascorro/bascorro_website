@@ -29,6 +29,7 @@
 #include <sys/wait.h>
 
 #include "std_msgs/msg/string.hpp"
+#include "std_msgs/msg/float64_multi_array.hpp"
 #include <yaml-cpp/yaml.h>
 #include "dynamixel_sdk/dynamixel_sdk.h"
 #include "robotis_controller/robotis_controller.h"
@@ -120,6 +121,8 @@ public:
   void goCmd_2(int index);
   void saveCmd();
   void nameCmd();
+  void playActionInWebots(int mp3_index);
+  void executeStepInWebots(int step_index);  
 
   int screen_col_;
   int screen_row_;
@@ -140,6 +143,8 @@ private:
   struct termios oldterm, new_term;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr enable_ctrl_module_pub_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr play_sound_pub_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr webots_action_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr webots_joint_pub_;
 
   action_file_define::Page page_;
   action_file_define::Step step_;

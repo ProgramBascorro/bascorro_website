@@ -288,6 +288,9 @@ bool ActionEditor::initializeActionEditor(std::string robot_file_path, std::stri
   enable_ctrl_module_pub_ = this->create_publisher<std_msgs::msg::String>("/robotis/enable_ctrl_module", 10);
   play_sound_pub_ = this->create_publisher<std_msgs::msg::String>("/play_sound_file", 10);
 
+  webots_action_pub_ = this->create_publisher<std_msgs::msg::String>("/webots/action_command", 10);
+  webots_joint_pub_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/webots/joint_positions", 10);
+
   //Initialize Member variable
   for (std::map<std::string, robotis_framework::Dynamixel*>::iterator it = robot_->dxls_.begin();
       it != robot_->dxls_.end(); it++)
@@ -1289,6 +1292,15 @@ void ActionEditor::playCmd(int mp3_index)
 
   printCmd("Playing... ('s' to stop, 'b' to brake)");
 
+    // Cek apakah dalam mode simulasi (gazebo/webots)
+    if (ctrl_->gazebo_mode_)
+    {
+      // Mode simulasi - kirim ke Webots
+      playActionInWebots(mp3_index);
+      return;
+    }
+
+  // Cek apakah dalam mode kontrol manual
   ctrl_->startTimer();
   rclcpp::sleep_for(std::chrono::milliseconds(300));  // waiting for timer start
 
@@ -1356,6 +1368,95 @@ void ActionEditor::playCmd(int mp3_index)
 
   readStep();
   drawStep(7);
+}
+
+void ActionEditor::playActionInWebots(int mp3_index)
+{
+  RCLCPP_INFO(this->get_logger(), "Playing action in Webots simulation mode");
+  
+  // Kirim informasi page yang akan dijalankan
+  std_msgs::msg::String action_msg;
+  action_msg.data = std::to_string(page_idx_);
+  webots_action_pub_->publish(action_msg);
+  
+  // Simulasi playback dengan mengeksekusi setiap step
+  for (int step_idx = 0; step_idx < page_.header.stepnum; step_idx++)
+  {
+    executeStepInWebots(step_idx);
+    
+    // Tunggu sesuai dengan timing step
+    int step_time = page_.step[step_idx].time;
+    if (step_time == 0) step_time = 50; // Default timing
+    
+    rclcpp::sleep_for(std::chrono::milliseconds(step_time * 8)); // 8ms per unit
+    
+    // Check for user input to stop
+    if (kbhit())
+    {
+      int key = _getch();
+      if (key == 's' || key == 'b')
+      {
+        printCmd("Stopped by user");
+        break;
+      }
+    }
+  }
+  
+  // Play MP3 if specified
+  if (mp3_index != -1)
+  {
+    std::string mp3_path = "";
+    bool get_path_result = loadMp3Path(mp3_index, mp3_path);
+
+    if (get_path_result == true)
+    {
+      std_msgs::msg::String sound_msg;
+      sound_msg.data = mp3_path;
+      play_sound_pub_->publish(sound_msg);
+    }
+  }
+  
+  printCmd("Webots action completed");
+  
+  // Update current step display
+  readStep();
+  drawStep(7);
+}
+
+void ActionEditor::executeStepInWebots(int step_index)
+{
+  if (step_index < 0 || step_index >= action_file_define::MAXNUM_STEP)
+    return;
+    
+  std_msgs::msg::Float64MultiArray joint_positions;
+  joint_positions.data.clear();
+  
+  // Convert 4095-based positions to radian positions for Webots
+  for (std::map<int, int>::iterator it = joint_id_to_row_index_.begin(); 
+       it != joint_id_to_row_index_.end(); it++)
+  {
+    int id = it->first;
+    int position_4095 = page_.step[step_index].position[id];
+    
+    if (!(position_4095 & action_file_define::INVALID_BIT_MASK) && 
+        !(position_4095 & action_file_define::TORQUE_OFF_BIT_MASK))
+    {
+      // Convert 4095 value to radian
+      double rad_position = convert4095ToRadPosition(id, position_4095);
+      joint_positions.data.push_back(rad_position);
+    }
+    else
+    {
+      // Invalid position, use current position or 0
+      joint_positions.data.push_back(0.0);
+    }
+  }
+  
+  // Publish to Webots
+  webots_joint_pub_->publish(joint_positions);
+  
+  RCLCPP_INFO(this->get_logger(), "Sent step %d to Webots with %zu joint positions", 
+              step_index, joint_positions.data.size());
 }
 
 void ActionEditor::listCmd()
@@ -1770,6 +1871,17 @@ void ActionEditor::goCmd(int index)
     }
   }
 
+  // Jika mode simulasi, gunakan metode yang berbeda
+  if (ctrl_->gazebo_mode_)
+  {
+    executeStepInWebots(index);
+    step_ = page_.step[index];
+    drawStep(7);
+    printCmd("Go Command Completed (Webots)");
+    return;
+  }
+
+  // Hardware mode - kode yang sudah ada
   int id;
   int32_t goal_position, start_position, distance;
   int max_distance = 0;
