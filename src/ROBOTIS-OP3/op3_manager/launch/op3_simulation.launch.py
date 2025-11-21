@@ -9,7 +9,7 @@ def generate_launch_description():
     offset_file_path_default = get_package_share_directory('op3_manager') + '/config/offset.yaml'
     robot_file_path_default = get_package_share_directory('op3_manager') + '/config/OP3.robot'
     init_file_path_default = get_package_share_directory('op3_manager') + '/config/dxl_init_OP3.yaml'
-    device_name_default = '/dev/ttyUSB0'
+    device_name_default = '/dev/null'
 
     return LaunchDescription([
         Node(

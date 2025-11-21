@@ -270,6 +270,59 @@ target_link_libraries(localization_node PRIVATE # PRIVATE karena ini executable
   # ${rclcpp_LIBRARIES} # Tidak perlu diulang jika humanoidlocalization sudah PUBLIC link
 )
 
+# ---------------------------
+# Link OctoMap + include dirs
+# ---------------------------
+# Debug prints (opsional, hapus jika tidak ingin)
+message(STATUS "octomap include dirs: ${octomap_INCLUDE_DIRS}")
+message(STATUS "octomap libraries: ${octomap_LIBRARIES}")
+
+if(TARGET raycastingmodel)
+  if(DEFINED octomap_INCLUDE_DIRS)
+    target_include_directories(raycastingmodel PRIVATE ${octomap_INCLUDE_DIRS})
+  else()
+    target_include_directories(raycastingmodel PRIVATE /opt/ros/humble/include)
+  endif()
+
+  target_link_libraries(raycastingmodel
+    PRIVATE
+      octomap
+      octomath
+      ${octomap_LIBRARIES}
+  )
+endif()
+
+if(TARGET humanoidlocalization)
+  if(DEFINED octomap_INCLUDE_DIRS)
+    target_include_directories(humanoidlocalization PRIVATE ${octomap_INCLUDE_DIRS})
+  else()
+    target_include_directories(humanoidlocalization PRIVATE /opt/ros/humble/include)
+  endif()
+
+  target_link_libraries(humanoidlocalization
+    PRIVATE
+      octomap
+      octomath
+      ${octomap_LIBRARIES}
+  )
+endif()
+
+if(TARGET localization_node)
+  target_link_libraries(localization_node
+    PRIVATE
+      humanoidlocalization
+      raycastingmodel
+      octomap
+      octomath
+      ${octomap_LIBRARIES}
+  )
+  if(DEFINED octomap_INCLUDE_DIRS)
+    target_include_directories(localization_node PRIVATE ${octomap_INCLUDE_DIRS})
+  else()
+    target_include_directories(localization_node PRIVATE /opt/ros/humble/include)
+  endif()
+endif()
+
 # --- Install Targets ---
 # Install libraries
 install(TARGETS

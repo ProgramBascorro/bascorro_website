@@ -21,7 +21,7 @@
 const int BAUD_RATE = 2000000;
 const double PROTOCOL_VERSION = 2.0;
 const int SUB_CONTROLLER_ID = 200;
-const std::string SUB_CONTROLLER_DEVICE = "/dev/ttyUSB0";
+const std::string SUB_CONTROLLER_DEVICE = "/dev/null";
 const int POWER_CTRL_TABLE = 24;
 
 void sighandler(int sig)

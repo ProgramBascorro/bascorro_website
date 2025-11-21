@@ -25,7 +25,7 @@ def main(args=None):
     robot_file_path_default = get_package_share_directory('op3_manager') + '/config/OP3.robot'
     init_file_path_default = get_package_share_directory('op3_manager') + '/config/dxl_init_OP3.yaml'
     action_file_path_default = get_package_share_directory('op3_action_module') + '/data/motion_4095.bin'
-    device_name_default = '/dev/ttyUSB0'
+    device_name_default = '/dev/null'
 
     # Define any parameters or arguments
     params = [
