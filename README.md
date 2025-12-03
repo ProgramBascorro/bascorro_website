@@ -1,8 +1,13 @@
+# PLAN
+
+
+
+
 # Robotic Code OP3
 
 ![alt text](./images/image.png)
 
-How to run 
+## How to run ( OLD ) 
 
 build
 ```bash
@@ -26,6 +31,13 @@ ros2 debug vision
 
 ```bash
 ros2 launch soccer_vision soccer_vision.launch.py publish_debug_image:=true
+```
+
+## How to run ( NEWW )
+
+```bash
+chmod +x ./run/run_vision_and_webots.sh
+./run/run_vision_and_webots.sh
 ```
 
 ### TODO
