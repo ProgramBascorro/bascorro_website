@@ -21,6 +21,13 @@ rqt_image_view
 ros2 run rqt_image_view rqt_image_view
 ```
 
+
+ros2 debug vision
+
+```bash
+ros2 launch soccer_vision soccer_vision.launch.py publish_debug_image:=true
+```
+
 ### TODO
 
 [ ] Docker
