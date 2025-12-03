@@ -88,7 +88,7 @@ install(PROGRAMS
   scripts/executor.py
   scripts/webots_executor.py
   scripts/bridge_webots.py
-  DESTINATION lib/${PROJECT_NAME}
+  DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()
