@@ -6,6 +6,7 @@
 build/
 install/
 log/
+ros2_logs/
 
 # =========================================
 # Standard build and temporary files

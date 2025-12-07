@@ -44,4 +44,8 @@ chmod +x ./run/run_vision_and_webots.sh
 
 [ ] Docker
 [ ] Lokalisasi
-   OTW UKF https://chatgpt.com/share/69209904-ab40-8010-be8c-09a715ca9bb4
+    OTW UKF https://chatgpt.com/share/69209904-ab40-8010-be8c-09a715ca9bb4
+[ ] Game controler
+[ ] run_kill_all.sh : masih belum nutup
+[ ] webots : kalau di refresh masih missconnect 
+[ ] vission prototype : cv2 --> yolo /src/soccer_vision/launch/soccer_vision.launch.py

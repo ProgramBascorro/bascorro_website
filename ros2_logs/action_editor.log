@@ -1,5 +1,5 @@
-[INFO] [1764772252.286443128] [op3_action_editor_executor]: Starting Action Editor with Webots simulation
-[WARN] [1764772278.709804029] [op3_action_editor]: SIMULATION_MODE
+[INFO] [1765110602.604620599] [op3_action_editor_executor]: Starting Action Editor with Webots simulation
+[WARN] [1765110625.311833780] [op3_action_editor]: SIMULATION_MODE
 /dev/ttyUSB0 added. (baudrate: 2000000)
 (/dev/ttyUSB0) [ID:  1]     XM430-W350 added. 
 (/dev/ttyUSB0) [ID:  2]     XM430-W350 added. 
@@ -22,7 +22,7 @@
 (/dev/ttyUSB0) [ID: 19]     XM430-W350 added. 
 (/dev/ttyUSB0) [ID: 20]     XM430-W350 added. 
 (/dev/ttyUSB0) [ID:200]        OPEN-CR added. 
-[INFO] [1764772278.742931086] [robotis_controller]: Load offsets...
+[INFO] [1765110625.350850128] [robotis_controller]: Load offsets...
 [H[2J[3J[H[2J[3J[PortHandlerLinux::SetupPort] Error opening serial port!
 
 [Action Editor for OP3]
@@ -100,16 +100,4 @@ Press Ctrl+C to exit when finished.
   Terminating Action Editor...
   Terminating OpenCR Simulator...
   Terminating Webots Bridge...
-Traceback (most recent call last):
-  File "/home/farhan/Projects/fawzi_motion_webots/install/op3_action_editor/lib/op3_action_editor/webots_executor.py", line 251, in <module>
-    main()
-  File "/home/farhan/Projects/fawzi_motion_webots/install/op3_action_editor/lib/op3_action_editor/webots_executor.py", line 246, in main
-    rclpy.shutdown()
-  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
-    _shutdown(context=context)
-  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
-    return context.shutdown()
-  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 102, in shutdown
-    self.__context.shutdown()
-rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:241
-241
+✅ All processes terminated successfully.
