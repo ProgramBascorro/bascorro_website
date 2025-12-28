@@ -27,6 +27,7 @@ import {
   FAQ_ITEMS,
   TEAM_DIVISIONS,
 } from "./constants";
+import ModelViewer from "./ModelViewer";
 
 const SectionHeader = ({
   title,
@@ -220,7 +221,7 @@ const Hero: React.FC = () => {
         {/* --- SECTION 3: ROBOTS --- */}
         <section
           id="robots"
-          className="px-8 py-24 md:px-16 bg-[#f3f4f6] relative overflow-hidden"
+          className="px-8 py-24 md:px-16 bg-[#f3f4f6] relative"
         >
           {/* Decorative Grid */}
           <div className="absolute top-0 right-0 p-12 opacity-10">
@@ -229,6 +230,41 @@ const Hero: React.FC = () => {
 
           <div className="max-w-7xl mx-auto relative z-10">
             <SectionHeader title="Our Machines" subtitle="Engineering" />
+
+            {/* 3D Model Showcase */}
+            <div className="mb-16 bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="flex flex-col lg:flex-row">
+                {/* 3D Viewer */}
+                <div className="w-full lg:w-2/3 h-[400px] md:h-[500px] bg-gradient-to-br from-gray-50 to-gray-100">
+                  <ModelViewer className="w-full h-full" />
+                </div>
+
+                {/* Info Panel */}
+                <div className="w-full lg:w-1/3 p-8 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-gray-200">
+                  <div className="inline-block px-3 py-1 mb-4 bg-undip-blue/10 text-undip-blue text-xs font-bold uppercase tracking-widest rounded-full w-fit">
+                    Interactive 3D Model
+                  </div>
+                  <h3 className="font-display font-bold text-2xl md:text-3xl mb-4 text-gray-900">
+                    ROBOTIS OP3
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                    Explore our humanoid robot in full 3D. Drag to rotate, scroll to zoom,
+                    and use two fingers to pan around the model.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-mono text-gray-600">
+                      Rotate: Drag
+                    </span>
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-mono text-gray-600">
+                      Zoom: Scroll
+                    </span>
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-mono text-gray-600">
+                      Pan: Shift+Drag
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {ROBOTS.map((robot, index) => (
