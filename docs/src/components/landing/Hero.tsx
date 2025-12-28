@@ -63,7 +63,7 @@ const Hero: React.FC = () => {
         <Navbar />
 
         {/* --- SECTION 1: HERO --- */}
-        <header className="relative min-h-[90vh] flex flex-col">
+        <header className="relative min-h-screen md:min-h-[90vh] flex flex-col">
           {/* Grid Background */}
           <div className="absolute inset-0 pointer-events-none z-0 opacity-10">
             <div className="w-full h-full grid grid-cols-6 md:grid-cols-12 gap-0">
@@ -80,7 +80,7 @@ const Hero: React.FC = () => {
 
           <div className="flex-1 flex flex-col md:flex-row relative z-10">
             {/* Left Text */}
-            <div className="w-full md:w-3/5 p-8 md:p-16 flex flex-col justify-center">
+            <div className="w-full md:w-3/5 p-6 sm:p-8 md:p-16 flex flex-col justify-center">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -89,10 +89,10 @@ const Hero: React.FC = () => {
                 <div className="inline-block px-3 py-1 mb-6 border border-gray-300 rounded-full text-xs font-mono text-gray-500 bg-white/50 backdrop-blur-sm">
                   EST. 2024 // UNDIP ROBOTICS
                 </div>
-                <h1 className="font-display font-black text-7xl md:text-8xl lg:text-[9rem] leading-[0.85] tracking-tighter text-gray-900 mb-6">
+                <h1 className="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[9rem] leading-[0.85] tracking-tighter text-gray-900 mb-4 sm:mb-6">
                   BASCORRO
                 </h1>
-                <p className="font-serif text-xl md:text-2xl text-gray-600 italic max-w-lg leading-relaxed mb-8 border-l-4 border-accent-yellow pl-6">
+                <p className="font-serif text-lg sm:text-xl md:text-2xl text-gray-600 italic max-w-lg leading-relaxed mb-6 sm:mb-8 border-l-4 border-accent-yellow pl-4 sm:pl-6">
                   "Shaping the future of autonomous humanoid soccer through
                   intelligent design and engineering."
                 </p>
@@ -100,7 +100,7 @@ const Hero: React.FC = () => {
                 {/* Search Input */}
                 <button
                   onClick={() => setOpenSearch(true)}
-                  className="w-full max-w-md flex items-center gap-3 px-4 py-3 mb-8 bg-white border border-gray-200 rounded-xl text-left hover:border-gray-300 hover:shadow-sm transition-all group"
+                  className="w-full max-w-md flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 mb-6 sm:mb-8 bg-white border border-gray-200 rounded-xl text-left hover:border-gray-300 hover:shadow-sm transition-all group"
                 >
                   <Search className="w-5 h-5 text-gray-400 group-hover:text-undip-blue transition-colors" />
                   <span className="flex-1 text-gray-400 text-sm">Search documentation...</span>
@@ -109,16 +109,16 @@ const Hero: React.FC = () => {
                   </kbd>
                 </button>
 
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <a
                     href="#robots"
-                    className="px-8 py-4 bg-undip-blue text-white font-bold rounded-full hover:bg-gray-900 transition-colors flex items-center gap-2"
+                    className="px-6 sm:px-8 py-3 sm:py-4 bg-undip-blue text-white font-bold rounded-full hover:bg-gray-900 transition-colors flex items-center justify-center gap-2"
                   >
                     Meet the Robots <ArrowRight size={18} />
                   </a>
                   <a
                     href="#join"
-                    className="px-8 py-4 border border-gray-300 text-gray-900 font-bold rounded-full hover:bg-white transition-colors"
+                    className="px-6 sm:px-8 py-3 sm:py-4 border border-gray-300 text-gray-900 font-bold rounded-full hover:bg-white transition-colors text-center"
                   >
                     Join the Team
                   </a>
@@ -127,7 +127,7 @@ const Hero: React.FC = () => {
             </div>
 
             {/* Right Image */}
-            <div className="w-full md:w-2/5 relative min-h-[40vh] md:min-h-auto border-l border-gray-300 overflow-hidden bg-gray-200">
+            <div className="w-full md:w-2/5 relative min-h-[30vh] sm:min-h-[35vh] md:min-h-auto border-t md:border-t-0 md:border-l border-gray-300 overflow-hidden bg-gray-200">
               <img
                 src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop"
                 alt="Robotics Lab"
@@ -135,7 +135,7 @@ const Hero: React.FC = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#f3f4f6] via-transparent to-transparent"></div>
 
-              <div className="absolute bottom-8 left-8 right-8">
+              <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 right-4 sm:right-8">
                 <div className="flex justify-between items-end">
                   <div className="text-xs font-mono">
                     <div className="mb-1">SYS.STATUS: ONLINE</div>
@@ -147,7 +147,7 @@ const Hero: React.FC = () => {
             </div>
           </div>
 
-          <div className="absolute bottom-0 w-full flex justify-center pb-8 animate-bounce">
+          <div className="absolute bottom-0 w-full hidden sm:flex justify-center pb-4 sm:pb-8 animate-bounce">
             <a
               href="#about"
               className="text-gray-400 hover:text-black transition-colors"
