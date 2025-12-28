@@ -1,18 +1,32 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { BookIcon } from 'lucide-react';
+import { Bot, Rocket, Github, Home } from 'lucide-react';
 
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
-      title: 'Bascorro',
+      title: (
+        <div className="flex items-center gap-2">
+          <Bot className="w-5 h-5 text-undip-blue" />
+          <span className="font-display font-bold">BASCORRO</span>
+        </div>
+      ),
     },
-     links: [
+    links: [
       {
-        icon: <BookIcon />,
+        icon: <Home />,
+        text: 'Home',
+        url: '/',
+      },
+      {
+        icon: <Rocket />,
         text: 'Quick Start',
-        url: '/blog',
-        // secondary items will be displayed differently on navbar
-        secondary: false,
+        url: '/docs/getting-started',
+      },
+      {
+        icon: <Github />,
+        text: 'GitHub',
+        url: 'https://github.com/ProgramBascorro/motion_webots',
+        external: true,
       },
     ],
   };
