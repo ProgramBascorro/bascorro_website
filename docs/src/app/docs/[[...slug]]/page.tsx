@@ -1,4 +1,4 @@
-import { getPageImage, source } from '@/lib/source';
+import { getPageImage, getLLMText, source } from '@/lib/source';
 import {
   DocsBody,
   DocsDescription,
@@ -9,6 +9,7 @@ import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
+import { DocActions } from '@/components/docs/DocActions';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -16,11 +17,23 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   if (!page) notFound();
 
   const MDX = page.data.body;
+  const markdown = await getLLMText(page);
+
+  // Get file path for GitHub link from slugs (e.g., "getting-started/installation.mdx")
+  // Slugs like ['getting-started', 'installation'] -> 'getting-started/installation.mdx'
+  const filePath = page.slugs.length > 0
+    ? `${page.slugs.join('/')}.mdx`
+    : 'index.mdx';
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
+      <DocActions
+        markdown={markdown}
+        filePath={filePath}
+        title={page.data.title}
+      />
       <DocsBody>
         <MDX
           components={getMDXComponents({
