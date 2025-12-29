@@ -24,19 +24,35 @@ const cinzel = Cinzel({
   weight: ['400', '700'],
 });
 
+// Determine the base URL for metadata
+// Priority: NEXT_PUBLIC_SITE_URL > VERCEL_PROJECT_PRODUCTION_URL > VERCEL_URL > production default
+const getBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+  // VERCEL_PROJECT_PRODUCTION_URL is the production domain (set automatically by Vercel)
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+  // VERCEL_URL is the deployment URL (preview or production)
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  // Fallback to production domain
+  return 'https://motion-webots.vercel.app/';
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
-  ),
+  metadataBase: new URL(getBaseUrl()),
   title: {
-    default: 'BASCORRO',
-    template: '%s | BASCORRO',
+    default: 'BASCORRO Robotics',
+    template: '%s | BASCORRO Robotics',
   },
   description: 'BASCORRO Humanoid Robosoccer Team documentation.',
   openGraph: {
     type: 'website',
-    siteName: 'BASCORRO',
-    title: 'BASCORRO',
+    siteName: 'BASCORRO Robotics',
+    title: 'BASCORRO Robotics',
     description: 'BASCORRO Humanoid Robosoccer Team documentation.',
     images: [
       {
@@ -49,7 +65,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BASCORRO',
+    title: 'BASCORRO Robotics',
     description: 'BASCORRO Humanoid Robosoccer Team documentation.',
     images: ['/Banner.png'],
   },
