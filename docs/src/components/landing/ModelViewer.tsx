@@ -63,10 +63,12 @@ export default function ModelViewer({ className }: ModelViewerProps) {
           {/* Toggle button when 3D is enabled */}
           <button
             onClick={toggle3D}
+            aria-label="Hide 3D model for better performance"
+            aria-pressed="true"
             className="absolute top-4 right-4 z-10 flex items-center gap-2 px-3 py-2 bg-black/70 hover:bg-black/90 text-white text-xs font-medium rounded-lg backdrop-blur-sm transition-all group"
             title="Hide 3D model for better performance"
           >
-            <EyeOff size={14} className="group-hover:scale-110 transition-transform" />
+            <EyeOff size={14} className="group-hover:scale-110 transition-transform" aria-hidden="true" />
             <span className="hidden sm:inline">Hide 3D</span>
           </button>
         </>
@@ -83,9 +85,11 @@ export default function ModelViewer({ className }: ModelViewerProps) {
             </p>
             <button
               onClick={toggle3D}
+              aria-label="Enable interactive 3D robot model view"
+              aria-pressed="false"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-undip-blue hover:bg-undip-blue/90 text-white font-medium rounded-full transition-all hover:scale-105 shadow-sm"
             >
-              <Eye size={16} />
+              <Eye size={16} aria-hidden="true" />
               Enable 3D View
             </button>
             <div className="mt-4 flex items-center justify-center gap-1 text-xs text-gray-400">
