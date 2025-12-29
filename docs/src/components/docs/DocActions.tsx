@@ -79,20 +79,24 @@ export function DocActions({ markdown, filePath, title }: DocActionsProps) {
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mb-6 pb-4 border-b border-fd-border">
+    <nav
+      className="flex flex-wrap items-center gap-2 mb-6 pb-4 border-b border-fd-border"
+      aria-label="Document actions"
+    >
       {/* Copy Markdown Button */}
       <button
         onClick={copyMarkdown}
+        aria-label={copied ? 'Copied to clipboard' : 'Copy page content as Markdown'}
         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-fd-border bg-fd-secondary text-fd-secondary-foreground hover:bg-fd-accent hover:text-fd-accent-foreground transition-colors"
       >
         {copied ? (
           <>
-            <Check size={14} className="text-green-500" />
+            <Check size={14} className="text-green-500" aria-hidden="true" />
             Copied!
           </>
         ) : (
           <>
-            <Copy size={14} />
+            <Copy size={14} aria-hidden="true" />
             Copy Markdown
           </>
         )}
@@ -103,33 +107,43 @@ export function DocActions({ markdown, filePath, title }: DocActionsProps) {
         <button
           onClick={() => setIsOpen(!isOpen)}
           onBlur={() => setTimeout(() => setIsOpen(false), 150)}
+          aria-expanded={isOpen}
+          aria-haspopup="menu"
+          aria-label="Open in external service"
           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-fd-border bg-fd-secondary text-fd-secondary-foreground hover:bg-fd-accent hover:text-fd-accent-foreground transition-colors"
         >
-          <ExternalLink size={14} />
+          <ExternalLink size={14} aria-hidden="true" />
           Open in...
           <ChevronDown
             size={12}
+            aria-hidden="true"
             className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
           />
         </button>
 
         {isOpen && (
-          <div className="absolute left-0 top-full mt-1 z-50 min-w-[180px] rounded-lg border border-fd-border bg-fd-popover p-1 shadow-lg">
+          <div
+            role="menu"
+            aria-label="External services"
+            className="absolute left-0 top-full mt-1 z-50 min-w-[180px] rounded-lg border border-fd-border bg-fd-popover p-1 shadow-lg"
+          >
             {openInOptions.map((option) => (
               <a
                 key={option.name}
                 href={option.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                role="menuitem"
+                aria-label={option.description}
                 className="flex items-center gap-2 px-3 py-2 text-sm rounded-md text-fd-popover-foreground hover:bg-fd-accent hover:text-fd-accent-foreground transition-colors"
               >
-                <option.icon size={16} />
+                <option.icon size={16} aria-hidden="true" />
                 {option.name}
               </a>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </nav>
   );
 }

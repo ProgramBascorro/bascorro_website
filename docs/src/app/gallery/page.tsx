@@ -144,15 +144,19 @@ export default function GalleryPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Viewing image: ${selectedImage.alt}`}
             className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
             onClick={() => setSelectedImage(null)}
           >
             {/* Close Button */}
             <button
               onClick={() => setSelectedImage(null)}
+              aria-label="Close lightbox"
               className="absolute top-4 right-4 z-10 p-2 text-white/70 hover:text-white transition-colors"
             >
-              <X size={28} />
+              <X size={28} aria-hidden="true" />
             </button>
 
             {/* Navigation */}
@@ -162,9 +166,10 @@ export default function GalleryPage() {
                   e.stopPropagation();
                   goToPrevious();
                 }}
+                aria-label="Previous image"
                 className="absolute left-4 z-10 p-2 text-white/70 hover:text-white transition-colors"
               >
-                <ChevronLeft size={36} />
+                <ChevronLeft size={36} aria-hidden="true" />
               </button>
             )}
             {currentIndex < filteredImages.length - 1 && (
@@ -173,9 +178,10 @@ export default function GalleryPage() {
                   e.stopPropagation();
                   goToNext();
                 }}
+                aria-label="Next image"
                 className="absolute right-4 z-10 p-2 text-white/70 hover:text-white transition-colors"
               >
-                <ChevronRight size={36} />
+                <ChevronRight size={36} aria-hidden="true" />
               </button>
             )}
 
