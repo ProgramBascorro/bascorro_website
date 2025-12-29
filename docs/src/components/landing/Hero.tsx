@@ -17,6 +17,7 @@ import {
   Zap,
   Code,
   Search,
+  Images,
 } from "lucide-react";
 import { useSearchContext } from 'fumadocs-ui/contexts/search';
 import Navbar from "./Navbar";
@@ -110,7 +111,7 @@ const Hero: React.FC = () => {
                   </kbd>
                 </button>
 
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
                   <a
                     href="#robots"
                     className="px-6 sm:px-8 py-3 sm:py-4 bg-undip-blue text-white font-bold rounded-full hover:bg-gray-900 transition-colors flex items-center justify-center gap-2"
@@ -122,6 +123,13 @@ const Hero: React.FC = () => {
                     className="px-6 sm:px-8 py-3 sm:py-4 border border-gray-300 text-gray-900 font-bold rounded-full hover:bg-white transition-colors text-center"
                   >
                     Join the Team
+                  </a>
+                  <a
+                    href="/gallery"
+                    className="px-6 sm:px-8 py-3 sm:py-4 border border-gray-300 text-gray-900 font-bold rounded-full hover:bg-white transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Images size={18} />
+                    Gallery
                   </a>
                 </div>
               </motion.div>
