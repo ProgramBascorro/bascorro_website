@@ -18,6 +18,7 @@ import {
   Code,
   Search,
   Images,
+  Trophy,
 } from "lucide-react";
 import { useSearchContext } from 'fumadocs-ui/contexts/search';
 import Navbar from "./Navbar";
@@ -130,6 +131,13 @@ const Hero: React.FC = () => {
                   >
                     <Images size={18} />
                     Gallery
+                  </a>
+                  <a
+                    href="/robocup"
+                    className="px-6 sm:px-8 py-3 sm:py-4 border border-gray-300 text-gray-900 font-bold rounded-full hover:bg-white transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Trophy size={18} />
+                    RoboCup
                   </a>
                 </div>
               </motion.div>
@@ -377,6 +385,14 @@ const Hero: React.FC = () => {
                     {comp.role}
                   </div>
                   <p className="text-gray-800 leading-relaxed">{comp.desc}</p>
+                  {comp.name.includes('RoboCup') && (
+                    <a
+                      href="/robocup"
+                      className="inline-flex items-center gap-1 mt-4 text-sm font-bold text-undip-blue hover:underline"
+                    >
+                      Learn More <ArrowRight size={14} />
+                    </a>
+                  )}
                 </div>
               ))}
             </div>
