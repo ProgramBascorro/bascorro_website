@@ -67,7 +67,7 @@ const Hero: React.FC = () => {
         <Navbar />
 
         {/* --- SECTION 1: HERO --- */}
-        <header className="relative min-h-screen md:min-h-[90vh] flex flex-col">
+        <header className="relative min-h-screen md:min-h-[90vh] flex flex-col pb-12 sm:pb-16 md:pb-0">
           {/* Grid Background */}
           <div className="absolute inset-0 pointer-events-none z-0 opacity-10">
             <div className="w-full h-full grid grid-cols-6 md:grid-cols-12 gap-0">
@@ -82,7 +82,7 @@ const Hero: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col md:flex-row relative z-10">
+          <div className="flex flex-col md:flex-row relative z-10 md:flex-1">
             {/* Left Text */}
             <div className="w-full md:w-3/5 p-6 sm:p-8 md:p-16 flex flex-col justify-center">
               <motion.div
@@ -154,7 +154,7 @@ const Hero: React.FC = () => {
             </div>
 
             {/* Right Image */}
-            <div className="w-full md:w-2/5 relative min-h-[30vh] sm:min-h-[35vh] md:min-h-auto border-t md:border-t-0 md:border-l border-gray-300 overflow-hidden bg-gray-200">
+            <div className="w-full md:w-2/5 relative min-h-[30vh] sm:min-h-[35vh] md:min-h-0 border-t md:border-t-0 md:border-l border-gray-300 overflow-hidden bg-gray-200">
               <img
                 src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop"
                 alt="Robotics Lab"
