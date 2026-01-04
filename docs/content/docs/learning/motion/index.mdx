@@ -1,0 +1,72 @@
+---
+title: Locomotion Fundamentals
+description: Walking, balance, gait cycle, dan motion control untuk robot humanoid
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import {
+  GaitCycleDemo,
+  ZmpBalanceDemo,
+  PIDTunerDemo,
+} from "@/components/learning";
+
+# Locomotion Fundamentals
+
+Locomotion adalah kemampuan robot untuk berjalan stabil dan mengontrol gerak tubuh. Di humanoid, locomotion menggabungkan **gait generation**, **balance control**, dan **inverse kinematics** agar kaki bergerak tanpa kehilangan keseimbangan.
+
+Gunakan halaman ini sebagai ringkasan, lalu lanjutkan ke topik detail di sidebar (Gait Cycle, Balance Control, ZMP, Tuning).
+
+---
+
+## Konsep Inti
+
+<Callout type="info">
+  Fokus utama locomotion adalah menjaga **Center of Mass (CoM)** tetap aman di
+  atas support polygon sambil menghasilkan langkah yang efisien.
+</Callout>
+
+- **Gait cycle**: urutan stance → swing → stance.
+- **Balance control**: koreksi postur berdasarkan IMU.
+- **IK & motor control**: mengubah target kaki menjadi sudut joint.
+
+---
+
+## Interactive: Gait Cycle
+
+Gunakan demo ini untuk memahami bagaimana step time, swing ratio, dan step length mempengaruhi kecepatan dan stabilitas.
+
+<GaitCycleDemo />
+
+---
+
+## Interactive: ZMP & Balance
+
+ZMP harus berada di dalam support polygon agar robot stabil. Geser CoM/ZMP untuk melihat batas stabilitas.
+
+<ZmpBalanceDemo />
+
+---
+
+## Balance Tuning (PID)
+
+Balance biasanya memakai kontrol PD/PID sederhana. Tuning yang tepat membuat robot cepat stabil tanpa oscillation. Naikkan gain sedikit demi sedikit sambil memantau overshoot.
+
+<PIDTunerDemo />
+
+---
+
+## Parameter Kritis
+
+| Parameter      | Dampak               | Catatan                                  |
+| -------------- | -------------------- | ---------------------------------------- |
+| step_time      | Kecepatan langkah    | Terlalu kecil membuat robot goyah        |
+| step_length    | Jarak per langkah    | Terlalu besar menaikkan risiko jatuh     |
+| swing_ratio    | Durasi kaki di udara | Swing tinggi = cepat, tapi kurang stabil |
+| gains (PD/PID) | Respon keseimbangan  | Gain tinggi → oscillation                |
+
+---
+
+## Next Steps
+
+- [Software Locomotion Module](/docs/software/locomotion) - Detail package OP3
+- [Robotics Control](/docs/learning/robotics/control) - Kontrol dan feedback

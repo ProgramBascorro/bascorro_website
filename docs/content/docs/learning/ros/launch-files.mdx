@@ -1,0 +1,144 @@
+---
+title: Launch Files | Launch System
+description: Automate starting multiple ROS 2 nodes dengan launch files | Automate starting multiple ROS 2 nodes with launch files
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Launch Files
+
+Launch files memungkinkan kamu menjalankan banyak nodes sekaligus dengan satu command.
+
+---
+
+## 📄 Python Launch File
+
+```python
+# launch/robot_launch.py
+from launch import LaunchDescription
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    return LaunchDescription([
+        Node(
+            package='turtlesim',
+            executable='turtlesim_node',
+            name='turtle1',
+            output='screen'
+        ),
+        Node(
+            package='turtlesim',
+            executable='turtle_teleop_key',
+            name='teleop',
+            output='screen',
+            prefix='xterm -e'  # Open in new terminal
+        ),
+    ])
+```
+
+---
+
+## 🏃 Running Launch Files
+
+```bash
+# From package
+ros2 launch my_package my_launch.py
+
+# From file path
+ros2 launch ./launch/robot_launch.py
+```
+
+---
+
+## ⚙️ Parameters & Arguments
+
+```python
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    return LaunchDescription([
+        # Declare argument
+        DeclareLaunchArgument(
+            'robot_name',
+            default_value='bascorro',
+            description='Name of the robot'
+        ),
+
+        # Use argument
+        Node(
+            package='my_package',
+            executable='robot_node',
+            name='robot',
+            parameters=[{
+                'robot_name': LaunchConfiguration('robot_name')
+            }]
+        ),
+    ])
+```
+
+```bash
+# Run with argument
+ros2 launch my_package robot.launch.py robot_name:=darwin
+```
+
+---
+
+## 📂 Setup di Package
+
+```python
+# setup.py
+from setuptools import setup
+import os
+from glob import glob
+
+setup(
+    name='my_package',
+    # ... other config
+    data_files=[
+        ('share/my_package/launch', glob('launch/*.py')),
+    ],
+)
+```
+
+---
+
+## 🎯 BASCORRO Example
+
+```python
+# bascorro_launch.py
+from launch import LaunchDescription
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    return LaunchDescription([
+        # Vision
+        Node(package='soccer_vision', executable='ball_detector'),
+
+        # Walking
+        Node(package='op3_walking_module', executable='walking_node'),
+
+        # Strategy
+        Node(package='op3_demo', executable='soccer_strategy'),
+    ])
+```
+
+---
+
+## ⏭️ Next Steps
+
+<Cards>
+  <Card
+    title="Debugging ROS 2 →"
+    description="Learn rqt, rviz2, and troubleshooting"
+    href="/docs/learning/ros/debugging"
+  />
+  <Card
+    title="← CLI & Workspace"
+    description="Review workspace setup"
+    href="/docs/learning/ros/ros2-basics"
+  />
+</Cards>

@@ -1,0 +1,14 @@
+{
+  "title": "Locomotion",
+  "icon": "Footprints",
+  "pages": [
+    "index",
+    "---Fundamentals---",
+    "gait-cycle",
+    "balance-control",
+    "zmp-stability",
+    "---Tuning---",
+    "tuning-pid",
+    "motion-parameters"
+  ]
+}

@@ -1,0 +1,63 @@
+---
+title: Gait Cycle
+description: Fase berjalan dan pengaruhnya pada kecepatan dan stabilitas
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { GaitCycleDemo } from "@/components/learning";
+
+# Gait Cycle
+
+Gait cycle adalah urutan pergerakan kaki saat berjalan: **stance phase** (kaki menahan beban) dan **swing phase** (kaki mengayun). Rasio kedua fase ini menentukan stabilitas dan kecepatan.
+
+<Callout type="info">
+  Stance phase yang lebih panjang membuat robot lebih stabil, tetapi mengurangi
+  kecepatan. Swing phase yang terlalu lama meningkatkan risiko kehilangan
+  keseimbangan.
+</Callout>
+
+---
+
+## Interactive Gait Explorer
+
+Gunakan demo ini untuk melihat bagaimana step_time, swing_ratio, dan step_length mempengaruhi gait.
+
+<GaitCycleDemo />
+
+---
+
+## Walking Phases
+
+```
+      Stance Phase (60%)         Swing Phase (40%)
+    ┌───────────────────┐     ┌─────────────────┐
+    │   Foot on ground  │     │  Foot in air    │
+    │   - Support body  │     │  - Move forward │
+    │   - Shift CoM     │     │  - Clear ground │
+    └───────────────────┘     └─────────────────┘
+
+    Double Support    Single Support    Double Support
+    ┌────────┐       ┌────────────┐    ┌────────┐
+    │ Both   │       │   One      │    │ Both   │
+    │ feet   │       │   foot     │    │ feet   │
+    └────────┘       └────────────┘    └────────┘
+       10%               80%               10%
+```
+
+---
+
+## Center of Mass (CoM) Trajectory
+
+CoM bergerak ke kiri‑kanan saat satu kaki terangkat agar robot tetap stabil.
+
+```
+        CoM position (top view)
+              ↑
+              │    ___
+              │   /   \
+     Left ────│──/─────\──── Right
+              │  \     /
+              │   \___/
+              │
+        ──────┼───────────→ Forward
+```

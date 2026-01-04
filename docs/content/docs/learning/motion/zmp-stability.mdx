@@ -1,0 +1,32 @@
+---
+title: ZMP Stability
+description: Konsep Zero Moment Point dan hubungan dengan kestabilan
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { ZmpBalanceDemo } from "@/components/learning";
+
+# ZMP Stability
+
+Zero Moment Point (ZMP) adalah titik di mana total momen gaya gravitasi dan inersia bernilai nol. Jika ZMP keluar dari support polygon, robot berisiko jatuh.
+
+<Callout type="info">
+  ZMP adalah indikator praktis untuk mengecek apakah gait masih stabil saat
+  kecepatan ditambah atau saat robot melakukan belokan tajam.
+</Callout>
+
+---
+
+## Interactive ZMP
+
+Coba geser ZMP dan CoM untuk melihat area stabil.
+
+<ZmpBalanceDemo />
+
+---
+
+## Intuisi Sederhana
+
+- Support polygon = area kontak kaki.
+- ZMP harus berada di dalam area ini.
+- Semakin cepat robot bergerak, semakin besar gaya inersia yang mendorong ZMP keluar.

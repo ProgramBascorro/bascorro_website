@@ -1,0 +1,215 @@
+---
+title: Field Detection
+description: Deteksi lapangan, garis, dan landmark untuk lokalisasi robot
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Field Detection
+
+Deteksi lapangan dan garis penting untuk lokalisasi robot di lapangan RoboCup.
+
+Pada praktiknya, kita mulai dengan **segmentation** untuk memisahkan area lapangan dari objek lain. Mask lapangan ini membantu mengurangi false positive saat mendeteksi garis, gawang, atau landmark.
+
+---
+
+## Field Segmentation
+
+### Green Field Detection
+
+```python
+import cv2
+import numpy as np
+
+def detect_field(image):
+    """Detect green field area."""
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    # Green color range
+    lower_green = np.array([35, 50, 50])
+    upper_green = np.array([85, 255, 255])
+
+    mask = cv2.inRange(hsv, lower_green, upper_green)
+
+    # Clean up
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+
+    return mask
+```
+
+---
+
+## Line Detection
+
+Setelah field mask didapat, garis putih bisa dicari dengan threshold pada intensitas putih. Langkah ini biasanya menghasilkan banyak noise, sehingga edge detection (Canny) dan Hough Transform dipakai untuk mengekstrak garis yang valid.
+
+### White Line Extraction
+
+```python
+def detect_white_lines(image, field_mask=None):
+    """Detect white lines on the field."""
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Apply field mask if available
+    if field_mask is not None:
+        gray = cv2.bitwise_and(gray, gray, mask=field_mask)
+
+    # Threshold for white
+    _, white_mask = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY)
+
+    # Detect edges
+    edges = cv2.Canny(white_mask, 50, 150)
+
+    # Hough Line Transform
+    lines = cv2.HoughLinesP(edges, 1, np.pi/180, 50,
+                            minLineLength=30, maxLineGap=10)
+
+    return lines, white_mask
+```
+
+### Line Classification
+
+```python
+def classify_line(line, image_width, image_height):
+    """Classify line type (horizontal, vertical, diagonal)."""
+    x1, y1, x2, y2 = line
+
+    dx = abs(x2 - x1)
+    dy = abs(y2 - y1)
+
+    if dx == 0:
+        return 'vertical'
+
+    angle = np.arctan(dy / dx) * 180 / np.pi
+
+    if angle < 20:
+        return 'horizontal'
+    elif angle > 70:
+        return 'vertical'
+    else:
+        return 'diagonal'
+```
+
+---
+
+## Landmark Detection
+
+Landmark seperti gawang dan lingkaran tengah membantu robot menentukan posisi relatifnya di lapangan. Deteksi landmark biasanya lebih sulit karena bentuknya tipis/parsial dan bisa tertutup robot lain.
+
+### Goal Post Detection
+
+```python
+def detect_goal_posts(image, field_mask):
+    """Detect goal posts (white vertical structures)."""
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # White threshold
+    _, white = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
+
+    # Find contours
+    contours, _ = cv2.findContours(white, cv2.RETR_EXTERNAL,
+                                    cv2.CHAIN_APPROX_SIMPLE)
+
+    goal_posts = []
+    for contour in contours:
+        x, y, w, h = cv2.boundingRect(contour)
+
+        # Goal posts are tall and narrow
+        aspect_ratio = h / w if w > 0 else 0
+
+        if aspect_ratio > 3 and h > 50:
+            goal_posts.append({
+                'bbox': (x, y, w, h),
+                'center': (x + w//2, y + h//2)
+            })
+
+    return goal_posts
+```
+
+### Center Circle Detection
+
+```python
+def detect_center_circle(edges, field_mask):
+    """Detect center circle using Hough Circle."""
+    # Apply field mask
+    masked_edges = cv2.bitwise_and(edges, edges, mask=field_mask)
+
+    circles = cv2.HoughCircles(
+        masked_edges,
+        cv2.HOUGH_GRADIENT,
+        dp=1,
+        minDist=100,
+        param1=100,
+        param2=30,
+        minRadius=50,
+        maxRadius=200
+    )
+
+    if circles is not None:
+        circles = np.uint16(np.around(circles))
+        return circles[0]
+
+    return None
+```
+
+---
+
+## Complete Field Analyzer
+
+```python
+class FieldAnalyzer:
+    def __init__(self):
+        self.green_lower = np.array([35, 50, 50])
+        self.green_upper = np.array([85, 255, 255])
+
+    def analyze(self, image):
+        """Complete field analysis."""
+        # Detect field
+        field_mask = detect_field(image)
+
+        # Detect lines
+        lines, line_mask = detect_white_lines(image, field_mask)
+
+        # Detect landmarks
+        goal_posts = detect_goal_posts(image, field_mask)
+
+        return {
+            'field_mask': field_mask,
+            'lines': lines,
+            'goal_posts': goal_posts,
+        }
+
+    def draw_analysis(self, image, analysis):
+        """Draw analysis results on image."""
+        output = image.copy()
+
+        # Draw lines
+        if analysis['lines'] is not None:
+            for line in analysis['lines']:
+                x1, y1, x2, y2 = line[0]
+                cv2.line(output, (x1, y1), (x2, y2), (0, 0, 255), 2)
+
+        # Draw goal posts
+        for post in analysis['goal_posts']:
+            x, y, w, h = post['bbox']
+            cv2.rectangle(output, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+        return output
+```
+
+---
+
+## Resources
+
+- [OpenCV Hough Transform](https://docs.opencv.org/4.x/d6/d10/tutorial_py_houghlines.html)
+- [B-Human Field Detection](https://www.b-human.de/)
+- [RoboCup Field Dimensions](https://humanoid.robocup.org/hl-2024/rules/)
+
+---
+
+## Next Steps
+
+- [Machine Learning](/docs/learning/vision/machine-learning) - CNN untuk deteksi robust
+- [Camera Calibration](/docs/learning/vision/camera-calibration) - Proyeksi 3D

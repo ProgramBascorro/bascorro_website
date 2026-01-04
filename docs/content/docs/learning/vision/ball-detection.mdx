@@ -1,0 +1,664 @@
+---
+title: Ball Detection
+description: Teknik deteksi bola untuk RoboCup - color segmentation, circle detection, dan deep learning
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { BallDetectionVisualizer, HSVTuner } from "@/components/learning";
+
+# Ball Detection
+
+Deteksi bola adalah tugas vision paling fundamental dalam robot soccer. Halaman ini membahas berbagai metode dari yang sederhana hingga advanced.
+
+Secara konsep, deteksi bola adalah pipeline: kita memilih warna/fitur, membersihkan noise, mencari kandidat, lalu memvalidasi bentuk agar bukan objek lain. Bagian-bagian ini sederhana, tetapi akurasinya sangat dipengaruhi pencahayaan dan sudut kamera.
+
+---
+
+## Interactive Demo
+
+Coba visualisasi ball detection pipeline secara interaktif:
+
+<BallDetectionVisualizer />
+
+## Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    BALL DETECTION PIPELINE                  │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   Image → Color Filter → Morphology → Contour → Validation │
+│              ↓              ↓           ↓          ↓       │
+│            HSV           Clean       Find        Check     │
+│            Mask          Mask        Circles     Shape     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Method 1: HSV Color Segmentation
+
+Metode paling umum dan cepat untuk deteksi bola berwarna.
+
+Intinya kita membuat **mask biner** berdasarkan range HSV. Hasilnya adalah gambar hitam/putih: putih berarti kandidat bola. Tantangan utamanya adalah menentukan range HSV yang stabil di berbagai pencahayaan.
+
+### Step 1: Define Color Range
+
+```python
+import cv2
+import numpy as np
+
+# Orange ball (RoboCup standard)
+BALL_HSV_LOWER = np.array([5, 100, 100])
+BALL_HSV_UPPER = np.array([15, 255, 255])
+
+# Alternative ranges for different lighting
+BALL_HSV_RANGES = {
+    'bright': ([5, 150, 150], [15, 255, 255]),
+    'normal': ([5, 100, 100], [15, 255, 255]),
+    'dim':    ([3, 80, 80], [18, 255, 255]),
+}
+```
+
+### Step 2: Create Mask
+
+```python
+def create_ball_mask(image, lower, upper):
+    """Create binary mask for ball color."""
+    # Convert to HSV
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    # Create mask
+    mask = cv2.inRange(hsv, lower, upper)
+
+    # Clean up mask
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+
+    return mask
+```
+
+### Step 3: Find Ball Contour
+
+```python
+def find_ball(mask, min_radius=10, max_radius=200):
+    """Find ball from binary mask."""
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL,
+                                    cv2.CHAIN_APPROX_SIMPLE)
+
+    best_ball = None
+    best_score = 0
+
+    for contour in contours:
+        # Get enclosing circle
+        (x, y), radius = cv2.minEnclosingCircle(contour)
+
+        # Check size constraints
+        if radius < min_radius or radius > max_radius:
+            continue
+
+        # Calculate circularity
+        area = cv2.contourArea(contour)
+        perimeter = cv2.arcLength(contour, True)
+        if perimeter == 0:
+            continue
+        circularity = 4 * np.pi * area / (perimeter ** 2)
+
+        # Score based on circularity and size
+        score = circularity * radius
+
+        if score > best_score:
+            best_score = score
+            best_ball = {
+                'center': (int(x), int(y)),
+                'radius': int(radius),
+                'circularity': circularity,
+                'area': area
+            }
+
+    return best_ball
+```
+
+### Complete Pipeline
+
+```python
+class BallDetector:
+    def __init__(self):
+        self.lower_hsv = np.array([5, 100, 100])
+        self.upper_hsv = np.array([15, 255, 255])
+        self.kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+
+    def detect(self, image):
+        """Detect ball in image."""
+        # Create mask
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, self.lower_hsv, self.upper_hsv)
+
+        # Clean mask
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.kernel)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, self.kernel)
+
+        # Find ball
+        ball = find_ball(mask)
+
+        return ball, mask
+
+    def draw_detection(self, image, ball):
+        """Draw detection on image."""
+        if ball is None:
+            return image
+
+        output = image.copy()
+        cx, cy = ball['center']
+        radius = ball['radius']
+
+        # Draw circle
+        cv2.circle(output, (cx, cy), radius, (0, 255, 0), 2)
+        cv2.circle(output, (cx, cy), 5, (0, 0, 255), -1)
+
+        # Draw info
+        cv2.putText(output, f"R:{radius}", (cx+10, cy-10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+
+        return output
+```
+
+---
+
+## Method 2: Hough Circle Transform
+
+Deteksi lingkaran langsung tanpa color filtering.
+
+```python
+def detect_ball_hough(image, min_radius=10, max_radius=100):
+    """Detect ball using Hough Circle Transform."""
+    # Convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Blur to reduce noise
+    blurred = cv2.GaussianBlur(gray, (9, 9), 2)
+
+    # Detect circles
+    circles = cv2.HoughCircles(
+        blurred,
+        cv2.HOUGH_GRADIENT,
+        dp=1,
+        minDist=50,
+        param1=100,
+        param2=30,
+        minRadius=min_radius,
+        maxRadius=max_radius
+    )
+
+    if circles is None:
+        return None
+
+    # Get best circle (usually the first one)
+    circles = np.uint16(np.around(circles))
+    best = circles[0][0]
+
+    return {
+        'center': (best[0], best[1]),
+        'radius': best[2]
+    }
+```
+
+<Callout type="info">
+  Hough Circle lebih robust terhadap variasi warna tapi lebih lambat dan bisa
+  mendeteksi objek bulat lain (kepala robot, dll).
+</Callout>
+
+---
+
+## Method 3: Blob Detection
+
+Menggunakan SimpleBlobDetector dari OpenCV.
+
+```python
+def detect_ball_blob(image):
+    """Detect ball using blob detection."""
+    # Setup SimpleBlobDetector parameters
+    params = cv2.SimpleBlobDetector_Params()
+
+    # Filter by area
+    params.filterByArea = True
+    params.minArea = 100
+    params.maxArea = 50000
+
+    # Filter by circularity
+    params.filterByCircularity = True
+    params.minCircularity = 0.7
+
+    # Filter by convexity
+    params.filterByConvexity = True
+    params.minConvexity = 0.8
+
+    # Filter by inertia (roundness)
+    params.filterByInertia = True
+    params.minInertiaRatio = 0.5
+
+    # Create detector
+    detector = cv2.SimpleBlobDetector_create(params)
+
+    # Create mask for orange
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, np.array([5, 100, 100]), np.array([15, 255, 255]))
+
+    # Invert mask (blob detector looks for dark blobs)
+    mask_inv = cv2.bitwise_not(mask)
+
+    # Detect blobs
+    keypoints = detector.detect(mask_inv)
+
+    if not keypoints:
+        return None
+
+    # Get largest blob
+    largest = max(keypoints, key=lambda k: k.size)
+
+    return {
+        'center': (int(largest.pt[0]), int(largest.pt[1])),
+        'radius': int(largest.size / 2)
+    }
+```
+
+---
+
+## Method 4: Deep Learning (YOLO)
+
+Menggunakan YOLO untuk deteksi yang lebih robust.
+
+### Installation
+
+```bash
+pip install ultralytics
+```
+
+### Training Custom Model
+
+```python
+from ultralytics import YOLO
+
+# Load pretrained model
+model = YOLO('yolov8n.pt')
+
+# Train on RoboCup dataset
+results = model.train(
+    data='robocup_ball.yaml',
+    epochs=100,
+    imgsz=640,
+    batch=16
+)
+```
+
+### Dataset YAML (robocup_ball.yaml)
+
+```yaml
+# RoboCup Ball Dataset
+path: /path/to/dataset
+train: images/train
+val: images/val
+
+nc: 1 # number of classes
+names: ["ball"]
+```
+
+### Inference
+
+```python
+from ultralytics import YOLO
+import cv2
+
+class YOLOBallDetector:
+    def __init__(self, model_path='best.pt'):
+        self.model = YOLO(model_path)
+
+    def detect(self, image):
+        """Detect ball using YOLO."""
+        results = self.model(image, verbose=False)
+
+        for result in results:
+            boxes = result.boxes
+            for box in boxes:
+                # Get bounding box
+                x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+                confidence = box.conf[0].cpu().numpy()
+
+                # Calculate center and radius
+                cx = (x1 + x2) / 2
+                cy = (y1 + y2) / 2
+                radius = max(x2 - x1, y2 - y1) / 2
+
+                return {
+                    'center': (int(cx), int(cy)),
+                    'radius': int(radius),
+                    'confidence': float(confidence),
+                    'bbox': (int(x1), int(y1), int(x2), int(y2))
+                }
+
+        return None
+```
+
+---
+
+## Comparison of Methods
+
+| Method               | Speed | Accuracy | Robustness | Use Case                       |
+| -------------------- | ----- | -------- | ---------- | ------------------------------ |
+| **HSV Segmentation** | ★★★★★ | ★★★☆☆    | ★★☆☆☆      | Real-time, controlled lighting |
+| **Hough Circle**     | ★★★☆☆ | ★★★☆☆    | ★★★☆☆      | Multiple ball colors           |
+| **Blob Detection**   | ★★★★☆ | ★★★☆☆    | ★★★☆☆      | Simple scenes                  |
+| **YOLO**             | ★★☆☆☆ | ★★★★★    | ★★★★★      | Variable conditions            |
+
+---
+
+## HSV Tuning Guide
+
+### Interactive HSV Tuner
+
+Gunakan tuner interaktif untuk eksperimen dengan nilai HSV:
+
+<HSVTuner />
+
+### Python Tuning Script
+
+```python
+import cv2
+import numpy as np
+
+def nothing(x):
+    pass
+
+def create_hsv_tuner(image_source=0):
+    """Interactive HSV tuner for ball detection."""
+    cv2.namedWindow('HSV Tuner')
+
+    # Create trackbars
+    cv2.createTrackbar('H Low', 'HSV Tuner', 5, 179, nothing)
+    cv2.createTrackbar('H High', 'HSV Tuner', 15, 179, nothing)
+    cv2.createTrackbar('S Low', 'HSV Tuner', 100, 255, nothing)
+    cv2.createTrackbar('S High', 'HSV Tuner', 255, 255, nothing)
+    cv2.createTrackbar('V Low', 'HSV Tuner', 100, 255, nothing)
+    cv2.createTrackbar('V High', 'HSV Tuner', 255, 255, nothing)
+
+    cap = cv2.VideoCapture(image_source)
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # Get trackbar values
+        h_low = cv2.getTrackbarPos('H Low', 'HSV Tuner')
+        h_high = cv2.getTrackbarPos('H High', 'HSV Tuner')
+        s_low = cv2.getTrackbarPos('S Low', 'HSV Tuner')
+        s_high = cv2.getTrackbarPos('S High', 'HSV Tuner')
+        v_low = cv2.getTrackbarPos('V Low', 'HSV Tuner')
+        v_high = cv2.getTrackbarPos('V High', 'HSV Tuner')
+
+        # Create mask
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        lower = np.array([h_low, s_low, v_low])
+        upper = np.array([h_high, s_high, v_high])
+        mask = cv2.inRange(hsv, lower, upper)
+
+        # Apply mask to original image
+        result = cv2.bitwise_and(frame, frame, mask=mask)
+
+        # Show results
+        cv2.imshow('Original', frame)
+        cv2.imshow('Mask', mask)
+        cv2.imshow('Result', result)
+
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
+            break
+        elif key == ord('s'):
+            print(f"Lower: [{h_low}, {s_low}, {v_low}]")
+            print(f"Upper: [{h_high}, {s_high}, {v_high}]")
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+# Run tuner
+create_hsv_tuner(0)  # Use webcam
+```
+
+---
+
+## 3D Position Estimation
+
+Setelah mendeteksi bola di image, kita perlu menghitung posisi 3D.
+
+```python
+class BallPositionEstimator:
+    def __init__(self, camera_matrix, ball_diameter=0.065):
+        """
+        Args:
+            camera_matrix: 3x3 intrinsic matrix
+            ball_diameter: Real ball diameter in meters (6.5cm for RoboCup)
+        """
+        self.camera_matrix = camera_matrix
+        self.ball_diameter = ball_diameter
+        self.fx = camera_matrix[0, 0]
+        self.fy = camera_matrix[1, 1]
+        self.cx = camera_matrix[0, 2]
+        self.cy = camera_matrix[1, 2]
+
+    def estimate_distance(self, radius_pixels):
+        """Estimate distance to ball based on apparent size."""
+        # Distance = (real_size * focal_length) / apparent_size
+        distance = (self.ball_diameter * self.fx) / (2 * radius_pixels)
+        return distance
+
+    def pixel_to_camera(self, u, v, distance):
+        """Convert pixel coordinates to camera frame coordinates."""
+        x = (u - self.cx) * distance / self.fx
+        y = (v - self.cy) * distance / self.fy
+        z = distance
+        return np.array([x, y, z])
+
+    def estimate_3d_position(self, ball_2d):
+        """Estimate 3D position of ball."""
+        if ball_2d is None:
+            return None
+
+        cx, cy = ball_2d['center']
+        radius = ball_2d['radius']
+
+        distance = self.estimate_distance(radius)
+        position = self.pixel_to_camera(cx, cy, distance)
+
+        return {
+            'position': position,
+            'distance': distance
+        }
+```
+
+---
+
+## ROS 2 Integration
+
+### Ball Detector Node
+
+```python
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Image
+from geometry_msgs.msg import PointStamped
+from cv_bridge import CvBridge
+import cv2
+import numpy as np
+
+class BallDetectorNode(Node):
+    def __init__(self):
+        super().__init__('ball_detector')
+
+        # Parameters
+        self.declare_parameter('h_low', 5)
+        self.declare_parameter('h_high', 15)
+        self.declare_parameter('s_low', 100)
+        self.declare_parameter('s_high', 255)
+        self.declare_parameter('v_low', 100)
+        self.declare_parameter('v_high', 255)
+
+        # Subscribers
+        self.image_sub = self.create_subscription(
+            Image, '/camera/image_raw', self.image_callback, 10)
+
+        # Publishers
+        self.ball_pub = self.create_publisher(PointStamped, '/ball_position', 10)
+        self.debug_pub = self.create_publisher(Image, '/ball_debug', 10)
+
+        self.bridge = CvBridge()
+        self.get_logger().info('Ball detector initialized')
+
+    def image_callback(self, msg):
+        # Convert ROS image to OpenCV
+        image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
+
+        # Get HSV parameters
+        h_low = self.get_parameter('h_low').value
+        h_high = self.get_parameter('h_high').value
+        s_low = self.get_parameter('s_low').value
+        s_high = self.get_parameter('s_high').value
+        v_low = self.get_parameter('v_low').value
+        v_high = self.get_parameter('v_high').value
+
+        # Detect ball
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        lower = np.array([h_low, s_low, v_low])
+        upper = np.array([h_high, s_high, v_high])
+        mask = cv2.inRange(hsv, lower, upper)
+
+        # Find contours
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL,
+                                        cv2.CHAIN_APPROX_SIMPLE)
+
+        if contours:
+            largest = max(contours, key=cv2.contourArea)
+            (x, y), radius = cv2.minEnclosingCircle(largest)
+
+            if radius > 10:
+                # Publish ball position
+                ball_msg = PointStamped()
+                ball_msg.header = msg.header
+                ball_msg.point.x = float(x)
+                ball_msg.point.y = float(y)
+                ball_msg.point.z = float(radius)
+                self.ball_pub.publish(ball_msg)
+
+                # Draw detection
+                cv2.circle(image, (int(x), int(y)), int(radius), (0, 255, 0), 2)
+
+        # Publish debug image
+        debug_msg = self.bridge.cv2_to_imgmsg(image, 'bgr8')
+        self.debug_pub.publish(debug_msg)
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = BallDetectorNode()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+---
+
+## Performance Optimization
+
+### 1. Region of Interest (ROI)
+
+```python
+def detect_with_roi(image, last_position=None, search_radius=100):
+    """Detect ball using ROI from last known position."""
+    if last_position is not None:
+        x, y = last_position
+        h, w = image.shape[:2]
+
+        # Define ROI
+        x1 = max(0, x - search_radius)
+        y1 = max(0, y - search_radius)
+        x2 = min(w, x + search_radius)
+        y2 = min(h, y + search_radius)
+
+        roi = image[y1:y2, x1:x2]
+
+        # Detect in ROI
+        ball = detect_ball(roi)
+
+        if ball:
+            # Adjust coordinates to full image
+            ball['center'] = (ball['center'][0] + x1,
+                             ball['center'][1] + y1)
+            return ball
+
+    # Fallback to full image search
+    return detect_ball(image)
+```
+
+### 2. Multi-scale Detection
+
+```python
+def detect_multiscale(image, scales=[1.0, 0.5, 0.25]):
+    """Detect ball at multiple scales."""
+    best_ball = None
+    best_conf = 0
+
+    for scale in scales:
+        h, w = image.shape[:2]
+        resized = cv2.resize(image, (int(w*scale), int(h*scale)))
+
+        ball = detect_ball(resized)
+
+        if ball and ball.get('circularity', 0) > best_conf:
+            # Scale back coordinates
+            ball['center'] = (int(ball['center'][0]/scale),
+                             int(ball['center'][1]/scale))
+            ball['radius'] = int(ball['radius']/scale)
+            best_ball = ball
+            best_conf = ball['circularity']
+
+    return best_ball
+```
+
+---
+
+## Resources
+
+### Datasets
+
+- [RoboCup SPL Dataset](https://github.com/bhuman/BHumanCodeRelease)
+- [ImageTagger for Annotation](https://github.com/bit-bots/imagetagger)
+
+### Papers
+
+- [B-Human Vision System](https://www.b-human.de/downloads/publications/2019/CodeRelease2019.pdf)
+- [NimbRo Vision](https://www.ais.uni-bonn.de/nimbro/)
+
+### Tools
+
+- [LabelImg](https://github.com/tzutalin/labelImg) - Annotation tool
+- [Roboflow](https://roboflow.com/) - Dataset management
+
+---
+
+## Practice Exercises
+
+1. Implement HSV ball detector dengan webcam
+2. Tune HSV values untuk berbagai kondisi pencahayaan
+3. Bandingkan akurasi HSV vs Hough Circle
+4. Train YOLO model dengan dataset custom
+
+---
+
+## Next Steps
+
+- [Field Detection](/docs/learning/vision/field-detection) - Deteksi garis dan area lapangan
+- [Machine Learning](/docs/learning/vision/machine-learning) - Deep learning untuk vision

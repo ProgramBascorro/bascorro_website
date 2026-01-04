@@ -1,0 +1,514 @@
+---
+title: Image Processing Basics
+description: Fundamental image processing techniques - color spaces, filtering, morphological operations
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { ImageFilterDemo, HSVTuner } from "@/components/learning";
+
+# Image Processing Basics
+
+Sebelum melakukan deteksi objek, image perlu diproses terlebih dahulu. Bab ini membahas teknik-teknik dasar image processing menggunakan OpenCV.
+
+---
+
+## Color Spaces
+
+Color space menentukan bagaimana warna direpresentasikan. Pilihan color space akan mempengaruhi stabilitas deteksi objek, terutama saat pencahayaan berubah.
+
+### RGB (Red, Green, Blue)
+
+Format default dari kebanyakan kamera. Setiap pixel terdiri dari 3 channel. Kekurangannya: perubahan cahaya langsung mempengaruhi nilai semua channel.
+
+```python
+import cv2
+import numpy as np
+
+# Read image (OpenCV uses BGR by default)
+image = cv2.imread('robot_field.jpg')
+
+# Split channels
+b, g, r = cv2.split(image)
+
+# Access single pixel
+pixel = image[100, 200]  # [B, G, R] values
+print(f"Blue: {pixel[0]}, Green: {pixel[1]}, Red: {pixel[2]}")
+```
+
+### HSV (Hue, Saturation, Value)
+
+HSV memisahkan warna murni (Hue) dari kecerahan (Value), sehingga lebih stabil saat lighting berubah. Biasanya kita mencari range Hue yang sempit, lalu menyesuaikan Saturation dan Value agar objek tetap terdeteksi tanpa terlalu banyak noise.
+
+Lebih baik untuk color-based detection karena memisahkan warna (Hue) dari intensitas (Value).
+
+```
+┌─────────────────────────────────────────────┐
+│  H (Hue)        : 0-179 (warna)             │
+│  S (Saturation) : 0-255 (kepekatan warna)   │
+│  V (Value)      : 0-255 (kecerahan)         │
+└─────────────────────────────────────────────┘
+```
+
+```python
+# Convert BGR to HSV
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+# Common color ranges in HSV
+colors = {
+    'red_low':    ([0, 100, 100], [10, 255, 255]),
+    'red_high':   ([170, 100, 100], [180, 255, 255]),
+    'orange':     ([5, 100, 100], [15, 255, 255]),
+    'yellow':     ([20, 100, 100], [35, 255, 255]),
+    'green':      ([35, 50, 50], [85, 255, 255]),
+    'blue':       ([100, 100, 100], [130, 255, 255]),
+    'white':      ([0, 0, 200], [180, 30, 255]),
+}
+
+# Create mask for orange (ball)
+lower = np.array([5, 100, 100])
+upper = np.array([15, 255, 255])
+mask = cv2.inRange(hsv, lower, upper)
+```
+
+### Interactive HSV Tuner
+
+Eksperimen dengan berbagai nilai HSV untuk menemukan range optimal:
+
+<HSVTuner />
+
+### LAB Color Space
+
+Perceptually uniform, bagus untuk color difference calculation.
+
+```python
+# Convert to LAB
+lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+
+# L: Lightness (0-255)
+# A: Green-Red (-128 to 127, stored as 0-255)
+# B: Blue-Yellow (-128 to 127, stored as 0-255)
+```
+
+### YCrCb
+
+Sering digunakan untuk skin detection dan video compression.
+
+```python
+ycrcb = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)
+
+# Y: Luminance
+# Cr: Red difference
+# Cb: Blue difference
+```
+
+---
+
+## Color Space Comparison
+
+| Color Space | Best For         | Pros                           | Cons                    |
+| ----------- | ---------------- | ------------------------------ | ----------------------- |
+| **RGB/BGR** | Display, general | Standard format                | Lighting sensitive      |
+| **HSV**     | Color detection  | Separates color from intensity | Hue wraps around at red |
+| **LAB**     | Color matching   | Perceptually uniform           | Complex conversion      |
+| **YCrCb**   | Skin detection   | Good luminance separation      | Less intuitive          |
+
+---
+
+## Image Filtering
+
+Filtering membantu menekan noise dan membuat bentuk objek lebih jelas sebelum proses deteksi. Di RoboCup, filter sering dipakai untuk menstabilkan kontur bola dan garis lapangan.
+
+### Gaussian Blur
+
+Menghaluskan image untuk mengurangi noise. Cocok untuk menghilangkan noise acak ringan.
+
+```python
+# Gaussian blur
+blurred = cv2.GaussianBlur(image, (5, 5), 0)
+
+# Parameters:
+# - ksize: Kernel size (must be odd, e.g., 3, 5, 7)
+# - sigmaX: Standard deviation in X direction
+```
+
+### Median Filter
+
+Bagus untuk menghilangkan salt-and-pepper noise.
+
+```python
+# Median blur
+median = cv2.medianBlur(image, 5)
+```
+
+### Bilateral Filter
+
+Menghaluskan sambil mempertahankan edges.
+
+```python
+# Bilateral filter
+bilateral = cv2.bilateralFilter(image, 9, 75, 75)
+
+# Parameters:
+# - d: Diameter of pixel neighborhood
+# - sigmaColor: Filter sigma in color space
+# - sigmaSpace: Filter sigma in coordinate space
+```
+
+### Interactive Filter Demo
+
+Coba berbagai filter dan lihat efeknya secara real-time:
+
+<ImageFilterDemo />
+
+### Filter Comparison
+
+```python
+import matplotlib.pyplot as plt
+
+# Load noisy image
+noisy = cv2.imread('noisy_field.jpg')
+
+# Apply filters
+gaussian = cv2.GaussianBlur(noisy, (5, 5), 0)
+median = cv2.medianBlur(noisy, 5)
+bilateral = cv2.bilateralFilter(noisy, 9, 75, 75)
+
+# Display comparison
+fig, axes = plt.subplots(2, 2, figsize=(12, 12))
+axes[0, 0].imshow(cv2.cvtColor(noisy, cv2.COLOR_BGR2RGB))
+axes[0, 0].set_title('Original (Noisy)')
+axes[0, 1].imshow(cv2.cvtColor(gaussian, cv2.COLOR_BGR2RGB))
+axes[0, 1].set_title('Gaussian Blur')
+axes[1, 0].imshow(cv2.cvtColor(median, cv2.COLOR_BGR2RGB))
+axes[1, 0].set_title('Median Filter')
+axes[1, 1].imshow(cv2.cvtColor(bilateral, cv2.COLOR_BGR2RGB))
+axes[1, 1].set_title('Bilateral Filter')
+plt.show()
+```
+
+---
+
+## Edge Detection
+
+Edge detection menonjolkan batas objek. Ini penting untuk garis lapangan atau kontur bola, terutama saat warna tidak cukup kuat untuk segmentasi.
+
+### Canny Edge Detector
+
+Algoritma paling populer untuk edge detection.
+
+```python
+# Convert to grayscale
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Apply Gaussian blur first
+blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+# Canny edge detection
+edges = cv2.Canny(blurred, threshold1=50, threshold2=150)
+
+# Parameters:
+# - threshold1: Lower threshold for hysteresis
+# - threshold2: Upper threshold for hysteresis
+```
+
+### Sobel Operator
+
+Menghitung gradient dalam arah X atau Y.
+
+```python
+# Sobel in X direction
+sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+
+# Sobel in Y direction
+sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+
+# Magnitude
+magnitude = np.sqrt(sobelx**2 + sobely**2)
+```
+
+### Laplacian
+
+Mendeteksi edges berdasarkan second derivative.
+
+```python
+laplacian = cv2.Laplacian(gray, cv2.CV_64F)
+```
+
+---
+
+## Morphological Operations
+
+Operasi berbasis shape untuk membersihkan binary masks. Ini sering dipakai setelah threshold/HSV mask supaya noise kecil hilang dan bentuk objek lebih solid.
+
+### Structuring Elements
+
+```python
+# Create kernels
+kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+kernel_ellipse = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+kernel_cross = cv2.getStructuringElement(cv2.MORPH_CROSS, (5, 5))
+```
+
+### Erosion
+
+Mengecilkan foreground, menghilangkan noise kecil.
+
+```python
+eroded = cv2.erode(mask, kernel, iterations=1)
+```
+
+### Dilation
+
+Memperbesar foreground, mengisi lubang kecil.
+
+```python
+dilated = cv2.dilate(mask, kernel, iterations=1)
+```
+
+### Opening
+
+Erosion diikuti dilation. Menghilangkan noise tanpa memperbesar.
+
+```python
+opened = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+```
+
+### Closing
+
+Dilation diikuti erosion. Mengisi lubang kecil.
+
+```python
+closed = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+```
+
+### Combined Pipeline
+
+```python
+def clean_mask(mask, kernel_size=5):
+    """Clean binary mask using morphological operations."""
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,
+                                        (kernel_size, kernel_size))
+
+    # Remove noise
+    cleaned = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+
+    # Fill holes
+    cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_CLOSE, kernel)
+
+    return cleaned
+```
+
+---
+
+## Histogram Analysis
+
+### Histogram Calculation
+
+```python
+# Calculate histogram
+hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
+
+# Plot histogram
+plt.plot(hist)
+plt.xlabel('Pixel Value')
+plt.ylabel('Frequency')
+plt.title('Grayscale Histogram')
+plt.show()
+```
+
+### Histogram Equalization
+
+Meningkatkan contrast dengan mendistribusikan pixel values secara merata.
+
+```python
+# Standard histogram equalization
+equalized = cv2.equalizeHist(gray)
+
+# CLAHE (Contrast Limited Adaptive Histogram Equalization)
+clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+clahe_result = clahe.apply(gray)
+```
+
+<Callout type="tip">
+  **CLAHE** lebih baik dari equalization standar karena menghindari
+  over-amplification noise.
+</Callout>
+
+---
+
+## Thresholding
+
+### Simple Thresholding
+
+```python
+# Binary threshold
+_, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+
+# Inverse binary
+_, binary_inv = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+
+# Truncate
+_, trunc = cv2.threshold(gray, 127, 255, cv2.THRESH_TRUNC)
+```
+
+### Adaptive Thresholding
+
+Lebih robust terhadap perubahan pencahayaan.
+
+```python
+# Adaptive mean threshold
+adaptive_mean = cv2.adaptiveThreshold(gray, 255,
+                                       cv2.ADAPTIVE_THRESH_MEAN_C,
+                                       cv2.THRESH_BINARY, 11, 2)
+
+# Adaptive Gaussian threshold
+adaptive_gauss = cv2.adaptiveThreshold(gray, 255,
+                                        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                        cv2.THRESH_BINARY, 11, 2)
+```
+
+### Otsu's Method
+
+Automatically finds optimal threshold.
+
+```python
+# Otsu's thresholding
+_, otsu = cv2.threshold(gray, 0, 255,
+                         cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+```
+
+---
+
+## Complete Processing Pipeline
+
+```python
+import cv2
+import numpy as np
+
+class ImageProcessor:
+    """Complete image processing pipeline for RoboCup."""
+
+    def __init__(self):
+        self.clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        self.kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+
+    def preprocess(self, image):
+        """Standard preprocessing pipeline."""
+        # Resize for consistent processing
+        resized = cv2.resize(image, (640, 480))
+
+        # Denoise
+        denoised = cv2.GaussianBlur(resized, (3, 3), 0)
+
+        return denoised
+
+    def enhance_contrast(self, image):
+        """Enhance contrast using CLAHE."""
+        lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+        l, a, b = cv2.split(lab)
+        l = self.clahe.apply(l)
+        enhanced = cv2.merge([l, a, b])
+        return cv2.cvtColor(enhanced, cv2.COLOR_LAB2BGR)
+
+    def create_color_mask(self, image, lower_hsv, upper_hsv):
+        """Create binary mask for color range."""
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
+
+        # Clean mask
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.kernel)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, self.kernel)
+
+        return mask
+
+    def detect_edges(self, image, low_thresh=50, high_thresh=150):
+        """Detect edges using Canny."""
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        edges = cv2.Canny(blurred, low_thresh, high_thresh)
+        return edges
+
+# Usage
+processor = ImageProcessor()
+
+cap = cv2.VideoCapture(0)
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # Preprocess
+    processed = processor.preprocess(frame)
+    enhanced = processor.enhance_contrast(processed)
+
+    # Create ball mask (orange)
+    ball_mask = processor.create_color_mask(
+        enhanced,
+        np.array([5, 100, 100]),
+        np.array([15, 255, 255])
+    )
+
+    # Detect edges (for line detection)
+    edges = processor.detect_edges(enhanced)
+
+    cv2.imshow('Enhanced', enhanced)
+    cv2.imshow('Ball Mask', ball_mask)
+    cv2.imshow('Edges', edges)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+```
+
+---
+
+## Performance Tips
+
+| Optimization                 | Benefit                    | Trade-off        |
+| ---------------------------- | -------------------------- | ---------------- |
+| Resize before processing     | 4-16x faster               | Lower resolution |
+| Use ROI (Region of Interest) | Process only relevant area | May miss objects |
+| Convert to grayscale early   | 3x less data               | Lose color info  |
+| Use integer operations       | Faster than float          | Less precision   |
+
+---
+
+## Resources
+
+### Documentation
+
+- [OpenCV Color Conversions](https://docs.opencv.org/4.x/d8/d01/group__imgproc__color__conversions.html)
+- [OpenCV Filtering](https://docs.opencv.org/4.x/d4/d86/group__imgproc__filter.html)
+- [OpenCV Morphological Operations](https://docs.opencv.org/4.x/d9/d61/tutorial_py_morphological_ops.html)
+
+### Tutorials
+
+- [OpenCV Python Tutorials](https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html)
+- [PyImageSearch OpenCV Tutorials](https://pyimagesearch.com/category/opencv/)
+- [LearnOpenCV](https://learnopencv.com/)
+
+### Interactive Tools
+
+- [HSV Color Picker](https://alloyui.com/examples/color-picker/hsv.html)
+- [OpenCV ColorSpace Explorer](https://github.com/opencv/opencv)
+
+---
+
+## Practice Exercises
+
+1. **Color Space**: Konversi image ke berbagai color space dan bandingkan
+2. **Filtering**: Bandingkan efek Gaussian, Median, dan Bilateral filter pada noisy image
+3. **Morphology**: Bersihkan binary mask menggunakan kombinasi opening dan closing
+4. **HSV Tuning**: Temukan HSV range optimal untuk deteksi bola oranye di berbagai kondisi cahaya
+
+---
+
+## Next Steps
+
+Setelah memahami image processing basics, lanjut ke:
+
+- [Ball Detection](/docs/learning/vision/ball-detection) - Deteksi bola menggunakan color segmentation
+- [Field Detection](/docs/learning/vision/field-detection) - Deteksi garis lapangan

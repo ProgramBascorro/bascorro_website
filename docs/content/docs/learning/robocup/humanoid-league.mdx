@@ -1,0 +1,333 @@
+---
+title: Humanoid League
+description: Deep dive into RoboCup Humanoid League - rules, specifications, and challenges
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Humanoid League
+
+RoboCup Humanoid League adalah kompetisi sepak bola untuk robot humanoid bipedal yang sepenuhnya otonom.
+
+---
+
+## Size Classes
+
+| Class      | Height     | Field Size | Team Size      |
+| ---------- | ---------- | ---------- | -------------- |
+| Kid Size   | 40-90 cm   | 9×6 m      | 4 robots       |
+| Teen Size  | 100-120 cm | 14×9 m     | 4 robots       |
+| Adult Size | 130-180 cm | 14×9 m     | 2 robots (1v1) |
+
+<Callout type="info">
+  BASCORRO berkompetisi di **Kid Size** menggunakan ROBOTIS OP3 (tinggi 51cm).
+</Callout>
+
+---
+
+## Robot Requirements
+
+### Humanoid Form
+
+Robot harus memiliki bentuk humanoid:
+
+- 2 kaki dengan minimal 2 DoF per kaki
+- 2 lengan
+- 1 kepala dengan kamera
+- Proporsi seperti manusia
+
+### Size Constraints (Kid Size)
+
+| Parameter  | Min   | Max   |
+| ---------- | ----- | ----- |
+| Height (H) | 40 cm | 90 cm |
+| Leg Length | 0.35H | 0.7H  |
+| Arm Length | 0.2H  | 0.7H  |
+| Head Size  | -     | 0.25H |
+
+### Sensor Restrictions
+
+**Allowed:**
+
+- Cameras (vision only)
+- IMU/Gyroscope
+- Force sensors
+- Joint encoders
+- Microphone (limited use)
+
+**Not Allowed:**
+
+- Lidar/Laser scanners
+- Ultrasonic sensors
+- External positioning systems
+- GPS
+
+---
+
+## Field Specifications
+
+### Kid Size Field (9×6 m)
+
+```
+┌─────────────────────────────────────┐
+│                 │                   │
+│    ┌───────┐    │    ┌───────┐      │
+│    │       │    │    │       │      │
+│    │ Goal  │    │    │ Goal  │      │
+│    │ Area  │    │    │ Area  │      │
+│    └───────┘    │    └───────┘      │
+│                 │                   │
+│       ●─────────●─────────●         │
+│                 │                   │
+│    ┌───────┐    │    ┌───────┐      │
+│    │Penalty│    │    │Penalty│      │
+│    │ Area  │    │    │ Area  │      │
+│    └───────┘    │    └───────┘      │
+│                 │                   │
+└─────────────────────────────────────┘
+```
+
+### Field Elements
+
+| Element       | Color                   | Size            |
+| ------------- | ----------------------- | --------------- |
+| Grass         | Green (artificial turf) | 9×6 m           |
+| Lines         | White                   | 5 cm wide       |
+| Goals         | Yellow (posts)          | 2.6m × 1m       |
+| Ball          | White/Black (size 4)    | ~20 cm diameter |
+| Center Circle | White                   | 1.5m radius     |
+
+---
+
+## Game Rules
+
+### Match Duration
+
+| Phase                | Duration     |
+| -------------------- | ------------ |
+| Half                 | 10 minutes   |
+| Half Time            | 5-10 minutes |
+| Overtime (if needed) | 2×5 minutes  |
+| Penalty Shootout     | Best of 5    |
+
+### Player Rules
+
+- **4 robots** on field per team (Kid Size)
+- One robot designated as **goalkeeper**
+- Substitutions allowed during stoppages
+- Robots must be **fully autonomous**
+
+### Common Fouls
+
+| Foul                 | Penalty         |
+| -------------------- | --------------- |
+| Pushing              | Free kick       |
+| Ball holding         | Free kick       |
+| Robot fallen >20 sec | Removal penalty |
+| Inactive robot       | Removal penalty |
+| Illegal defender     | Penalty kick    |
+
+---
+
+## Technical Challenges
+
+Selain main match, ada technical challenges:
+
+### 1. Push Recovery
+
+- Robot berdiri, diberi push
+- Harus tetap berdiri atau recover
+
+### 2. Goal Kick from Moving Ball
+
+- Ball diroll ke robot
+- Harus kick ke goal
+
+### 3. High Jump
+
+- Melompat setinggi mungkin
+- Diukur dari ground clearance
+
+### 4. High Kick
+
+- Tendangan paling tinggi
+- Ball harus melewati bar tertentu
+
+---
+
+## Vision System Requirements
+
+### Ball Detection
+
+```python
+class BallDetector:
+    def __init__(self):
+        # Ball is white/black pattern
+        self.ball_cascade = cv2.CascadeClassifier('ball_cascade.xml')
+        # Or using color + shape
+        self.min_radius = 10
+        self.max_radius = 150
+
+    def detect(self, frame):
+        # Convert to HSV for better color segmentation
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+        # White detection (for white ball)
+        lower_white = np.array([0, 0, 200])
+        upper_white = np.array([180, 30, 255])
+        mask = cv2.inRange(hsv, lower_white, upper_white)
+
+        # Find circles
+        circles = cv2.HoughCircles(
+            mask, cv2.HOUGH_GRADIENT, 1, 50,
+            param1=50, param2=30,
+            minRadius=self.min_radius,
+            maxRadius=self.max_radius
+        )
+
+        return circles
+```
+
+### Field Line Detection
+
+```python
+def detect_field_lines(frame):
+    """Detect white lines on green field."""
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    # Detect green field
+    lower_green = np.array([35, 40, 40])
+    upper_green = np.array([85, 255, 255])
+    green_mask = cv2.inRange(hsv, lower_green, upper_green)
+
+    # Detect white lines within green field
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(gray, 50, 150)
+
+    # Mask edges with field
+    field_edges = cv2.bitwise_and(edges, edges, mask=green_mask)
+
+    # Hough line detection
+    lines = cv2.HoughLinesP(
+        field_edges, 1, np.pi/180, 50,
+        minLineLength=30, maxLineGap=10
+    )
+
+    return lines
+```
+
+---
+
+## Localization
+
+### Particle Filter Localization
+
+```python
+class ParticleFilter:
+    def __init__(self, num_particles=1000, field_size=(9, 6)):
+        self.particles = self._init_particles(num_particles, field_size)
+        self.weights = np.ones(num_particles) / num_particles
+
+    def _init_particles(self, n, field_size):
+        """Initialize particles uniformly on field."""
+        particles = np.zeros((n, 3))  # x, y, theta
+        particles[:, 0] = np.random.uniform(0, field_size[0], n)
+        particles[:, 1] = np.random.uniform(0, field_size[1], n)
+        particles[:, 2] = np.random.uniform(-np.pi, np.pi, n)
+        return particles
+
+    def update(self, observations, odometry):
+        """Update particles based on observations."""
+        # Motion update
+        self._motion_update(odometry)
+
+        # Measurement update
+        self._measurement_update(observations)
+
+        # Resample
+        self._resample()
+
+    def get_estimate(self):
+        """Return weighted average position."""
+        x = np.average(self.particles[:, 0], weights=self.weights)
+        y = np.average(self.particles[:, 1], weights=self.weights)
+        theta = np.arctan2(
+            np.average(np.sin(self.particles[:, 2]), weights=self.weights),
+            np.average(np.cos(self.particles[:, 2]), weights=self.weights)
+        )
+        return x, y, theta
+```
+
+---
+
+## Behavior State Machine
+
+```python
+from enum import Enum
+
+class GameState(Enum):
+    INITIAL = 0
+    READY = 1
+    SET = 2
+    PLAYING = 3
+    FINISHED = 4
+
+class RobotBehavior(Enum):
+    STAND = 0
+    WALK_TO_BALL = 1
+    KICK = 2
+    SEARCH_BALL = 3
+    DEFEND_GOAL = 4
+    POSITION = 5
+
+class BehaviorController:
+    def __init__(self, role='striker'):
+        self.game_state = GameState.INITIAL
+        self.behavior = RobotBehavior.STAND
+        self.role = role
+
+    def update(self, world_model):
+        """Update behavior based on world model."""
+        if self.game_state != GameState.PLAYING:
+            self.behavior = RobotBehavior.STAND
+            return
+
+        ball = world_model.ball
+
+        if ball.visible:
+            if ball.distance < 0.3:
+                self.behavior = RobotBehavior.KICK
+            else:
+                self.behavior = RobotBehavior.WALK_TO_BALL
+        else:
+            self.behavior = RobotBehavior.SEARCH_BALL
+```
+
+---
+
+## Competition Checklist
+
+### Before Competition
+
+- [ ] All robots tested and working
+- [ ] Backup parts ready
+- [ ] Software committed and tagged
+- [ ] Battery sets charged
+- [ ] Team registration complete
+- [ ] Robot inspection passed
+
+### During Competition
+
+- [ ] Pre-match calibration
+- [ ] Check network/communication
+- [ ] Monitor robot status
+- [ ] Record match footage
+- [ ] Log issues for debugging
+
+---
+
+## Resources
+
+- [Humanoid League Rules 2025](https://humanoid.robocup.org/rules/)
+- [Technical Challenges Rules](https://humanoid.robocup.org/technical-challenges/)
+- [Previous Competition Results](https://humanoid.robocup.org/results/)

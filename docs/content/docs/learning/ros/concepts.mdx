@@ -1,0 +1,261 @@
+---
+title: Konsep Dasar ROS 2 | ROS 2 Core Concepts
+description: Memahami Nodes, Topics, Services, dan Actions di ROS 2 | Understanding Nodes, Topics, Services, and Actions in ROS 2
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+import { ROSTopicDemo, NodeGraph } from "@/components/learning";
+
+# Konsep Dasar ROS 2
+
+<Callout type="info">
+**Learning Objectives**
+
+Setelah materi ini, kamu akan memahami: (1) Nodes sebagai unit eksekusi, (2) Topics untuk komunikasi publish/subscribe, (3) Services untuk request/response, (4) Actions untuk task dengan feedback.
+
+</Callout>
+
+---
+
+## Nodes
+
+**Node** adalah unit eksekusi terkecil di ROS 2. Setiap node menjalankan satu tugas spesifik dan berkomunikasi dengan node lain.
+
+<NodeGraph />
+
+### Membuat Node Sederhana
+
+```python
+# minimal_node.py
+import rclpy
+from rclpy.node import Node
+
+class MinimalNode(Node):
+    def __init__(self):
+        super().__init__('minimal_node')
+        self.get_logger().info('Hello from MinimalNode!')
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = MinimalNode()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+### CLI Commands untuk Nodes
+
+```bash
+# List semua nodes yang sedang berjalan
+ros2 node list
+
+# Info tentang node tertentu
+ros2 node info /minimal_node
+```
+
+---
+
+## Topics
+
+**Topics** adalah channel untuk komunikasi **publish/subscribe** - one-way, continuous data streaming.
+
+<ROSTopicDemo />
+
+### Contoh: Publisher Node
+
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
+class PublisherNode(Node):
+    def __init__(self):
+        super().__init__('publisher_node')
+        self.publisher_ = self.create_publisher(String, 'chatter', 10)
+        self.timer = self.create_timer(0.5, self.timer_callback)
+        self.count = 0
+
+    def timer_callback(self):
+        msg = String()
+        msg.data = f'Hello BASCORRO #{self.count}'
+        self.publisher_.publish(msg)
+        self.count += 1
+```
+
+### Contoh: Subscriber Node
+
+```python
+class SubscriberNode(Node):
+    def __init__(self):
+        super().__init__('subscriber_node')
+        self.subscription = self.create_subscription(
+            String,
+            'chatter',
+            self.listener_callback,
+            10
+        )
+
+    def listener_callback(self, msg):
+        self.get_logger().info(f'Received: "{msg.data}"')
+```
+
+### CLI Commands untuk Topics
+
+```bash
+ros2 topic list                    # List semua topics
+ros2 topic echo /chatter           # Lihat data yang di-publish
+ros2 topic info /chatter           # Info tentang topic
+ros2 topic hz /chatter             # Check publish rate
+```
+
+---
+
+## Services
+
+**Services** adalah komunikasi **request/response** - synchronous, two-way communication. Cocok untuk operasi yang membutuhkan konfirmasi.
+
+### Contoh: Service Server
+
+```python
+from std_srvs.srv import SetBool
+
+class ServiceServer(Node):
+    def __init__(self):
+        super().__init__('service_server')
+        self.srv = self.create_service(
+            SetBool, 'set_led', self.set_led_callback
+        )
+        self.led_on = False
+
+    def set_led_callback(self, request, response):
+        self.led_on = request.data
+        response.success = True
+        response.message = f'LED is now {"ON" if self.led_on else "OFF"}'
+        return response
+```
+
+### CLI Commands untuk Services
+
+```bash
+ros2 service list
+ros2 service call /set_led std_srvs/srv/SetBool "data: true"
+```
+
+---
+
+## Actions
+
+**Actions** adalah untuk task yang membutuhkan waktu lama dengan **feedback** dan kemampuan **cancel**.
+
+| Use Case       | Contoh                                     |
+| -------------- | ------------------------------------------ |
+| Task lama      | Walking to goal, executing motion sequence |
+| Butuh feedback | Navigation progress, motion percentage     |
+| Bisa di-cancel | Stop walking, abort kick                   |
+
+### CLI Commands untuk Actions
+
+```bash
+ros2 action list
+ros2 action info /navigate_to_pose
+```
+
+---
+
+## Perbandingan
+
+| Aspek        | Topics                  | Services         | Actions              |
+| ------------ | ----------------------- | ---------------- | -------------------- |
+| **Pola**     | Pub/Sub                 | Request/Response | Goal/Feedback/Result |
+| **Arah**     | One-way                 | Two-way          | Two-way + Feedback   |
+| **Blocking** | Non-blocking            | Blocking         | Non-blocking         |
+| **Use Case** | Sensor data, continuous | Get/Set params   | Long tasks           |
+| **Cancel**   | N/A                     | N/A              | Yes                  |
+
+---
+
+## Latihan
+
+<div className="p-6 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 my-6">
+
+**Challenge: Ball Position Publisher**
+
+Buat sebuah node yang:
+
+1. Publish posisi bola (x, y) setiap 100ms ke topic `/ball_position`
+2. Posisi bola berubah secara random dalam range 0-10
+
+Hints: Gunakan `geometry_msgs/msg/Point` dan `random.uniform(0, 10)`
+
+</div>
+
+<details>
+<summary className="font-bold cursor-pointer py-2">Lihat Solusi</summary>
+
+```python
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Point
+import random
+
+class BallPublisher(Node):
+    def __init__(self):
+        super().__init__('ball_publisher')
+        self.publisher_ = self.create_publisher(Point, 'ball_position', 10)
+        self.timer = self.create_timer(0.1, self.publish_ball)
+
+    def publish_ball(self):
+        msg = Point()
+        msg.x = random.uniform(0, 10)
+        msg.y = random.uniform(0, 10)
+        msg.z = 0.0
+        self.publisher_.publish(msg)
+
+def main(args=None):
+    rclpy.init(args=args)
+    rclpy.spin(BallPublisher())
+    rclpy.shutdown()
+```
+
+</details>
+
+---
+
+## Quiz
+
+<details>
+<summary className="font-bold cursor-pointer py-2">1. Kapan menggunakan Topic vs Service?</summary>
+
+**Topic:** Untuk data continuous yang perlu di-broadcast ke banyak subscriber (sensor data, camera images, robot state).
+
+**Service:** Untuk operasi request-response satu kali (get parameter, trigger action).
+
+</details>
+
+<details>
+<summary className="font-bold cursor-pointer py-2">2. Apa keuntungan Actions dibanding Service?</summary>
+
+Actions menyediakan: (1) Feedback progress selama eksekusi, (2) Kemampuan cancel task, (3) Non-blocking execution.
+
+</details>
+
+---
+
+## Next Steps
+
+<Cards>
+  <Card
+    title="ROS 2 CLI & Workspace"
+    description="Pelajari command line tools dan setup workspace"
+    href="/docs/learning/ros/ros2-basics"
+  />
+  <Card
+    title="Kembali"
+    description="Kembali ke pengenalan ROS"
+    href="/docs/learning/ros"
+  />
+</Cards>

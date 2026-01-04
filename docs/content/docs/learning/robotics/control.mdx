@@ -1,0 +1,375 @@
+---
+title: Control Systems
+description: PID control, feedback loops, and balance control for humanoid robots
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { PIDTunerDemo } from "@/components/learning";
+
+# Control Systems
+
+Control systems adalah otak yang menentukan bagaimana robot merespons terhadap error antara state saat ini dan target yang diinginkan.
+
+---
+
+## Feedback Control
+
+### Open-Loop vs Closed-Loop
+
+| Type            | Description                   | Example           |
+| --------------- | ----------------------------- | ----------------- |
+| **Open-Loop**   | No feedback, command langsung | Timer-based motor |
+| **Closed-Loop** | Uses sensor feedback          | Position servo    |
+
+```
+Open-Loop:
+Command ──▶ Controller ──▶ Actuator ──▶ Output
+
+Closed-Loop:
+                    ┌────────────────────────┐
+                    │                        │
+                    ▼                        │
+Command ──▶ [+] ──▶ Controller ──▶ Actuator ──▶ Output
+             │-                              │
+             │                               │
+             └────── Sensor ◀────────────────┘
+```
+
+---
+
+## Interactive PID Tuner
+
+Coba sesuaikan nilai Kp, Ki, dan Kd untuk melihat bagaimana response sistem berubah:
+
+<PIDTunerDemo />
+
+---
+
+## PID Control
+
+PID adalah controller paling umum dalam robotika. Menggabungkan tiga komponen:
+
+### Components
+
+| Term | Name         | Function                      |
+| ---- | ------------ | ----------------------------- |
+| P    | Proportional | Responds to current error     |
+| I    | Integral     | Eliminates steady-state error |
+| D    | Derivative   | Dampens oscillations          |
+
+### PID Equation
+
+```
+u(t) = Kp × e(t) + Ki × ∫e(τ)dτ + Kd × de(t)/dt
+
+u(t) = Control output
+e(t) = Error (setpoint - measured)
+Kp, Ki, Kd = Gains
+```
+
+### Python Implementation
+
+```python
+class PIDController:
+    def __init__(self, kp, ki, kd, output_limits=None):
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
+        self.output_limits = output_limits
+
+        self.integral = 0.0
+        self.prev_error = 0.0
+        self.prev_time = None
+
+    def update(self, setpoint, measured, current_time):
+        """
+        Calculate PID output.
+
+        Args:
+            setpoint: Desired value
+            measured: Current measured value
+            current_time: Current timestamp
+
+        Returns:
+            Control output
+        """
+        error = setpoint - measured
+
+        # Calculate dt
+        if self.prev_time is None:
+            dt = 0.01  # Default 10ms
+        else:
+            dt = current_time - self.prev_time
+
+        # Proportional
+        p_term = self.kp * error
+
+        # Integral (with anti-windup)
+        self.integral += error * dt
+        i_term = self.ki * self.integral
+
+        # Derivative
+        if dt > 0:
+            derivative = (error - self.prev_error) / dt
+        else:
+            derivative = 0
+        d_term = self.kd * derivative
+
+        # Total output
+        output = p_term + i_term + d_term
+
+        # Apply limits
+        if self.output_limits:
+            output = max(self.output_limits[0],
+                        min(self.output_limits[1], output))
+
+        # Store for next iteration
+        self.prev_error = error
+        self.prev_time = current_time
+
+        return output
+
+    def reset(self):
+        """Reset controller state."""
+        self.integral = 0.0
+        self.prev_error = 0.0
+        self.prev_time = None
+```
+
+---
+
+## PID Tuning
+
+### Manual Tuning Method
+
+1. Set Ki = Kd = 0
+2. Increase Kp until system oscillates
+3. Set Ki to eliminate steady-state error
+4. Add Kd to reduce overshoot
+
+### Ziegler-Nichols Method
+
+| Controller | Kp      | Ki        | Kd        |
+| ---------- | ------- | --------- | --------- |
+| P          | 0.5 Ku  | -         | -         |
+| PI         | 0.45 Ku | 1.2 Kp/Tu | -         |
+| PID        | 0.6 Ku  | 2 Kp/Tu   | Kp × Tu/8 |
+
+Where:
+
+- Ku = Ultimate gain (gain at oscillation)
+- Tu = Oscillation period
+
+### Tuning Tips
+
+<Callout type="tip">
+  **Common issues:** - Too much P: Oscillation - Too much I: Slow response,
+  windup - Too much D: Noise amplification, jitter
+</Callout>
+
+---
+
+## Balance Control
+
+### Single Inverted Pendulum Model
+
+Humanoid robot dapat dimodelkan sebagai inverted pendulum:
+
+```
+        ●  CoM (Center of Mass)
+        │
+        │ Body
+        │
+    ────┴────  Ground
+       CoP (Center of Pressure)
+```
+
+### Linear Inverted Pendulum Model (LIPM)
+
+```python
+class LIPMController:
+    def __init__(self, com_height, gravity=9.81):
+        self.z_c = com_height
+        self.g = gravity
+        self.omega = np.sqrt(gravity / com_height)
+
+    def calculate_zmp(self, com_pos, com_accel):
+        """
+        Calculate Zero Moment Point (ZMP).
+
+        ZMP = CoM - (z_c / g) × CoM_acceleration
+        """
+        zmp_x = com_pos[0] - (self.z_c / self.g) * com_accel[0]
+        zmp_y = com_pos[1] - (self.z_c / self.g) * com_accel[1]
+        return np.array([zmp_x, zmp_y])
+
+    def capture_point(self, com_pos, com_vel):
+        """
+        Calculate Capture Point (Instantaneous Capture Point).
+
+        CP = CoM + CoM_velocity / omega
+        """
+        cp_x = com_pos[0] + com_vel[0] / self.omega
+        cp_y = com_pos[1] + com_vel[1] / self.omega
+        return np.array([cp_x, cp_y])
+```
+
+### Balance Control Algorithm
+
+```python
+class BalanceController:
+    def __init__(self, kp_hip=100, kd_hip=10, kp_ankle=50, kd_ankle=5):
+        self.hip_controller = PIDController(kp_hip, 0, kd_hip)
+        self.ankle_controller = PIDController(kp_ankle, 0, kd_ankle)
+
+    def update(self, imu_pitch, imu_roll, target_pitch=0, target_roll=0, time=None):
+        """
+        Calculate hip and ankle corrections for balance.
+
+        Returns:
+            (hip_pitch_correction, ankle_pitch_correction,
+             hip_roll_correction, ankle_roll_correction)
+        """
+        # Pitch control (forward/backward)
+        hip_pitch = self.hip_controller.update(target_pitch, imu_pitch, time)
+        ankle_pitch = self.ankle_controller.update(target_pitch, imu_pitch, time)
+
+        # Roll control (left/right)
+        hip_roll = self.hip_controller.update(target_roll, imu_roll, time)
+        ankle_roll = self.ankle_controller.update(target_roll, imu_roll, time)
+
+        return hip_pitch, ankle_pitch, hip_roll, ankle_roll
+```
+
+---
+
+## Joint Position Control
+
+### Dynamixel Position Control
+
+```python
+class JointPositionController:
+    def __init__(self, port_handler, packet_handler):
+        self.port = port_handler
+        self.packet = packet_handler
+
+        # Dynamixel addresses (Protocol 2.0)
+        self.ADDR_GOAL_POSITION = 116
+        self.ADDR_PRESENT_POSITION = 132
+
+    def set_position(self, dxl_id, goal_rad):
+        """Set joint to target position in radians."""
+        # Convert radians to Dynamixel units (0-4095)
+        goal_unit = int((goal_rad / (2 * np.pi)) * 4095) % 4095
+
+        self.packet.write4ByteTxRx(
+            self.port, dxl_id, self.ADDR_GOAL_POSITION, goal_unit
+        )
+
+    def get_position(self, dxl_id):
+        """Get current position in radians."""
+        pos, _, _ = self.packet.read4ByteTxRx(
+            self.port, dxl_id, self.ADDR_PRESENT_POSITION
+        )
+        return (pos / 4095.0) * 2 * np.pi
+```
+
+### ROS 2 Joint Trajectory Controller
+
+```python
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from builtin_interfaces.msg import Duration
+
+class TrajectoryPublisher:
+    def __init__(self, node):
+        self.pub = node.create_publisher(
+            JointTrajectory,
+            '/joint_trajectory_controller/joint_trajectory',
+            10
+        )
+
+    def send_trajectory(self, joint_names, positions, duration_sec=1.0):
+        """
+        Send joint trajectory command.
+
+        Args:
+            joint_names: List of joint names
+            positions: List of target positions (radians)
+            duration_sec: Time to reach target
+        """
+        msg = JointTrajectory()
+        msg.joint_names = joint_names
+
+        point = JointTrajectoryPoint()
+        point.positions = positions
+        point.time_from_start = Duration(sec=int(duration_sec),
+                                         nanosec=int((duration_sec % 1) * 1e9))
+
+        msg.points = [point]
+        self.pub.publish(msg)
+```
+
+---
+
+## Walking Control
+
+### State Machine for Walking
+
+```python
+from enum import Enum
+
+class WalkingState(Enum):
+    IDLE = 0
+    INIT = 1
+    LEFT_SUPPORT = 2
+    RIGHT_SUPPORT = 3
+    DOUBLE_SUPPORT = 4
+    STOP = 5
+
+class WalkingController:
+    def __init__(self):
+        self.state = WalkingState.IDLE
+        self.phase = 0.0  # 0-1 within each step
+        self.step_time = 0.5  # seconds per step
+
+    def update(self, dt):
+        """Update walking state machine."""
+        self.phase += dt / self.step_time
+
+        if self.phase >= 1.0:
+            self.phase = 0.0
+            self._transition_state()
+
+        return self._calculate_foot_trajectory()
+
+    def _transition_state(self):
+        """Transition to next state."""
+        if self.state == WalkingState.LEFT_SUPPORT:
+            self.state = WalkingState.DOUBLE_SUPPORT
+        elif self.state == WalkingState.DOUBLE_SUPPORT:
+            self.state = WalkingState.RIGHT_SUPPORT
+        elif self.state == WalkingState.RIGHT_SUPPORT:
+            self.state = WalkingState.DOUBLE_SUPPORT
+
+    def _calculate_foot_trajectory(self):
+        """Calculate foot position based on current phase."""
+        # Cubic spline or sinusoidal trajectory
+        # ... implementation depends on gait parameters
+        pass
+```
+
+---
+
+## Practice Exercises
+
+1. **PID Tuning**: Tune PID untuk joint position control pada OP3
+2. **Balance**: Implement simple balance controller menggunakan IMU feedback
+3. **Walking**: Modify step_time dan observe effect on stability
+
+---
+
+## Resources
+
+- [PID Control - Wikipedia](https://en.wikipedia.org/wiki/PID_controller)
+- [Introduction to Humanoid Robotics - Springer](https://www.springer.com/gp/book/9783642545351)
+- [ROBOTIS OP3 Control](https://emanual.robotis.com/docs/en/platform/op3/robotis_op3/)

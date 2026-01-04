@@ -1,0 +1,170 @@
+---
+title: Apa itu ROS 2?
+description: Pengenalan Robot Operating System 2 untuk pemula
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Apa itu ROS 2?
+
+<Callout type="info">
+**Learning Objectives**
+
+Setelah mempelajari materi ini, kamu akan dapat: (1) Menjelaskan apa itu ROS dan mengapa digunakan dalam robotika, (2) Memahami perbedaan ROS 1 dan ROS 2, (3) Mengenal ekosistem dan komunitas ROS.
+
+</Callout>
+
+---
+
+## Robot Operating System (ROS)
+
+**ROS** (Robot Operating System) bukanlah sistem operasi seperti Windows atau Linux, melainkan **middleware** - kumpulan framework dan tools untuk membangun software robot.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Robot Application                       │
+├─────────────────────────────────────────────────────────────┤
+│                         ROS 2                                │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐           │
+│  │ Vision  │ │ Motion  │ │ Sensors │ │Strategy │           │
+│  │  Node   │ │  Node   │ │  Node   │ │  Node   │           │
+│  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘           │
+│       └──────────┴──────────┴──────────┘                    │
+│                    Communication Layer                       │
+├─────────────────────────────────────────────────────────────┤
+│              Linux (Ubuntu 22.04)                            │
+├─────────────────────────────────────────────────────────────┤
+│                   Robot Hardware                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Mengapa ROS?
+
+### 1. Modularitas
+
+ROS memungkinkan kamu memecah sistem robot yang kompleks menjadi bagian-bagian kecil yang independen (disebut **Nodes**).
+
+### 2. Reusability
+
+Package yang dibuat untuk satu robot bisa digunakan untuk robot lain. Banyak package open-source tersedia!
+
+### 3. Komunitas Besar
+
+- Dokumentasi lengkap
+- Ribuan package tersedia
+- Forum aktif (ROS Discourse, Stack Overflow)
+- Standar industri robotika
+
+### 4. Simulation Support
+
+ROS terintegrasi dengan simulator seperti **Gazebo** dan **Webots** - kamu bisa test tanpa robot fisik!
+
+---
+
+## ROS 1 vs ROS 2
+
+BASCORRO menggunakan **ROS 2 Humble** karena:
+
+| Aspek           | ROS 1               | ROS 2                 |
+| --------------- | ------------------- | --------------------- |
+| **Status**      | Legacy (deprecated) | Aktif dikembangkan    |
+| **Real-time**   | Tidak               | Ya (dengan DDS)       |
+| **Multi-robot** | Sulit               | Native support        |
+| **Security**    | Minimal             | Built-in security     |
+| **OS Support**  | Linux only          | Linux, Windows, macOS |
+| **Python**      | Python 2            | Python 3              |
+
+<Callout type="warn">
+  ROS 1 (Noetic) akan end-of-life pada 2025. Semua project baru sebaiknya
+  menggunakan ROS 2!
+</Callout>
+
+---
+
+## ROS 2 Distributions
+
+ROS 2 dirilis dalam "distributions" seperti Ubuntu:
+
+| Distribution         | Release Date | EOL      | Ubuntu |
+| -------------------- | ------------ | -------- | ------ |
+| **Humble Hawksbill** | May 2022     | May 2027 | 22.04  |
+| Iron Irwini          | May 2023     | Nov 2024 | 22.04  |
+| **Jazzy Jalisco**    | May 2024     | May 2029 | 24.04  |
+
+<Callout type="info">
+  **BASCORRO menggunakan ROS 2 Humble** karena stabil dan LTS (Long Term
+  Support).
+</Callout>
+
+---
+
+## Komponen Utama ROS 2
+
+| Komponen     | Fungsi                                                |
+| ------------ | ----------------------------------------------------- |
+| **Nodes**    | Unit eksekusi terkecil, melakukan satu tugas spesifik |
+| **Topics**   | Channel untuk publish/subscribe data continuous       |
+| **Services** | Komunikasi request/response synchronous               |
+| **Actions**  | Task dengan feedback dan cancel capability            |
+
+---
+
+## Tools yang Akan Kamu Gunakan
+
+| Tool       | Fungsi                       |
+| ---------- | ---------------------------- |
+| `ros2` CLI | Command line interface utama |
+| `colcon`   | Build system untuk packages  |
+| `rviz2`    | Visualisasi 3D               |
+| `rqt`      | GUI tools collection         |
+| `rosbag2`  | Record & playback data       |
+
+---
+
+## Quick Demo
+
+Jika sudah install ROS 2, coba jalankan demo ini:
+
+```bash
+# Terminal 1: Run turtlesim
+ros2 run turtlesim turtlesim_node
+
+# Terminal 2: Control the turtle
+ros2 run turtlesim turtle_teleop_key
+```
+
+Gunakan arrow keys untuk menggerakkan kura-kura! Ini adalah contoh sederhana dari komunikasi ROS 2.
+
+<Callout type="tip">
+  **Sandbox Online:** Belum install ROS 2? Coba di [The
+  Construct](https://www.theconstructsim.com/) - platform online untuk belajar
+  ROS!
+</Callout>
+
+---
+
+## Referensi
+
+- [ROS 2 Official Documentation](https://docs.ros.org/en/humble/)
+- [ROS 2 Tutorials](https://docs.ros.org/en/humble/Tutorials.html)
+- [BASCORRO Installation Guide](/docs/getting-started/installation)
+
+---
+
+## Next Steps
+
+<Cards>
+  <Card
+    title="Konsep Dasar ROS 2"
+    description="Pelajari Nodes, Topics, Services, dan Actions"
+    href="/docs/learning/ros/concepts"
+  />
+  <Card
+    title="Kembali ke Learning Hub"
+    description="Lihat track pembelajaran lainnya"
+    href="/docs/learning"
+  />
+</Cards>

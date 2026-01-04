@@ -1,0 +1,180 @@
+---
+title: RoboCup Overview
+description: Introduction to RoboCup competition - history, leagues, and goals
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+# RoboCup Overview
+
+RoboCup adalah kompetisi robotika internasional yang bertujuan untuk memajukan riset AI dan robotika melalui tantangan yang terstandarisasi.
+
+<Callout type="info">
+  **Goal RoboCup:** "By 2050, develop a team of fully autonomous humanoid robot
+  soccer players that can win against the human World Cup champions."
+</Callout>
+
+---
+
+## What is RoboCup?
+
+RoboCup (Robot World Cup) dimulai pada tahun 1997 di Nagoya, Jepang. Sejak saat itu, kompetisi ini telah menjadi benchmark utama untuk riset robotika dan AI.
+
+### Mission
+
+- Mendorong riset AI dan robotika
+- Menyediakan platform benchmarking standar
+- Memfasilitasi knowledge sharing antar tim
+- Mengembangkan teknologi untuk aplikasi dunia nyata
+
+---
+
+## RoboCup Leagues
+
+| League         | Description                 | Robots                                               |
+| -------------- | --------------------------- | ---------------------------------------------------- |
+| **Soccer**     | Robot playing soccer        | Humanoid, Standard Platform, Small Size, Middle Size |
+| **Rescue**     | Search and rescue scenarios | Ground, aerial robots                                |
+| **@Home**      | Domestic service robots     | Service robots                                       |
+| **Industrial** | Logistics and manufacturing | Industrial robots                                    |
+| **Junior**     | For students under 19       | Various platforms                                    |
+
+---
+
+## RoboCup Soccer
+
+Tim BASCORRO berkompetisi di RoboCup Soccer Humanoid League.
+
+### Soccer Leagues Comparison
+
+| League             | Robot Type       | Size           | Autonomy            |
+| ------------------ | ---------------- | -------------- | ------------------- |
+| Humanoid           | Bipedal humanoid | Kid/Adult/Teen | Fully autonomous    |
+| Standard Platform  | NAO robots       | 58cm           | Fully autonomous    |
+| Small Size League  | Wheeled robots   | 18cm max       | Centralized + Local |
+| Middle Size League | Wheeled robots   | 50cm           | Fully autonomous    |
+| Simulation         | Virtual agents   | N/A            | Software only       |
+
+---
+
+## Topics in This Track
+
+<Cards>
+  <Card
+    title="Humanoid League"
+    description="Detail tentang Humanoid League - rules, robot specs, challenges"
+    href="/docs/learning/robocup/humanoid-league"
+  />
+  <Card
+    title="Team Play Strategy"
+    description="Multi-robot coordination dan game strategy"
+    href="/docs/learning/robocup/team-play"
+  />
+</Cards>
+
+---
+
+## RoboCup Timeline
+
+```
+1997 - RoboCup pertama di Nagoya, Jepang
+2002 - Humanoid League dimulai
+2015 - BASCORRO didirikan
+2024 - RoboCup di Eindhoven, Netherlands
+2025 - RoboCup di Salvador, Brazil
+2050 - Goal: Beat human World Cup champions
+```
+
+---
+
+## Key Technical Challenges
+
+### 1. Locomotion
+
+- Stable bipedal walking
+- Running and sprinting
+- Getting up after falling
+
+### 2. Vision
+
+- Ball detection in varying lighting
+- Goal and field line recognition
+- Robot and obstacle detection
+
+### 3. Localization
+
+- Self-localization on the field
+- Dealing with symmetric field
+- Recovery from kidnapping
+
+### 4. Strategy
+
+- Role assignment
+- Formation and positioning
+- Game state handling
+
+### 5. Team Coordination
+
+- Communication between robots
+- Collaborative behaviors
+- Opponent modeling
+
+---
+
+## Competition Format
+
+### Typical Match
+
+| Phase     | Duration | Description                     |
+| --------- | -------- | ------------------------------- |
+| Setup     | 5 min    | Robot placement and calibration |
+| Half 1    | 10 min   | First half of the match         |
+| Half Time | 5 min    | Strategy adjustment             |
+| Half 2    | 10 min   | Second half of the match        |
+
+### Scoring
+
+- Goal: 1 point
+- Win: 3 points
+- Draw: 1 point each
+- Loss: 0 points
+
+---
+
+## How to Prepare
+
+### Technical Preparation
+
+1. **Hardware**
+
+   - Ensure all servos are functional
+   - Calibrate sensors
+   - Check battery capacity
+
+2. **Software**
+
+   - Test all behaviors
+   - Validate vision pipeline
+   - Stress test communication
+
+3. **Integration**
+   - Full system testing
+   - Multi-robot scenarios
+   - Recovery procedures
+
+### Team Preparation
+
+- Define roles and responsibilities
+- Practice setup procedures
+- Prepare troubleshooting guides
+- Document known issues
+
+---
+
+## Resources
+
+- [RoboCup Official Website](https://www.robocup.org/)
+- [Humanoid League Website](https://humanoid.robocup.org/)
+- [RoboCup Rules 2025](/docs/robocup/rules-2025)
+- [Team Qualification Process](https://humanoid.robocup.org/qualification/)

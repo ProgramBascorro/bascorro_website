@@ -1,0 +1,40 @@
+---
+title: Balance Control
+description: IMU feedback dan kontrol keseimbangan saat berjalan
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { ZmpBalanceDemo, PIDTunerDemo } from "@/components/learning";
+
+# Balance Control
+
+Balance control menjaga robot tetap tegak saat berjalan dengan memanfaatkan IMU (roll & pitch). Koreksi kecil pada joint pinggul dan pergelangan membuat CoM kembali aman.
+
+<Callout type="info">
+  Balance control bekerja cepat (loop kecil), sedangkan gait planner bekerja
+  lebih lambat. Keduanya harus sinkron agar tidak saling mengganggu.
+</Callout>
+
+---
+
+## Interactive: ZMP & Support Polygon
+
+ZMP harus berada di dalam support polygon agar robot stabil. Geser CoM/ZMP untuk memahami batas stabilitas.
+
+<ZmpBalanceDemo />
+
+---
+
+## Interactive: PID Tuning
+
+Naikkan gain secara bertahap. Gain tinggi membuat robot cepat stabil, tetapi bisa menyebabkan oscillation.
+
+<PIDTunerDemo />
+
+---
+
+## Practical Tips
+
+- Mulai dengan gain kecil dan naikkan perlahan.
+- Pantau overshoot setelah robot terkena gangguan kecil.
+- Jika oscillation muncul, turunkan Kp atau naikkan Kd sedikit.

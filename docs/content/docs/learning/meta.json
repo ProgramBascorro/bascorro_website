@@ -1,0 +1,17 @@
+{
+  "title": "Learning",
+  "icon": "GraduationCap",
+  "pages": [
+    "index",
+    "---ROS 2---",
+    "ros",
+    "---Robotics---",
+    "robotics",
+    "---Locomotion---",
+    "motion",
+    "---Computer Vision---",
+    "vision",
+    "---RoboCup---",
+    "robocup"
+  ]
+}

@@ -1,0 +1,359 @@
+---
+title: Sensors
+description: Understanding sensors used in humanoid robots - IMU, cameras, encoders
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Sensors
+
+Sensor adalah mata dan telinga robot - memungkinkan robot untuk merasakan lingkungannya dan state internalnya.
+
+---
+
+## Sensor Categories
+
+| Category           | Purpose              | Examples                       |
+| ------------------ | -------------------- | ------------------------------ |
+| **Proprioceptive** | Internal state       | Encoders, IMU, Current sensors |
+| **Exteroceptive**  | External environment | Camera, Lidar, Ultrasonic      |
+
+---
+
+## IMU (Inertial Measurement Unit)
+
+IMU mengukur orientasi dan percepatan robot. Kritis untuk balance control.
+
+### Components
+
+| Sensor        | Measures            | Units |
+| ------------- | ------------------- | ----- |
+| Accelerometer | Linear acceleration | m/s^2 |
+| Gyroscope     | Angular velocity    | rad/s |
+| Magnetometer  | Magnetic field      | Tesla |
+
+### OP3 IMU Data
+
+```python
+# Reading IMU data via ROS 2
+import rclpy
+from sensor_msgs.msg import Imu
+
+class IMUSubscriber:
+    def __init__(self, node):
+        self.sub = node.create_subscription(
+            Imu,
+            '/imu/data',
+            self.imu_callback,
+            10
+        )
+
+    def imu_callback(self, msg):
+        # Orientation (quaternion)
+        qx = msg.orientation.x
+        qy = msg.orientation.y
+        qz = msg.orientation.z
+        qw = msg.orientation.w
+
+        # Angular velocity
+        wx = msg.angular_velocity.x  # roll rate
+        wy = msg.angular_velocity.y  # pitch rate
+        wz = msg.angular_velocity.z  # yaw rate
+
+        # Linear acceleration
+        ax = msg.linear_acceleration.x
+        ay = msg.linear_acceleration.y
+        az = msg.linear_acceleration.z
+```
+
+### Orientation from IMU
+
+```python
+import numpy as np
+
+def quaternion_to_euler(q):
+    """Convert quaternion to roll, pitch, yaw."""
+    x, y, z, w = q
+
+    # Roll (x-axis rotation)
+    sinr_cosp = 2 * (w * x + y * z)
+    cosr_cosp = 1 - 2 * (x * x + y * y)
+    roll = np.arctan2(sinr_cosp, cosr_cosp)
+
+    # Pitch (y-axis rotation)
+    sinp = 2 * (w * y - z * x)
+    pitch = np.arcsin(np.clip(sinp, -1, 1))
+
+    # Yaw (z-axis rotation)
+    siny_cosp = 2 * (w * z + x * y)
+    cosy_cosp = 1 - 2 * (y * y + z * z)
+    yaw = np.arctan2(siny_cosp, cosy_cosp)
+
+    return roll, pitch, yaw
+```
+
+---
+
+## Joint Encoders
+
+Encoder mengukur posisi dan kecepatan joint. ROBOTIS OP3 menggunakan Dynamixel servos dengan built-in encoders.
+
+### Dynamixel Position Reading
+
+```python
+from dynamixel_sdk import *
+
+# Protocol 2.0
+ADDR_PRESENT_POSITION = 132
+DXL_ID = 1
+
+def read_position(port_handler, packet_handler, dxl_id):
+    """Read current position from Dynamixel."""
+    position, result, error = packet_handler.read4ByteTxRx(
+        port_handler,
+        dxl_id,
+        ADDR_PRESENT_POSITION
+    )
+
+    if result != COMM_SUCCESS:
+        print(f"Communication error: {packet_handler.getTxRxResult(result)}")
+        return None
+
+    # Convert to radians (0-4095 -> 0-2pi)
+    angle_rad = (position / 4095.0) * 2 * np.pi
+    return angle_rad
+```
+
+### Joint State Message
+
+```python
+from sensor_msgs.msg import JointState
+
+class JointStateSubscriber:
+    def __init__(self, node):
+        self.sub = node.create_subscription(
+            JointState,
+            '/joint_states',
+            self.callback,
+            10
+        )
+        self.joint_positions = {}
+
+    def callback(self, msg):
+        for i, name in enumerate(msg.name):
+            self.joint_positions[name] = {
+                'position': msg.position[i],
+                'velocity': msg.velocity[i] if msg.velocity else 0,
+                'effort': msg.effort[i] if msg.effort else 0
+            }
+```
+
+---
+
+## Camera
+
+Kamera adalah sensor utama untuk vision - ball detection, goal detection, localization.
+
+### OP3 Camera Specs
+
+| Parameter     | Value               |
+| ------------- | ------------------- |
+| Resolution    | 1920x1080 (Full HD) |
+| Frame Rate    | 30 fps              |
+| Field of View | 78 deg diagonal     |
+| Interface     | USB 3.0             |
+
+### Reading Camera Data
+
+```python
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import cv2
+
+class CameraSubscriber:
+    def __init__(self, node):
+        self.bridge = CvBridge()
+        self.sub = node.create_subscription(
+            Image,
+            '/camera/image_raw',
+            self.callback,
+            10
+        )
+
+    def callback(self, msg):
+        # Convert ROS Image to OpenCV
+        cv_image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
+
+        # Process image
+        # ... ball detection, etc.
+```
+
+### Camera Calibration
+
+```python
+import cv2
+import numpy as np
+
+def calibrate_camera(images, pattern_size=(9, 6), square_size=0.025):
+    """
+    Calibrate camera using checkerboard pattern.
+
+    Args:
+        images: List of calibration images
+        pattern_size: (columns, rows) of internal corners
+        square_size: Size of square in meters
+
+    Returns:
+        camera_matrix, dist_coeffs
+    """
+    objp = np.zeros((pattern_size[0] * pattern_size[1], 3), np.float32)
+    objp[:, :2] = np.mgrid[0:pattern_size[0], 0:pattern_size[1]].T.reshape(-1, 2)
+    objp *= square_size
+
+    obj_points = []
+    img_points = []
+
+    for img in images:
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        ret, corners = cv2.findChessboardCorners(gray, pattern_size)
+
+        if ret:
+            obj_points.append(objp)
+            img_points.append(corners)
+
+    ret, camera_matrix, dist_coeffs, rvecs, tvecs = cv2.calibrateCamera(
+        obj_points, img_points, gray.shape[::-1], None, None
+    )
+
+    return camera_matrix, dist_coeffs
+```
+
+---
+
+## Force Sensitive Resistors (FSR)
+
+FSR mengukur tekanan pada telapak kaki - penting untuk balance detection.
+
+### OP3 Foot Sensors
+
+```
+     ┌─────────────┐
+     │  FSR_FL     │    FSR = Force Sensitive Resistor
+     │      ●      │
+     │             │    FL = Front Left
+     │  ●       ●  │    FR = Front Right
+     │ FSR_RL FSR_RR    RL = Rear Left
+     └─────────────┘    RR = Rear Right
+          Foot
+```
+
+### Center of Pressure (CoP)
+
+```python
+def calculate_cop(fsr_fl, fsr_fr, fsr_rl, fsr_rr, foot_length=0.1, foot_width=0.05):
+    """
+    Calculate Center of Pressure from FSR readings.
+
+    Args:
+        fsr_*: Force readings from each sensor
+        foot_length: Distance between front and rear sensors
+        foot_width: Distance between left and right sensors
+
+    Returns:
+        (x, y) position of CoP relative to foot center
+    """
+    total_force = fsr_fl + fsr_fr + fsr_rl + fsr_rr
+
+    if total_force < 0.01:  # No contact
+        return 0, 0
+
+    # X position (forward/backward)
+    front = fsr_fl + fsr_fr
+    rear = fsr_rl + fsr_rr
+    x = (front - rear) / total_force * (foot_length / 2)
+
+    # Y position (left/right)
+    left = fsr_fl + fsr_rl
+    right = fsr_fr + fsr_rr
+    y = (right - left) / total_force * (foot_width / 2)
+
+    return x, y
+```
+
+---
+
+## Sensor Fusion
+
+Menggabungkan data dari multiple sensors untuk estimasi yang lebih akurat.
+
+### Complementary Filter
+
+Simple fusion untuk IMU (accelerometer + gyroscope):
+
+```python
+class ComplementaryFilter:
+    def __init__(self, alpha=0.98):
+        self.alpha = alpha
+        self.angle = 0.0
+
+    def update(self, gyro_rate, accel_angle, dt):
+        """
+        Fuse gyroscope and accelerometer data.
+
+        Args:
+            gyro_rate: Angular velocity from gyro (rad/s)
+            accel_angle: Angle from accelerometer (rad)
+            dt: Time step (seconds)
+
+        Returns:
+            Fused angle estimate
+        """
+        # Integrate gyroscope
+        gyro_angle = self.angle + gyro_rate * dt
+
+        # Combine with accelerometer
+        self.angle = self.alpha * gyro_angle + (1 - self.alpha) * accel_angle
+
+        return self.angle
+```
+
+### Kalman Filter
+
+More sophisticated fusion dengan noise estimation:
+
+```python
+class SimpleKalmanFilter:
+    def __init__(self, q=0.001, r=0.1):
+        self.q = q  # Process noise
+        self.r = r  # Measurement noise
+        self.x = 0  # State estimate
+        self.p = 1  # Error covariance
+
+    def update(self, measurement):
+        # Prediction
+        self.p = self.p + self.q
+
+        # Update
+        k = self.p / (self.p + self.r)  # Kalman gain
+        self.x = self.x + k * (measurement - self.x)
+        self.p = (1 - k) * self.p
+
+        return self.x
+```
+
+---
+
+## Practice Exercises
+
+1. **IMU**: Plot roll, pitch, yaw dari OP3 selama 10 detik
+2. **Encoder**: Baca posisi semua joint dan tampilkan dalam derajat
+3. **FSR**: Implementasi CoP tracker untuk satu kaki
+4. **Fusion**: Implement complementary filter untuk tilt estimation
+
+---
+
+## Resources
+
+- [ROBOTIS Dynamixel Protocol 2.0](https://emanual.robotis.com/docs/en/dxl/protocol2/)
+- [OpenCV Camera Calibration](https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html)
+- [Kalman Filter Tutorial](https://www.kalmanfilter.net/)

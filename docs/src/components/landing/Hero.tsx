@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import { motion } from "framer-motion";
@@ -19,8 +19,9 @@ import {
   Search,
   Images,
   Trophy,
+  BookOpen,
 } from "lucide-react";
-import { useSearchContext } from 'fumadocs-ui/contexts/search';
+import { useSearchContext } from "fumadocs-ui/contexts/search";
 import Navbar from "./Navbar";
 import {
   ROBOTS,
@@ -106,7 +107,9 @@ const Hero: React.FC = () => {
                   className="w-full max-w-md flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 mb-6 sm:mb-8 bg-white border border-gray-200 rounded-xl text-left hover:border-gray-300 hover:shadow-sm transition-all group"
                 >
                   <Search className="w-5 h-5 text-gray-400 group-hover:text-undip-blue transition-colors" />
-                  <span className="flex-1 text-gray-400 text-sm">Search documentation...</span>
+                  <span className="flex-1 text-gray-400 text-sm">
+                    Search documentation...
+                  </span>
                   <kbd className="hidden sm:flex items-center gap-1 px-2 py-1 text-xs font-mono bg-gray-100 rounded border border-gray-200 text-gray-400">
                     <span className="text-xs">⌘</span>K
                   </kbd>
@@ -124,6 +127,13 @@ const Hero: React.FC = () => {
                     className="px-6 sm:px-8 py-3 sm:py-4 border border-gray-300 text-gray-900 font-bold rounded-full hover:bg-white transition-colors text-center"
                   >
                     Join the Team
+                  </a>
+                  <a
+                    href="/docs/learning"
+                    className="px-6 sm:px-8 py-3 sm:py-4 border border-gray-300 text-gray-900 font-bold rounded-full hover:bg-white transition-colors flex items-center justify-center gap-2"
+                  >
+                    <BookOpen size={18} />
+                    Learning Hub
                   </a>
                   <a
                     href="/gallery"
@@ -264,8 +274,8 @@ const Hero: React.FC = () => {
                     ROBOTIS OP3
                   </h3>
                   <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                    Explore our humanoid robot in full 3D. Drag to rotate, scroll to zoom,
-                    and use two fingers to pan around the model.
+                    Explore our humanoid robot in full 3D. Drag to rotate,
+                    scroll to zoom, and use two fingers to pan around the model.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-mono text-gray-600">
@@ -385,7 +395,7 @@ const Hero: React.FC = () => {
                     {comp.role}
                   </div>
                   <p className="text-gray-800 leading-relaxed">{comp.desc}</p>
-                  {comp.name.includes('RoboCup') && (
+                  {comp.name.includes("RoboCup") && (
                     <a
                       href="/robocup"
                       className="inline-flex items-center gap-1 mt-4 text-sm font-bold text-undip-blue hover:underline"

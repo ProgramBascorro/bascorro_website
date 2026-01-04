@@ -1,0 +1,141 @@
+---
+title: Robotics Basics
+description: Fundamental concepts of robotics - from sensors to control systems
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Robotics Basics
+
+Pelajari konsep-konsep dasar robotika yang menjadi fondasi untuk memahami sistem humanoid robot.
+
+<Callout type="info">
+  **Prerequisite:** Tidak ada. Track ini cocok untuk pemula absolut.
+</Callout>
+
+---
+
+## What is a Robot?
+
+Robot adalah sistem mekanik yang dapat:
+
+1. **Sense** - Merasakan lingkungan melalui sensor
+2. **Plan** - Memproses informasi dan membuat keputusan
+3. **Act** - Melakukan aksi melalui aktuator
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   SENSE     │────▶│    PLAN     │────▶│     ACT     │
+│  (Sensors)  │     │  (Control)  │     │ (Actuators) │
+└─────────────┘     └─────────────┘     └─────────────┘
+       ▲                                       │
+       └───────────── Feedback ────────────────┘
+```
+
+---
+
+## Humanoid Robot Components
+
+### Mechanical System
+
+- **Frame/Body** - Struktur fisik robot
+- **Joints** - Titik rotasi yang memungkinkan gerakan
+- **Degrees of Freedom (DoF)** - Jumlah axis gerakan independen
+
+### Electronic System
+
+- **Microcontroller/Computer** - Otak robot
+- **Motor Drivers** - Pengontrol motor
+- **Power System** - Baterai dan distribusi daya
+
+### Software System
+
+- **Operating System** - ROS 2
+- **Control Algorithms** - PID, balance control
+- **Perception** - Computer vision, sensor fusion
+
+---
+
+## Topics in This Track
+
+<Cards>
+  <Card
+    title="Kinematics"
+    description="Forward & inverse kinematics untuk gerakan robot"
+    href="/docs/learning/robotics/kinematics"
+  />
+  <Card
+    title="Sensors"
+    description="IMU, encoders, cameras, dan sensor lainnya"
+    href="/docs/learning/robotics/sensors"
+  />
+  <Card
+    title="Control Systems"
+    description="PID control dan feedback loops"
+    href="/docs/learning/robotics/control"
+  />
+</Cards>
+
+---
+
+## Key Concepts
+
+### Coordinate Systems
+
+Robot menggunakan sistem koordinat untuk menentukan posisi:
+
+| Frame              | Description                           |
+| ------------------ | ------------------------------------- |
+| World Frame        | Koordinat global tetap                |
+| Base Frame         | Koordinat relatif terhadap base robot |
+| End-Effector Frame | Koordinat di ujung manipulator        |
+
+### Transformations
+
+Transformasi digunakan untuk mengkonversi antara coordinate frames:
+
+```
+T = [R | t]
+    [0 | 1]
+
+R = Rotation matrix (3x3)
+t = Translation vector (3x1)
+```
+
+---
+
+## ROBOTIS OP3 Specifications
+
+Robot yang digunakan tim BASCORRO:
+
+| Parameter | Value                           |
+| --------- | ------------------------------- |
+| Height    | 51 cm                           |
+| Weight    | 3.5 kg                          |
+| DoF       | 20                              |
+| CPU       | Intel NUC                       |
+| Actuators | Dynamixel MX-106, MX-64, XM-430 |
+| Sensors   | IMU, Camera, FSR                |
+
+---
+
+## Learning Path
+
+```
+Week 1: Coordinate Systems & Transforms
+    ↓
+Week 2: Kinematics (FK & IK)
+    ↓
+Week 3: Sensors & Perception
+    ↓
+Week 4: Control Systems & PID
+```
+
+---
+
+## Resources
+
+- [ROBOTIS OP3 Emanual](https://emanual.robotis.com/docs/en/platform/op3/introduction/)
+- [Introduction to Robotics - Stanford](https://see.stanford.edu/Course/CS223A)
+- [Modern Robotics - Northwestern](https://modernrobotics.org/)

@@ -1,0 +1,42 @@
+---
+title: Motion Parameters
+description: Parameter penting untuk kecepatan, stabilitas, dan kenyamanan
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { GaitCycleDemo } from "@/components/learning";
+
+# Motion Parameters
+
+Parameter locomotion menentukan karakter berjalan robot. Kombinasi yang baik membuat langkah stabil, efisien, dan responsif.
+
+<Callout type="info">
+  Parameter saling berpengaruh. Jika step_length dinaikkan, step_time biasanya
+  juga perlu disesuaikan agar robot tidak kehilangan keseimbangan.
+</Callout>
+
+---
+
+## Parameter Kritis
+
+| Parameter   | Dampak               | Catatan                                  |
+| ----------- | -------------------- | ---------------------------------------- |
+| step_time   | Kecepatan langkah    | Terlalu kecil membuat robot goyah        |
+| step_length | Jarak per langkah    | Terlalu besar menaikkan risiko jatuh     |
+| swing_ratio | Durasi kaki di udara | Swing tinggi = cepat, tapi kurang stabil |
+| z_move      | Tinggi langkah       | Terlalu tinggi boros energi              |
+| turn        | Kecepatan belok      | Terlalu cepat mengganggu balance         |
+
+---
+
+## Interactive Explorer
+
+<GaitCycleDemo />
+
+---
+
+## Tips Praktis
+
+- Naikkan kecepatan bertahap, jangan langsung maksimal.
+- Gunakan permukaan rata saat tuning parameter awal.
+- Simpan beberapa preset untuk kondisi lapangan yang berbeda.

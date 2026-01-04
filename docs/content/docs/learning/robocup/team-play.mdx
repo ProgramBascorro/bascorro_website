@@ -1,0 +1,459 @@
+---
+title: Team Play Strategy
+description: Multi-robot coordination, game strategy, and team communication for RoboCup
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { FormationVisualizer } from "@/components/learning";
+
+# Team Play Strategy
+
+Koordinasi tim adalah kunci keberhasilan di RoboCup. Robot harus bekerja sama secara otonom untuk mencapai tujuan bersama.
+
+---
+
+## Robot Roles
+
+### Role Assignment
+
+| Role       | Responsibility                    | Priority        |
+| ---------- | --------------------------------- | --------------- |
+| Goalkeeper | Defend goal, stay in penalty area | Highest         |
+| Striker    | Attack, score goals               | Ball possession |
+| Defender   | Block opponents, clear ball       | Defensive play  |
+| Supporter  | Assist striker, receive passes    | Offensive play  |
+
+### Dynamic Role Switching
+
+```python
+class RoleAssigner:
+    def __init__(self, num_robots=4):
+        self.roles = {
+            'goalkeeper': None,
+            'striker': None,
+            'defender': None,
+            'supporter': None
+        }
+        self.num_robots = num_robots
+
+    def assign_roles(self, robots, ball_position, our_goal):
+        """Dynamically assign roles based on game state."""
+        # Goalkeeper is fixed
+        self.roles['goalkeeper'] = self._select_goalkeeper(robots)
+
+        field_robots = [r for r in robots if r.id != self.roles['goalkeeper'].id]
+
+        # Closest to ball becomes striker
+        distances_to_ball = [
+            (r, self._distance(r.position, ball_position))
+            for r in field_robots
+        ]
+        distances_to_ball.sort(key=lambda x: x[1])
+
+        self.roles['striker'] = distances_to_ball[0][0]
+
+        remaining = [r for r, d in distances_to_ball[1:]]
+
+        # Closest to own goal becomes defender
+        distances_to_goal = [
+            (r, self._distance(r.position, our_goal))
+            for r in remaining
+        ]
+        distances_to_goal.sort(key=lambda x: x[1])
+
+        self.roles['defender'] = distances_to_goal[0][0]
+
+        if len(remaining) > 1:
+            self.roles['supporter'] = distances_to_goal[1][0]
+
+        return self.roles
+```
+
+---
+
+## Formation Strategies
+
+### Interactive Formation Demo
+
+Drag posisi bola untuk melihat bagaimana formasi tim berubah secara dinamis:
+
+<FormationVisualizer />
+
+---
+
+### Basic Formations
+
+**1-2-1 Formation (Default)**
+
+```
+        GK
+
+    DEF    DEF
+
+       STR
+
+    ──── Ball ────
+```
+
+**2-1-1 Formation (Defensive)**
+
+```
+        GK
+
+   DEF  DEF
+
+       SUP
+
+       STR
+```
+
+### Position Calculation
+
+```python
+class FormationManager:
+    def __init__(self, field_size=(9, 6)):
+        self.field_width = field_size[0]
+        self.field_height = field_size[1]
+
+        # Define formation positions (normalized 0-1)
+        self.formations = {
+            '1-2-1': {
+                'goalkeeper': (0.1, 0.5),
+                'defender': (0.3, 0.5),
+                'supporter': (0.5, 0.3),
+                'striker': (0.7, 0.5)
+            },
+            '2-1-1': {
+                'goalkeeper': (0.1, 0.5),
+                'defender': (0.25, 0.3),
+                'supporter': (0.25, 0.7),
+                'striker': (0.6, 0.5)
+            }
+        }
+
+    def get_target_position(self, role, formation='1-2-1', ball_position=None):
+        """Get target position for a role."""
+        base_pos = self.formations[formation][role]
+
+        # Adjust based on ball position
+        if ball_position and role != 'goalkeeper':
+            adjustment = self._ball_attraction(base_pos, ball_position)
+            base_pos = (
+                base_pos[0] + adjustment[0],
+                base_pos[1] + adjustment[1]
+            )
+
+        # Convert to field coordinates
+        return (
+            base_pos[0] * self.field_width,
+            base_pos[1] * self.field_height
+        )
+
+    def _ball_attraction(self, pos, ball_pos, strength=0.2):
+        """Attract position toward ball."""
+        dx = (ball_pos[0] / self.field_width - pos[0]) * strength
+        dy = (ball_pos[1] / self.field_height - pos[1]) * strength
+        return (dx, dy)
+```
+
+---
+
+## Team Communication
+
+### GameController Protocol
+
+RoboCup menggunakan GameController untuk komunikasi game state:
+
+```python
+import socket
+import struct
+
+class GameControllerReceiver:
+    def __init__(self, team_number, port=3838):
+        self.team_number = team_number
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind(('', port))
+        self.sock.setblocking(False)
+
+    def receive(self):
+        """Receive and parse GameController packet."""
+        try:
+            data, addr = self.sock.recvfrom(4096)
+            return self._parse_packet(data)
+        except socket.error:
+            return None
+
+    def _parse_packet(self, data):
+        """Parse RoboCupGameControlData structure."""
+        # Simplified parsing
+        header = struct.unpack('4sH', data[:6])
+
+        if header[0] != b'RGme':
+            return None
+
+        # Game state is at offset 12
+        game_state = struct.unpack('B', data[12:13])[0]
+
+        return {
+            'state': ['INITIAL', 'READY', 'SET', 'PLAYING', 'FINISHED'][game_state],
+            'first_half': bool(data[13]),
+            'kick_off_team': data[14]
+        }
+```
+
+### Inter-Robot Communication
+
+```python
+import json
+from dataclasses import dataclass
+from typing import Optional
+
+@dataclass
+class TeamMessage:
+    robot_id: int
+    timestamp: float
+    position: tuple  # (x, y, theta)
+    ball_seen: bool
+    ball_position: Optional[tuple]
+    role: str
+
+class TeamCommunicator:
+    def __init__(self, robot_id, team_port=10000):
+        self.robot_id = robot_id
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        self.team_port = team_port
+
+        # Bind to receive
+        self.recv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.recv_sock.bind(('', team_port))
+        self.recv_sock.setblocking(False)
+
+    def broadcast(self, message: TeamMessage):
+        """Broadcast message to team."""
+        data = json.dumps({
+            'id': message.robot_id,
+            'ts': message.timestamp,
+            'pos': message.position,
+            'ball_seen': message.ball_seen,
+            'ball_pos': message.ball_position,
+            'role': message.role
+        }).encode()
+
+        self.sock.sendto(data, ('<broadcast>', self.team_port))
+
+    def receive_all(self):
+        """Receive all pending team messages."""
+        messages = []
+        while True:
+            try:
+                data, addr = self.recv_sock.recvfrom(1024)
+                msg_dict = json.loads(data.decode())
+                if msg_dict['id'] != self.robot_id:
+                    messages.append(TeamMessage(
+                        robot_id=msg_dict['id'],
+                        timestamp=msg_dict['ts'],
+                        position=tuple(msg_dict['pos']),
+                        ball_seen=msg_dict['ball_seen'],
+                        ball_position=tuple(msg_dict['ball_pos']) if msg_dict['ball_pos'] else None,
+                        role=msg_dict['role']
+                    ))
+            except socket.error:
+                break
+        return messages
+```
+
+---
+
+## World Model
+
+### Team World Model
+
+```python
+from dataclasses import dataclass, field
+from typing import List, Dict
+import time
+
+@dataclass
+class Ball:
+    position: tuple = (0, 0)
+    velocity: tuple = (0, 0)
+    confidence: float = 0.0
+    last_seen: float = 0.0
+
+@dataclass
+class Robot:
+    id: int
+    position: tuple = (0, 0, 0)  # x, y, theta
+    role: str = 'unknown'
+    active: bool = True
+    last_update: float = 0.0
+
+class WorldModel:
+    def __init__(self, num_teammates=4):
+        self.ball = Ball()
+        self.teammates: Dict[int, Robot] = {}
+        self.opponents: List[Robot] = []
+        self.own_position = (0, 0, 0)
+
+        # Initialize teammates
+        for i in range(num_teammates):
+            self.teammates[i] = Robot(id=i)
+
+    def update_from_vision(self, ball_obs, robot_obs, self_localization):
+        """Update world model from vision observations."""
+        current_time = time.time()
+
+        # Update self position
+        self.own_position = self_localization
+
+        # Update ball
+        if ball_obs is not None:
+            self.ball.position = ball_obs['position']
+            self.ball.confidence = ball_obs['confidence']
+            self.ball.last_seen = current_time
+
+    def update_from_team(self, team_messages):
+        """Update world model from team communication."""
+        current_time = time.time()
+
+        for msg in team_messages:
+            if msg.robot_id in self.teammates:
+                teammate = self.teammates[msg.robot_id]
+                teammate.position = msg.position
+                teammate.role = msg.role
+                teammate.last_update = current_time
+
+                # Fuse ball observations
+                if msg.ball_seen and msg.ball_position:
+                    self._fuse_ball_observation(msg.ball_position, msg.timestamp)
+
+    def _fuse_ball_observation(self, observed_pos, timestamp):
+        """Fuse ball observation from teammate."""
+        # Simple weighted average based on confidence
+        age = time.time() - timestamp
+        if age > 1.0:  # Observation too old
+            return
+
+        weight = 1.0 / (1.0 + age)
+
+        if self.ball.confidence > 0:
+            # Weighted average
+            total_weight = self.ball.confidence + weight
+            self.ball.position = (
+                (self.ball.position[0] * self.ball.confidence +
+                 observed_pos[0] * weight) / total_weight,
+                (self.ball.position[1] * self.ball.confidence +
+                 observed_pos[1] * weight) / total_weight
+            )
+            self.ball.confidence = min(1.0, total_weight)
+        else:
+            self.ball.position = observed_pos
+            self.ball.confidence = weight
+```
+
+---
+
+## Game Strategy
+
+### Strategy Selection
+
+```python
+class StrategyManager:
+    def __init__(self):
+        self.current_strategy = 'normal'
+        self.score_difference = 0
+        self.time_remaining = 600  # seconds
+
+    def select_strategy(self, our_score, their_score, time_remaining):
+        """Select strategy based on game state."""
+        self.score_difference = our_score - their_score
+        self.time_remaining = time_remaining
+
+        if self.score_difference >= 2:
+            # We're winning comfortably
+            self.current_strategy = 'defensive'
+        elif self.score_difference <= -2 and time_remaining < 180:
+            # We're losing with little time
+            self.current_strategy = 'all_attack'
+        elif self.score_difference < 0:
+            # We're losing
+            self.current_strategy = 'aggressive'
+        else:
+            self.current_strategy = 'normal'
+
+        return self.current_strategy
+
+    def get_formation(self):
+        """Get formation based on current strategy."""
+        formations = {
+            'defensive': '2-1-1',
+            'normal': '1-2-1',
+            'aggressive': '1-1-2',
+            'all_attack': '1-1-2'
+        }
+        return formations.get(self.current_strategy, '1-2-1')
+```
+
+---
+
+## Set Pieces
+
+### Kick-Off
+
+```python
+def kickoff_positions(is_kicking_team, field_size):
+    """Calculate positions for kickoff."""
+    center = (field_size[0] / 2, field_size[1] / 2)
+
+    if is_kicking_team:
+        return {
+            'goalkeeper': (1.0, field_size[1] / 2),
+            'striker': (center[0] - 0.3, center[1]),  # At center circle
+            'defender': (center[0] - 2.0, center[1] - 1.0),
+            'supporter': (center[0] - 2.0, center[1] + 1.0)
+        }
+    else:
+        return {
+            'goalkeeper': (1.0, field_size[1] / 2),
+            'defender': (center[0] - 2.0, center[1]),
+            'striker': (center[0] - 1.5, center[1] - 1.5),
+            'supporter': (center[0] - 1.5, center[1] + 1.5)
+        }
+```
+
+### Penalty Kick
+
+```python
+def penalty_positions(is_kicking_team, field_size, penalty_spot):
+    """Calculate positions for penalty kick."""
+    if is_kicking_team:
+        return {
+            'kicker': penalty_spot,
+            'others': [(field_size[0] / 2, y)
+                      for y in [1.5, 3.0, 4.5]]
+        }
+    else:
+        return {
+            'goalkeeper': (0.5, field_size[1] / 2),  # On goal line
+            'others': [(field_size[0] / 2, y)
+                      for y in [1.5, 3.0, 4.5]]
+        }
+```
+
+---
+
+## Practice Exercises
+
+1. **Role Assignment**: Implement utility-based role assignment
+2. **Formation**: Create adaptive formation that responds to ball position
+3. **Communication**: Build team message protocol with ball fusion
+4. **Strategy**: Implement strategy switching based on game time
+
+---
+
+## Resources
+
+- [Multi-Robot Coordination in RoboCup](https://www.sciencedirect.com/topics/computer-science/robocup)
+- [B-Human Team Report](https://www.b-human.de/publications/)
+- [Team Communication Protocol](https://humanoid.robocup.org/materials/rules/)

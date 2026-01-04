@@ -1,0 +1,31 @@
+---
+title: Tuning Balance (PID)
+description: Cara praktis tuning PD/PID untuk balance control
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { PIDTunerDemo } from "@/components/learning";
+
+# Tuning Balance (PID)
+
+Tuning PD/PID bertujuan mendapatkan respons yang cepat tapi tetap stabil. Prosesnya iteratif: ubah gain kecil demi kecil, observasi respons, lalu ulangi.
+
+<Callout type="info">
+  Mulai dari Kp kecil, naikkan sampai robot mulai stabil. Tambahkan Kd untuk
+  meredam oscillation. Ki jarang dipakai pada balance cepat.
+</Callout>
+
+---
+
+## Interactive PID Tuner
+
+<PIDTunerDemo />
+
+---
+
+## Checklist Tuning
+
+- Naikkan **Kp** sampai robot mulai menyeimbangkan diri.
+- Tambahkan **Kd** untuk meredam overshoot.
+- Jika steady‑state error besar, pertimbangkan **Ki** kecil.
+- Uji dengan gangguan kecil (dorongan ringan) untuk melihat recovery.

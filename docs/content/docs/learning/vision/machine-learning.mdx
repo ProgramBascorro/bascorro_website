@@ -1,0 +1,214 @@
+---
+title: Machine Learning untuk Vision
+description: Deep learning untuk computer vision - CNN, YOLO, dan training custom models
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Machine Learning untuk Vision
+
+Deep learning memberikan deteksi yang lebih robust dibanding metode tradisional, terutama dalam kondisi pencahayaan bervariasi. Namun ada trade-off: model lebih berat, butuh dataset, dan perlu tuning agar bisa berjalan real-time di robot.
+
+---
+
+## CNN Fundamentals
+
+CNN cocok untuk tugas klasifikasi sederhana (misalnya bola vs bukan bola). Ia belajar fitur tepi, tekstur, dan bentuk secara bertahap melalui lapisan konvolusi.
+
+### Convolutional Neural Network Architecture
+
+```
+Input Image (640x480x3)
+       │
+       ▼
+┌──────────────┐
+│   Conv2D     │ ← Feature extraction
+│   + ReLU     │
+│   + MaxPool  │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│   Conv2D     │ ← More features
+│   + ReLU     │
+│   + MaxPool  │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│   Flatten    │
+│   + Dense    │ ← Classification
+│   + Softmax  │
+└──────────────┘
+       │
+       ▼
+   Output (classes)
+```
+
+### Simple CNN dengan PyTorch
+
+```python
+import torch
+import torch.nn as nn
+
+class SimpleCNN(nn.Module):
+    def __init__(self, num_classes=2):
+        super().__init__()
+
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(128 * 28 * 28, 256),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(256, num_classes),
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = self.classifier(x)
+        return x
+```
+
+---
+
+## YOLO untuk Object Detection
+
+YOLO cocok untuk deteksi multi-objek (bola, robot, gawang) dalam satu frame. Kelebihannya adalah cepat; kekurangannya model perlu dilatih dengan dataset RoboCup agar tahan terhadap sudut kamera dan pencahayaan khas kompetisi.
+
+### Installation
+
+```bash
+pip install ultralytics
+```
+
+### Quick Start
+
+```python
+from ultralytics import YOLO
+
+# Load pretrained model
+model = YOLO('yolov8n.pt')
+
+# Inference
+results = model('image.jpg')
+
+# Show results
+results[0].show()
+```
+
+### Training Custom Model
+
+```python
+from ultralytics import YOLO
+
+# Create dataset structure
+# dataset/
+# ├── images/
+# │   ├── train/
+# │   └── val/
+# └── labels/
+#     ├── train/
+#     └── val/
+
+# Train
+model = YOLO('yolov8n.pt')
+model.train(
+    data='dataset.yaml',
+    epochs=100,
+    imgsz=640,
+    batch=16,
+    device='cuda'
+)
+```
+
+### Dataset YAML
+
+```yaml
+# dataset.yaml
+path: /path/to/dataset
+train: images/train
+val: images/val
+
+nc: 3 # number of classes
+names: ["ball", "goal", "robot"]
+```
+
+---
+
+## Transfer Learning
+
+Transfer learning mempercepat training karena kita memanfaatkan model yang sudah belajar fitur dasar (tepi, tekstur). Biasanya hanya layer terakhir yang dilatih ulang untuk kelas RoboCup, sehingga butuh data lebih sedikit.
+
+### Using Pretrained Models
+
+```python
+import torchvision.models as models
+import torch.nn as nn
+
+def create_ball_classifier():
+    # Load pretrained ResNet
+    model = models.resnet18(pretrained=True)
+
+    # Freeze early layers
+    for param in model.parameters():
+        param.requires_grad = False
+
+    # Replace final layer
+    model.fc = nn.Sequential(
+        nn.Linear(512, 256),
+        nn.ReLU(),
+        nn.Dropout(0.3),
+        nn.Linear(256, 2),  # ball / not_ball
+    )
+
+    return model
+```
+
+---
+
+## RoboCup Datasets
+
+| Dataset         | Description      | Link                                                                       |
+| --------------- | ---------------- | -------------------------------------------------------------------------- |
+| **B-Human**     | SPL labeled data | [github.com/bhuman](https://github.com/bhuman/BHumanCodeRelease)           |
+| **ImageTagger** | Annotation tool  | [github.com/bit-bots/imagetagger](https://github.com/bit-bots/imagetagger) |
+| **Roboflow**    | Dataset hosting  | [roboflow.com](https://roboflow.com)                                       |
+
+---
+
+## Performance Comparison
+
+| Model   | FPS (CPU) | FPS (GPU) | mAP  |
+| ------- | --------- | --------- | ---- |
+| YOLOv8n | 5-10      | 100+      | 37.3 |
+| YOLOv8s | 3-5       | 80+       | 44.9 |
+| YOLOv8m | 1-2       | 50+       | 50.2 |
+
+---
+
+## Resources
+
+- [Ultralytics YOLO](https://docs.ultralytics.com/)
+- [PyTorch Tutorials](https://pytorch.org/tutorials/)
+- [RoboCup Vision Papers](https://www.robocup.org/documents)
+- [Papers With Code - Object Detection](https://paperswithcode.com/task/object-detection)
+
+---
+
+## Next Steps
+
+- [Camera Calibration](/docs/learning/vision/camera-calibration) - 3D projection

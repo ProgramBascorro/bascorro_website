@@ -1,0 +1,258 @@
+---
+title: Computer Vision Fundamentals
+description: Dasar-dasar computer vision untuk robot soccer - dari image processing hingga machine learning
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Computer Vision untuk Robot Soccer
+
+Computer vision adalah "mata" robot yang memungkinkan robot memahami lingkungan sekitar melalui kamera. Dalam RoboCup, vision system bertanggung jawab untuk mendeteksi bola, garis lapangan, gawang, dan robot lain.
+
+---
+
+## Mengapa Penting?
+
+<Callout type="info">
+  Dalam RoboCup Humanoid League, robot harus sepenuhnya **otonom** - tidak ada
+  remote control atau operator manusia. Semua keputusan diambil berdasarkan apa
+  yang robot "lihat" melalui kamera.
+</Callout>
+
+| Objek              | Pentingnya                                        |
+| ------------------ | ------------------------------------------------- |
+| **Bola**           | Target utama untuk scoring                        |
+| **Garis Lapangan** | Lokalisasi posisi di lapangan                     |
+| **Gawang**         | Target untuk menendang                            |
+| **Robot Lain**     | Hindari collision, identifikasi teammate/opponent |
+
+---
+
+## Vision Pipeline Overview
+
+```
+┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+│   Camera    │───▶│  Preprocess  │───▶│  Detection  │
+│   Input     │    │  (denoise,   │    │  (ball,     │
+│             │    │   resize)    │    │   lines)    │
+└─────────────┘    └──────────────┘    └──────┬──────┘
+                                              │
+                   ┌──────────────┐    ┌──────▼──────┐
+                   │   World      │◀───│    3D       │
+                   │   Model      │    │ Projection  │
+                   └──────────────┘    └─────────────┘
+```
+
+Pipeline ini penting karena setiap tahap membatasi noise dan mengubah data ke bentuk yang bisa dipakai robot untuk mengambil keputusan. Ringkasnya:
+
+- **Preprocess** menstabilkan input (denoise, resize, koreksi warna) agar deteksi lebih konsisten.
+- **Detection** mengekstrak objek penting (bola, garis, gawang) dari citra.
+- **3D Projection** mengubah posisi pixel ke koordinat lapangan agar bisa dipakai untuk navigasi dan gerak.
+
+---
+
+## Learning Tracks
+
+<Cards>
+  <Card
+    title="Image Processing Basics"
+    description="Color spaces, filtering, morphological operations"
+    href="/docs/learning/vision/image-processing"
+  />
+  <Card
+    title="Ball Detection"
+    description="Color segmentation, circle detection, blob analysis"
+    href="/docs/learning/vision/ball-detection"
+  />
+  <Card
+    title="Field Detection"
+    description="Line detection, field segmentation, landmark recognition"
+    href="/docs/learning/vision/field-detection"
+  />
+  <Card
+    title="Machine Learning"
+    description="CNN, YOLO, training custom models"
+    href="/docs/learning/vision/machine-learning"
+  />
+  <Card
+    title="Camera Calibration"
+    description="Intrinsics, extrinsics, 3D projection"
+    href="/docs/learning/vision/camera-calibration"
+  />
+</Cards>
+
+---
+
+## Tools & Libraries
+
+### Primary Tools
+
+| Tool                 | Purpose                     | Link                                        |
+| -------------------- | --------------------------- | ------------------------------------------- |
+| **OpenCV**           | Image processing, detection | [opencv.org](https://opencv.org/)           |
+| **NumPy**            | Array operations            | [numpy.org](https://numpy.org/)             |
+| **PyTorch**          | Deep learning               | [pytorch.org](https://pytorch.org/)         |
+| **Ultralytics YOLO** | Object detection            | [ultralytics.com](https://ultralytics.com/) |
+
+### ROS 2 Packages
+
+```bash
+# Image transport
+sudo apt install ros-humble-image-transport
+
+# CV Bridge (OpenCV ↔ ROS)
+sudo apt install ros-humble-cv-bridge
+
+# Image pipeline
+sudo apt install ros-humble-image-pipeline
+```
+
+---
+
+## Quick Start: Ball Detection
+
+Contoh sederhana deteksi bola oranye menggunakan OpenCV:
+
+```python
+import cv2
+import numpy as np
+
+def detect_ball(image):
+    """Detect orange ball using HSV color filtering."""
+    # Convert BGR to HSV
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    # Define orange color range
+    lower_orange = np.array([5, 100, 100])
+    upper_orange = np.array([15, 255, 255])
+
+    # Create mask
+    mask = cv2.inRange(hsv, lower_orange, upper_orange)
+
+    # Find contours
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL,
+                                    cv2.CHAIN_APPROX_SIMPLE)
+
+    if contours:
+        # Get largest contour (assume it's the ball)
+        largest = max(contours, key=cv2.contourArea)
+        (x, y), radius = cv2.minEnclosingCircle(largest)
+
+        if radius > 10:  # Minimum size threshold
+            return int(x), int(y), int(radius)
+
+    return None
+
+# Usage
+cap = cv2.VideoCapture(0)
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    result = detect_ball(frame)
+    if result:
+        x, y, r = result
+        cv2.circle(frame, (x, y), r, (0, 255, 0), 2)
+        cv2.circle(frame, (x, y), 5, (0, 0, 255), -1)
+
+    cv2.imshow('Ball Detection', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+```
+
+---
+
+## Challenges in RoboCup
+
+### 1. Lighting Variations
+
+Lapangan RoboCup memiliki pencahayaan yang bisa berubah:
+
+- Natural light vs artificial light
+- Shadows dari robot/arena
+- Specular reflections dari lantai
+
+**Solusi:** Adaptive thresholding, histogram equalization, ML-based detection
+
+### 2. Motion Blur
+
+Robot bergerak cepat menyebabkan motion blur:
+
+- Ball tracking saat walking
+- Head movement untuk scanning
+
+**Solusi:** Higher FPS camera, motion compensation, predictive tracking
+
+### 3. Occlusion
+
+Objek bisa terhalang:
+
+- Ball behind opponent robot
+- Partial line visibility
+
+**Solusi:** Multi-frame tracking, probabilistic models
+
+### 4. Real-time Constraint
+
+Processing harus cepat (~30 fps minimum):
+
+- Limited compute on robot
+- Battery constraints
+
+**Solusi:** Efficient algorithms, GPU acceleration, region of interest
+
+---
+
+## Performance Metrics
+
+| Metric        | Target | Description                           |
+| ------------- | ------ | ------------------------------------- |
+| **FPS**       | ≥30    | Frames per second                     |
+| **Latency**   | ≤50ms  | Detection delay                       |
+| **Precision** | ≥95%   | Correct detections / total detections |
+| **Recall**    | ≥90%   | Detected objects / actual objects     |
+
+---
+
+## Resources
+
+### Documentation
+
+- [OpenCV Python Tutorials](https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html)
+- [PyTorch Vision Tutorial](https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html)
+- [ROS 2 Image Pipeline](https://github.com/ros-perception/image_pipeline)
+
+### Papers & Research
+
+- [B-Human Team Report](https://www.b-human.de/publications/) - State-of-the-art SPL vision
+- [RoboCup Symposium Papers](https://www.robocup.org/documents)
+- [YOLO Paper](https://arxiv.org/abs/1506.02640) - Original YOLO architecture
+
+### Video Tutorials
+
+- [OpenCV Course - freeCodeCamp](https://www.youtube.com/watch?v=oXlwWbU8l2o)
+- [PyTorch for Computer Vision](https://www.youtube.com/watch?v=V_xro1bcAuA)
+
+### GitHub Repositories
+
+- [Ultralytics YOLO](https://github.com/ultralytics/ultralytics)
+- [B-Human Code Release](https://github.com/bhuman/BHumanCodeRelease)
+- [soccer_vision ROS package](/docs/software/vision)
+
+---
+
+## Next Steps
+
+1. **Pemula**: Mulai dengan [Image Processing Basics](/docs/learning/vision/image-processing)
+2. **Intermediate**: Lanjut ke [Ball Detection](/docs/learning/vision/ball-detection)
+3. **Advanced**: Explore [Machine Learning](/docs/learning/vision/machine-learning)
+
+<Callout type="tip">
+  Praktik adalah kunci! Coba implementasi langsung dengan webcam atau dataset
+  RoboCup yang tersedia.
+</Callout>

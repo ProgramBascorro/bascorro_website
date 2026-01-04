@@ -1,0 +1,143 @@
+---
+title: Debugging ROS 2 | Debugging & Troubleshooting
+description: Tools dan teknik debugging untuk ROS 2 | Debugging tools and techniques for ROS 2
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Debugging ROS 2
+
+Pelajari tools untuk debugging dan troubleshooting sistem ROS 2.
+
+---
+
+## 🔧 rqt - GUI Tools Collection
+
+```bash
+# Launch rqt
+rqt
+
+# Or specific plugins
+rqt_graph          # Node/topic visualization
+rqt_console        # View log messages
+rqt_topic          # Topic inspector
+rqt_plot           # Plot numeric data
+```
+
+### rqt_graph - Visualize System
+
+```bash
+ros2 run rqt_graph rqt_graph
+```
+
+Shows nodes and topic connections - great for understanding system architecture.
+
+---
+
+## 🌐 rviz2 - 3D Visualization
+
+```bash
+ros2 run rviz2 rviz2
+```
+
+Visualize:
+- Robot model (URDF)
+- TF frames
+- Sensor data (camera, lidar)
+- Path planning
+
+---
+
+## 📊 Common Debugging Commands
+
+```bash
+# Check if node is running
+ros2 node list
+
+# Check topic data
+ros2 topic echo /topic_name
+ros2 topic hz /topic_name      # Check frequency
+ros2 topic bw /topic_name      # Check bandwidth
+
+# Check service availability
+ros2 service list
+
+# View logs
+ros2 run rqt_console rqt_console
+```
+
+---
+
+## 🐛 Common Issues & Solutions
+
+| Problem | Solution |
+|---------|----------|
+| Node not found | `source install/setup.bash` |
+| Topic not publishing | Check `ros2 topic list`, verify node running |
+| Service timeout | Check server node, verify service name |
+| Parameter not set | Use `ros2 param list`, check namespace |
+
+---
+
+## 📝 Logging
+
+```python
+# In your node
+self.get_logger().debug('Debug message')
+self.get_logger().info('Info message')
+self.get_logger().warn('Warning message')
+self.get_logger().error('Error message')
+```
+
+```bash
+# Set log level
+ros2 run my_package my_node --ros-args --log-level DEBUG
+```
+
+---
+
+## 🎥 Recording & Playback
+
+```bash
+# Record topics
+ros2 bag record /topic1 /topic2 -o my_recording
+
+# Record all
+ros2 bag record -a
+
+# Playback
+ros2 bag play my_recording
+
+# Info about bag
+ros2 bag info my_recording
+```
+
+---
+
+## ✅ Debugging Checklist
+
+1. ☑️ Sourced workspace? (`source install/setup.bash`)
+2. ☑️ Node running? (`ros2 node list`)
+3. ☑️ Topics publishing? (`ros2 topic list`, `ros2 topic echo`)
+4. ☑️ Correct message types? (`ros2 topic info`)
+5. ☑️ TF frames correct? (`ros2 run tf2_tools view_frames`)
+
+---
+
+## 🎉 ROS 2 Learning Complete!
+
+Selamat! Kamu telah menyelesaikan track ROS 2 Fundamentals.
+
+<Cards>
+  <Card
+    title="Robotics Basics →"
+    description="Lanjut ke dasar-dasar robotika"
+    href="/docs/learning/robotics"
+  />
+  <Card
+    title="← Learning Hub"
+    description="Kembali ke hub"
+    href="/docs/learning"
+  />
+</Cards>

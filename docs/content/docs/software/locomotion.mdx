@@ -3,11 +3,11 @@ title: Locomotion
 description: Walking control, gait generation, dan balance untuk robot OP3
 ---
 
-import { Callout } from 'fumadocs-ui/components/callout';
+import { Callout } from "fumadocs-ui/components/callout";
 
 # Locomotion
 
-Modul locomotion mengontrol gerakan berjalan robot, termasuk gait generation, balance control, dan action execution.
+Modul locomotion mengontrol gerakan berjalan robot, termasuk gait generation, balance control, dan action execution. Di humanoid, modul ini harus menjaga stabilitas sambil menghasilkan langkah yang konsisten.
 
 ---
 
@@ -37,17 +37,19 @@ Walking Command
 └─────────────────┘
 ```
 
+Pipeline ini berarti perintah berjalan tidak langsung menggerakkan motor. Perintah diubah menjadi langkah, distabilkan oleh balance control, lalu diterjemahkan ke sudut joint sebelum akhirnya dijalankan oleh servo.
+
 ---
 
 ## Core Packages
 
-| Package | Fungsi |
-|---------|--------|
-| `op3_walking_module` | Standard walking gait |
+| Package                     | Fungsi                         |
+| --------------------------- | ------------------------------ |
+| `op3_walking_module`        | Standard walking gait          |
 | `op3_online_walking_module` | Real-time walking (adjustable) |
-| `op3_balance_control` | Dynamic balance during motion |
-| `op3_action_module` | Pre-programmed actions |
-| `op3_kinematics_dynamics` | Inverse kinematics |
+| `op3_balance_control`       | Dynamic balance during motion  |
+| `op3_action_module`         | Pre-programmed actions         |
+| `op3_kinematics_dynamics`   | Inverse kinematics             |
 
 ---
 
@@ -55,7 +57,7 @@ Walking Command
 
 ### op3_walking_module
 
-Standard walking dengan parameter preset. Cocok untuk gerakan sederhana.
+Standard walking dengan parameter preset. Cocok untuk gerakan sederhana. Ideal untuk uji coba awal karena parameter tetap dan mudah direproduksi.
 
 ```bash
 # Enable walking
@@ -67,13 +69,13 @@ ros2 topic pub /walking/command op3_walking_module_msgs/msg/WalkingParam ...
 
 ### Parameters
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| x_move | -0.3 ~ 0.3 m | 0.0 | Forward/backward |
-| y_move | -0.2 ~ 0.2 m | 0.0 | Left/right strafe |
-| turn | -30 ~ 30 deg | 0.0 | Rotation |
-| step_time | 0.2 ~ 0.5 s | 0.25 | Duration per step |
-| z_move | 0.02 ~ 0.06 m | 0.04 | Foot lift height |
+| Parameter | Range         | Default | Description       |
+| --------- | ------------- | ------- | ----------------- |
+| x_move    | -0.3 ~ 0.3 m  | 0.0     | Forward/backward  |
+| y_move    | -0.2 ~ 0.2 m  | 0.0     | Left/right strafe |
+| turn      | -30 ~ 30 deg  | 0.0     | Rotation          |
+| step_time | 0.2 ~ 0.5 s   | 0.25    | Duration per step |
+| z_move    | 0.02 ~ 0.06 m | 0.04    | Foot lift height  |
 
 ---
 
@@ -81,7 +83,7 @@ ros2 topic pub /walking/command op3_walking_module_msgs/msg/WalkingParam ...
 
 ### op3_online_walking_module
 
-Real-time walking dengan footstep planning. Bisa adjust trajectory mid-motion.
+Real-time walking dengan footstep planning. Bisa adjust trajectory mid-motion. Modul ini dipakai saat robot perlu menyesuaikan langkah karena bola atau rintangan bergerak.
 
 ```bash
 # Launch online walking
@@ -109,7 +111,7 @@ step:
 
 ### op3_balance_control
 
-Menggunakan feedback IMU untuk menjaga keseimbangan saat berjalan.
+Menggunakan feedback IMU untuk menjaga keseimbangan saat berjalan. Saat robot miring, controller memberikan kompensasi joint agar CoM kembali aman.
 
 ```
 IMU Data ───┐
@@ -125,6 +127,8 @@ IMU Data ───┐
 
 ### Tuning Gains
 
+Tuning gains menentukan seberapa agresif robot mengoreksi kemiringan. Mulai dari nilai kecil, lalu naikkan perlahan sambil memantau oscillation.
+
 ```yaml
 # balance_control.yaml
 balance_control:
@@ -135,7 +139,8 @@ balance_control:
 ```
 
 <Callout type="warn">
-Gain yang terlalu tinggi menyebabkan oscillation. Gain terlalu rendah menyebabkan robot tidak stabil. Tuning harus dilakukan dengan hati-hati.
+  Gain yang terlalu tinggi menyebabkan oscillation. Gain terlalu rendah
+  menyebabkan robot tidak stabil. Tuning harus dilakukan dengan hati-hati.
 </Callout>
 
 ---
@@ -145,6 +150,7 @@ Gain yang terlalu tinggi menyebabkan oscillation. Gain terlalu rendah menyebabka
 ### op3_action_module
 
 Pre-programmed motion sequences untuk gerakan kompleks:
+
 - Get up from fall (face up/down)
 - Kick (left/right)
 - Goal celebration
@@ -177,6 +183,14 @@ kick_right:
 ---
 
 ## Gait Cycle
+
+Gait cycle adalah pola langkah berulang yang menentukan kapan kaki menyentuh tanah dan kapan mengayun. Rasio stance/swing mempengaruhi stabilitas dan kecepatan.
+
+### Interactive Gait Explorer
+
+Pelajari efek step_time, swing_ratio, dan step_length secara visual di Learning Hub.
+
+**Link:** [Locomotion Fundamentals](/docs/learning/motion)
 
 ### Walking Phases
 
@@ -217,7 +231,7 @@ kick_right:
 
 ## Zero Moment Point (ZMP)
 
-ZMP adalah titik di mana total moment dari gravitasi dan inersia = 0.
+ZMP adalah titik di mana total moment dari gravitasi dan inersia = 0. Selama ZMP berada di dalam support polygon, robot bisa menjaga keseimbangan meskipun bergerak.
 
 ### Stability Criterion
 
@@ -261,12 +275,14 @@ ros2 topic echo /odom
 
 ## Performance Specs
 
-| Metric | Value |
-|--------|-------|
-| Max Walking Speed | 24 cm/s |
-| Step Time | 0.25 s |
-| Step Length | 6 cm |
-| Turn Rate | ~30 deg/s |
+Parameter ini adalah angka tipikal; performa nyata bisa berubah tergantung baterai, permukaan, dan payload.
+
+| Metric            | Value     |
+| ----------------- | --------- |
+| Max Walking Speed | 24 cm/s   |
+| Step Time         | 0.25 s    |
+| Step Length       | 6 cm      |
+| Turn Rate         | ~30 deg/s |
 
 ---
 

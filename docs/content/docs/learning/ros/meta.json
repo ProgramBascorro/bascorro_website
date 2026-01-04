@@ -1,0 +1,5 @@
+{
+  "title": "ROS 2 Fundamentals",
+  "icon": "Terminal",
+  "pages": ["index", "concepts", "ros2-basics", "launch-files", "debugging"]
+}

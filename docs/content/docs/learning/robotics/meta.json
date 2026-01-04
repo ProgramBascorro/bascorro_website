@@ -1,0 +1,5 @@
+{
+  "title": "Robotics Basics",
+  "icon": "Cog",
+  "pages": ["index", "kinematics", "sensors", "control"]
+}

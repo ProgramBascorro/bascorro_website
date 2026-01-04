@@ -1,0 +1,15 @@
+{
+  "title": "Computer Vision",
+  "icon": "Eye",
+  "pages": [
+    "index",
+    "---Fundamentals---",
+    "image-processing",
+    "---Detection---",
+    "ball-detection",
+    "field-detection",
+    "---Advanced---",
+    "machine-learning",
+    "camera-calibration"
+  ]
+}

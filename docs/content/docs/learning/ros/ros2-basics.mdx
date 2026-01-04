@@ -1,0 +1,202 @@
+---
+title: ROS 2 CLI & Workspace | ROS 2 CLI & Workspace Setup
+description: Pelajari command line tools dan setup workspace ROS 2 | Learn ROS 2 command line tools and workspace setup
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+# ROS 2 CLI & Workspace
+
+<Callout type="info">
+**🎯 Learning Objectives**
+
+Setelah materi ini: (1) Menguasai ROS 2 CLI commands, (2) Membuat dan build workspace, (3) Membuat package Python/C++.
+
+</Callout>
+
+---
+
+## 🖥️ ROS 2 CLI Overview
+
+ROS 2 CLI menggunakan pattern: `ros2 <verb> <resource> [options]`
+
+```bash
+# Common verbs
+ros2 run      # Run a node
+ros2 launch   # Launch multiple nodes
+ros2 topic    # Interact with topics
+ros2 service  # Interact with services
+ros2 node     # Interact with nodes
+ros2 param    # Manage parameters
+ros2 bag      # Record/playback data
+```
+
+---
+
+## 📂 Workspace Structure
+
+```
+ros2_ws/                    # Workspace root
+├── src/                    # Source packages
+│   ├── my_package/
+│   ├── another_package/
+│   └── ...
+├── build/                  # Build artifacts (auto-generated)
+├── install/                # Installed packages (auto-generated)
+└── log/                    # Build logs (auto-generated)
+```
+
+### Creating a Workspace
+
+```bash
+# Create workspace directory
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws
+
+# Build (even if empty)
+colcon build
+
+# Source the workspace
+source install/setup.bash
+```
+
+---
+
+## 📦 Creating Packages
+
+### Python Package
+
+```bash
+cd ~/ros2_ws/src
+
+ros2 pkg create --build-type ament_python \
+    --node-name my_node \
+    my_python_pkg
+
+# Structure:
+# my_python_pkg/
+# ├── package.xml
+# ├── setup.py
+# ├── setup.cfg
+# ├── my_python_pkg/
+# │   ├── __init__.py
+# │   └── my_node.py
+# └── resource/
+```
+
+### C++ Package
+
+```bash
+ros2 pkg create --build-type ament_cmake \
+    --node-name my_node \
+    my_cpp_pkg
+```
+
+---
+
+## 🔨 Building Packages
+
+```bash
+cd ~/ros2_ws
+
+# Build all packages
+colcon build
+
+# Build specific package
+colcon build --packages-select my_package
+
+# Build with symlinks (for Python - faster dev)
+colcon build --symlink-install
+```
+
+<Callout type="tip">
+  **💡 Pro Tip:** Gunakan `--symlink-install` untuk Python packages agar tidak
+  perlu rebuild setelah edit code.
+</Callout>
+
+---
+
+## 🏃 Running Nodes
+
+```bash
+# Source workspace first!
+source ~/ros2_ws/install/setup.bash
+
+# Run a node
+ros2 run my_package my_node
+
+# Run with parameters
+ros2 run my_package my_node --ros-args -p param_name:=value
+
+# Run with remapping
+ros2 run my_package my_node --ros-args -r old_topic:=new_topic
+```
+
+---
+
+## 🔧 Essential CLI Commands
+
+### Topic Commands
+
+```bash
+ros2 topic list                    # List all topics
+ros2 topic echo /topic_name        # Print topic data
+ros2 topic hz /topic_name          # Check publish rate
+ros2 topic info /topic_name        # Topic info
+ros2 topic pub /topic msg_type "data"  # Publish once
+```
+
+### Node Commands
+
+```bash
+ros2 node list                     # List running nodes
+ros2 node info /node_name          # Node details
+```
+
+### Service Commands
+
+```bash
+ros2 service list                  # List services
+ros2 service call /srv srv_type "args"  # Call service
+```
+
+### Parameter Commands
+
+```bash
+ros2 param list                    # List all parameters
+ros2 param get /node param_name    # Get parameter
+ros2 param set /node param_name val # Set parameter
+```
+
+---
+
+## 🧪 Quick Exercise
+
+```bash
+# Terminal 1: Run turtlesim
+ros2 run turtlesim turtlesim_node
+
+# Terminal 2: Explore!
+ros2 node list
+ros2 topic list
+ros2 topic echo /turtle1/pose
+ros2 service list
+```
+
+---
+
+## ⏭️ Next Steps
+
+<Cards>
+  <Card
+    title="Launch Files →"
+    description="Automate starting multiple nodes"
+    href="/docs/learning/ros/launch-files"
+  />
+  <Card
+    title="← Konsep Dasar"
+    description="Review Nodes, Topics, Services"
+    href="/docs/learning/ros/concepts"
+  />
+</Cards>
