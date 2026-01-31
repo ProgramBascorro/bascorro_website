@@ -66,10 +66,10 @@ export default function Contact() {
                     Email & Inquiries
                   </h4>
                   <a
-                    href="mailto:urdc.undip@gmail.com"
+                    href="mailto:ewsbascorro@gmail.com"
                     className="text-gray-500 text-sm hover:text-undip-blue transition-colors"
                   >
-                    bascorro.team@gmail.com
+                    ewsbascorro@gmail.com
                   </a>
                   <p className="text-xs text-gray-400 mt-1">
                     Response time: 24-48 hours

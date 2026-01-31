@@ -57,14 +57,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: "2025-4",
-    name: "Rina Kusuma",
+    name: "Muhamad Fayad",
     role: "Head of Electronics",
     division: "Electrical",
     year: 2025,
     isLead: true,
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1770&auto=format&fit=crop",
-    socials: { linkedin: "#" },
+    image: "/headElectric.jpeg",
+    socials: { linkedin: "http://linkedin.com/in/mfayyadhilham" },
   },
   {
     id: "2025-5",

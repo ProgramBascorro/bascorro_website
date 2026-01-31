@@ -6,39 +6,45 @@ import Image from "next/image";
 
 const PARTNERS = [
   {
-    name: "Universitas Diponegoro",
-    logo: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?q=80&w=2069&auto=format&fit=crop", // Placeholder for Uni logo
-    type: "Institution",
+    name: "PT PLN (Persero)",
+    logo: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=2070&auto=format&fit=crop", // Electricity/Grid
+    type: "Energy Utility",
     tier: "Main Patron",
   },
   {
-    name: "ROBOTIS",
-    logo: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop", // Placeholder (AI chip/tech vibe)
-    type: "Hardware Vendor",
+    name: "PT Pertamina (Persero)",
+    logo: "https://images.unsplash.com/photo-1563291074-2bf867700e8e?q=80&w=2070&auto=format&fit=crop", // Oil/Gas/Industrial
+    type: "Energy & Oil",
+    tier: "Platinum Sponsor",
+  },
+  {
+    name: "Katup Industri Indonesia",
+    logo: "https://images.unsplash.com/photo-1535970793482-07de93762dc4?q=80&w=2070&auto=format&fit=crop", // Industrial Valves/Pipes
+    type: "Valve Manufacturing",
     tier: "Gold Sponsor",
   },
   {
-    name: "NVIDIA",
-    logo: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?q=80&w=1974&auto=format&fit=crop", // Placeholder (Chip vibe)
-    type: "Compute Partner",
+    name: "Enviromate Tech Int (ETI)",
+    logo: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1974&auto=format&fit=crop", // Green/Tech
+    type: "Green Energy Infrastructure",
+    tier: "Gold Sponsor",
+  },
+  {
+    name: "Bumi Agung Perkasa",
+    logo: "https://images.unsplash.com/photo-1533062657738-bfbc783b2729?q=80&w=2070&auto=format&fit=crop", // Metal/Galvanizing
+    type: "Industrial Coating",
     tier: "Silver Sponsor",
   },
   {
-    name: "Maxon Motors",
-    logo: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?q=80&w=2070&auto=format&fit=crop", // Placeholder (Industrial)
-    type: "Actuators",
+    name: "Recare",
+    logo: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2069&auto=format&fit=crop", // Professional/Handshake
+    type: "Professional Services",
     tier: "Silver Sponsor",
   },
   {
-    name: "Altium",
-    logo: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop", // Placeholder (Electronics)
-    type: "Software License",
-    tier: "Bronze Sponsor",
-  },
-  {
-    name: "SolidWorks",
-    logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1974&auto=format&fit=crop", // Placeholder (Design)
-    type: "Design Partner",
+    name: "Pakuwon Jati",
+    logo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop", // City/Building
+    type: "Property Developer",
     tier: "Bronze Sponsor",
   },
 ];
@@ -71,7 +77,7 @@ export default function Partners() {
           </a>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {PARTNERS.map((partner, i) => (
             <motion.div
               key={partner.name}
@@ -81,16 +87,16 @@ export default function Partners() {
               transition={{ delay: i * 0.1, duration: 0.5 }}
               className="group relative aspect-square bg-white/5 border border-white/10 rounded-2xl flex flex-col items-center justify-center p-6 hover:bg-white/10 hover:border-undip-blue/50 transition-all duration-300"
             >
-              <div className="relative w-full h-full mb-4 opacity-50 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0">
+              <div className="relative w-full h-full mb-4 opacity-50 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0 overflow-hidden rounded-xl">
                 <Image
                   src={partner.logo}
                   alt={partner.name}
                   fill
-                  className="object-contain p-2"
-                  sizes="(max-width: 768px) 50vw, 16vw"
+                  className="object-cover"
+                  sizes="(max-width: 768px) 50vw, 25vw"
                 />
               </div>
-              <div className="absolute bottom-4 left-0 w-full text-center opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+              <div className="absolute bottom-4 left-0 w-full text-center opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 bg-black/60 backdrop-blur-sm py-2">
                 <p className="text-xs font-bold text-white mb-0.5">
                   {partner.name}
                 </p>

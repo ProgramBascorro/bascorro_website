@@ -21,6 +21,7 @@ import {
   Wrench,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 import type React from "react";
 import {
   COMPETITIONS,
@@ -30,6 +31,7 @@ import {
   TECH_STACK,
 } from "./constants";
 import ImageShowcase from "./ImageShowcase";
+import Achievements from "./Achievements";
 import TeamPreview from "./TeamPreview";
 import Partners from "./Partners";
 import Publications from "./Publications";
@@ -102,8 +104,11 @@ const Hero: React.FC = () => {
                   EWS BASCORRO
                 </h1>
                 <p className="font-serif text-lg sm:text-xl md:text-2xl text-gray-600 italic max-w-lg leading-relaxed mb-6 sm:mb-8 border-l-4 border-accent-yellow pl-4 sm:pl-6">
-                  "Shaping the future of autonomous humanoid soccer through
-                  intelligent design and engineering."
+                  "Vincit Omnia Paratus" — Ready to Conquer All.
+                </p>
+                <p className="text-gray-500 mb-8 max-w-md">
+                  The RoboSoccer Team of Universitas Diponegoro, aligned with
+                  UNDIP's 4th Research Pillar: Research and Technology.
                 </p>
 
                 {/* Search Input */}
@@ -201,11 +206,12 @@ const Hero: React.FC = () => {
                   Who We Are
                 </h3>
                 <p className="text-gray-500 leading-relaxed mb-6">
-                  EWS BASCORRO is a student-driven research team from Universitas
-                  Diponegoro (UNDIP). We exist at the intersection of mechanical
-                  engineering, electronics, and artificial intelligence.
+                  EWS BASCORRO aims to compete in the Regional and National
+                  Indonesian Robot Contest (KRI) and participate in RoboCup
+                  (Asia-Pacific & World). We operate under UNDIP's 4th Research
+                  Pillar (BAPPENAS 2025).
                 </p>
-                <div className="grid grid-cols-2 gap-8 mt-12">
+                <div className="grid grid-cols-3 gap-8 mt-12">
                   <div>
                     <div className="text-4xl font-black text-undip-blue mb-2">
                       20+
@@ -222,6 +228,14 @@ const Hero: React.FC = () => {
                       Robots Built
                     </div>
                   </div>
+                  <div>
+                    <div className="text-4xl font-black text-undip-blue mb-2">
+                      2
+                    </div>
+                    <div className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                      Robots on Development
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -230,9 +244,9 @@ const Hero: React.FC = () => {
                     Our Vision
                   </h4>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    To become a leading force in humanoid robotics research in
-                    Indonesia and represent the nation on the global RoboCup
-                    stage.
+                    To become the leading pioneer in human-android technology
+                    within the Indonesian university ecosystem. "Vincit Omnia
+                    Paratus" — Ready to Conquer All.
                   </p>
                 </div>
                 <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100">
@@ -240,8 +254,9 @@ const Hero: React.FC = () => {
                     Our Mission
                   </h4>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    Developing autonomous systems that can perceive, decide, and
-                    act in real-time dynamic environments like soccer.
+                    To excel in KRI and RoboCup while mastering electric,
+                    mechanical, and software integration. "Dalam satu asa, kami
+                    tergerak. Lawan. Sikat. Juara!"
                   </p>
                 </div>
               </div>
@@ -307,12 +322,15 @@ const Hero: React.FC = () => {
                   className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-200"
                 >
                   <div className="h-64 bg-gray-200 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black mix-blend-multiply opacity-60"></div>
-                    {/* Placeholder for Robot Image */}
-                    <div className="absolute inset-0 flex items-center justify-center text-white/20 font-display font-black text-6xl">
-                      {robot.name.split(" ")[0]}
-                    </div>
-                    <div className="absolute top-6 right-6 bg-white/10 backdrop-blur-md px-3 py-1 rounded text-xs font-mono text-white border border-white/20">
+                    <Image
+                      src={robot.image}
+                      alt={robot.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div className="absolute top-6 right-6 bg-white/10 backdrop-blur-md px-3 py-1 rounded text-xs font-mono text-white border border-white/20 z-10">
                       STATUS: {robot.status.toUpperCase()}
                     </div>
                   </div>
@@ -382,40 +400,8 @@ const Hero: React.FC = () => {
           </div>
         </section>
 
-        {/* --- SECTION 5: COMPETITIONS --- */}
-        <section className="px-8 py-24 md:px-16 bg-accent-yellow">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="font-display font-black text-4xl md:text-6xl text-undip-blue mb-12 uppercase">
-              The Arena
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              {COMPETITIONS.map((comp, i) => (
-                <div key={i} className="border-t-2 border-black/10 pt-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="font-bold text-2xl text-gray-900">
-                      {comp.name}
-                    </h3>
-                    <span className="bg-black/10 px-3 py-1 rounded-full text-xs font-bold">
-                      {comp.year}
-                    </span>
-                  </div>
-                  <div className="text-sm font-bold uppercase tracking-wider text-undip-blue mb-2">
-                    {comp.role}
-                  </div>
-                  <p className="text-gray-800 leading-relaxed">{comp.desc}</p>
-                  {comp.name.includes("RoboCup") && (
-                    <a
-                      href="/robocup"
-                      className="inline-flex items-center gap-1 mt-4 text-sm font-bold text-undip-blue hover:underline"
-                    >
-                      Learn More <ArrowRight size={14} />
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* --- SECTION 5: ACHIEVEMENTS & COMPETITIONS --- */}
+        <Achievements />
 
  
 

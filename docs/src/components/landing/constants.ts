@@ -11,13 +11,15 @@ export const ROBOTS = [
     name: "Alphonse",
     desc: "Our primary striker unit built on the ROBOTIS OP3 platform, enhanced with custom kinematics.",
     specs: ["Height: 690 mm", "Weight: 5.1kg", "DOF: 20", "OS: ROS 2 Humble"],
-    status: "Active"
+    status: "Active",
+    image: "/robot1.jpeg"
   },
   {
-    name: "Beatrice",
+    name: "Chronos",
     desc: "Next-gen goalkeeper prototype featuring advanced trajectory prediction and stability control.",
     specs: ["Height: 525mm", "Weight: 3.8kg", "DOF: 22", "Vision: Stereo Cam"],
-    status: "Active"
+    status: "Active",
+    image: "/robot2.jpeg"
   }
 ];
 
@@ -102,5 +104,36 @@ export const FAQ_ITEMS = [
   {
     q: "How can I support the team?",
     a: "We are open to sponsorships and industrial partnerships. Please use the contact section below to reach out."
+  }
+];
+
+export const TEAM_ACHIEVEMENTS = [
+  {
+    year: "2024",
+    competition: "Kontes Robot Indonesia (KRI) Nasional",
+    result: "National Finalist",
+    category: "KRSBI-Humanoid",
+    level: "National"
+  },
+  {
+    year: "2024",
+    competition: "Kontes Robot Indonesia (KRI) Wilayah II",
+    result: "Regional Finalist",
+    category: "KRSBI-Humanoid",
+    level: "Regional"
+  },
+  {
+    year: "2023",
+    competition: "Kontes Robot Indonesia (KRI) Nasional",
+    result: "National Participant",
+    category: "KRSBI-Humanoid",
+    level: "National"
+  },
+  {
+    year: "2022",
+    competition: "Kontes Robot Indonesia (KRI) Nasional",
+    result: "National Participant",
+    category: "KRSBI-Humanoid",
+    level: "National"
   }
 ];

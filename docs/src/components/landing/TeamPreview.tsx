@@ -146,7 +146,7 @@ export default function TeamPreview() {
                     src={member.image}
                     alt={member.name}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
 
