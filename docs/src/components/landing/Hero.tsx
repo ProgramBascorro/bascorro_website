@@ -161,7 +161,7 @@ const Hero: React.FC = () => {
             {/* Right Image */}
             <div className="w-full md:w-2/5 relative aspect-[4/3] sm:aspect-[16/9] md:aspect-auto md:h-full border-t md:border-t-0 md:border-l border-gray-300 overflow-hidden bg-gray-200">
               <img
-                src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop"
+                src="https://imgbascorro.myudak.com/WhatsApp%20Image%202024-09-06%20at%2021.16.15_3ab5d883.jpg"
                 alt="Robotics Lab"
                 className="w-full h-full object-cover grayscale mix-blend-multiply opacity-80 hover:scale-105 transition-transform duration-1000"
               />
