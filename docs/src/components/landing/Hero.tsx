@@ -1,36 +1,41 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
+import { useSearchContext } from "fumadocs-ui/contexts/search";
 import {
-  ArrowRight,
-  Eye,
   Activity,
+  ArrowRight,
+  BookOpen,
   Brain,
-  Monitor,
   ChevronDown,
-  Instagram,
+  Code,
+  Eye,
   Github,
+  Images,
+  Instagram,
   Mail,
+  Monitor,
+  Search,
+  Trophy,
   Users,
   Wrench,
   Zap,
-  Code,
-  Search,
-  Images,
-  Trophy,
-  BookOpen,
 } from "lucide-react";
-import { useSearchContext } from "fumadocs-ui/contexts/search";
-import Navbar from "./Navbar";
+import type React from "react";
 import {
-  ROBOTS,
   COMPETITIONS,
-  TECH_STACK,
   FAQ_ITEMS,
+  ROBOTS,
   TEAM_DIVISIONS,
+  TECH_STACK,
 } from "./constants";
+import ImageShowcase from "./ImageShowcase";
+import TeamPreview from "./TeamPreview";
+import Partners from "./Partners";
+import Publications from "./Publications";
+import Contact from "./Contact";
 import ModelViewer from "./ModelViewer";
+import Navbar from "./Navbar";
 
 const SectionHeader = ({
   title,
@@ -93,8 +98,8 @@ const Hero: React.FC = () => {
                 <div className="inline-block px-3 py-1 mb-6 border border-gray-300 rounded-full text-xs font-mono text-gray-500 bg-white/50 backdrop-blur-sm">
                   EST. 2024 // UNDIP ROBOTICS
                 </div>
-                <h1 className="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[9rem] leading-[0.85] tracking-tighter text-gray-900 mb-4 sm:mb-6">
-                  BASCORRO
+                <h1 className="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[7rem] leading-[0.85] tracking-tighter text-gray-900 mb-4 sm:mb-6">
+                  EWS BASCORRO
                 </h1>
                 <p className="font-serif text-lg sm:text-xl md:text-2xl text-gray-600 italic max-w-lg leading-relaxed mb-6 sm:mb-8 border-l-4 border-accent-yellow pl-4 sm:pl-6">
                   "Shaping the future of autonomous humanoid soccer through
@@ -196,7 +201,7 @@ const Hero: React.FC = () => {
                   Who We Are
                 </h3>
                 <p className="text-gray-500 leading-relaxed mb-6">
-                  BASCORRO is a student-driven research team from Universitas
+                  EWS BASCORRO is a student-driven research team from Universitas
                   Diponegoro (UNDIP). We exist at the intersection of mechanical
                   engineering, electronics, and artificial intelligence.
                 </p>
@@ -243,6 +248,9 @@ const Hero: React.FC = () => {
             </div>
           </div>
         </section>
+
+       {/* --- SECTION 5.5: IMAGE SHOWCASE --- */}
+        <ImageShowcase />
 
         {/* --- SECTION 3: ROBOTS --- */}
         <section
@@ -409,89 +417,16 @@ const Hero: React.FC = () => {
           </div>
         </section>
 
-        {/* --- SECTION 6: TEAM (NEW) --- */}
-        <section id="team" className="px-8 py-24 md:px-16 bg-white">
-          <div className="max-w-7xl mx-auto">
-            <SectionHeader title="The Squad" subtitle="Behind the Machines" />
+ 
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {TEAM_DIVISIONS.map((div, i) => (
-                <motion.div
-                  key={i}
-                  className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-undip-blue/30 transition-colors group"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                >
-                  <div className="w-12 h-12 bg-white rounded-2xl border border-gray-200 flex items-center justify-center mb-6 text-gray-400 group-hover:text-undip-blue shadow-sm transition-colors">
-                    {div.icon === "Users" && (
-                      <motion.div
-                        whileHover={{ scale: 1.15, y: -2 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 10,
-                        }}
-                      >
-                        <Users size={24} />
-                      </motion.div>
-                    )}
-                    {div.icon === "Wrench" && (
-                      <motion.div
-                        whileHover={{ rotate: [0, -20, 20, -10, 10, 0] }}
-                        transition={{ duration: 0.6, ease: "easeInOut" }}
-                      >
-                        <Wrench size={24} />
-                      </motion.div>
-                    )}
-                    {div.icon === "Zap" && (
-                      <motion.div
-                        whileHover={{
-                          scale: [1, 1.2, 1],
-                          opacity: [1, 0.7, 1],
-                        }}
-                        transition={{ duration: 0.4, repeat: Infinity }}
-                      >
-                        <Zap size={24} />
-                      </motion.div>
-                    )}
-                    {div.icon === "Code" && (
-                      <motion.div
-                        whileHover={{ scale: 1.15 }}
-                        transition={{ type: "spring", stiffness: 400 }}
-                      >
-                        <Code size={24} />
-                      </motion.div>
-                    )}
-                  </div>
-                  <h4 className="font-bold text-xl mb-1">{div.name}</h4>
-                  <span className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 block">
-                    {div.role}
-                  </span>
-                  <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-                    {div.description}
-                  </p>
-                  <div className="border-t border-gray-200 pt-4">
-                    <div className="text-xs font-bold text-gray-900 mb-3">
-                      Key Roles:
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {div.members.map((m, idx) => (
-                        <span
-                          key={idx}
-                          className="text-[10px] font-medium bg-white border border-gray-200 px-2 py-1 rounded-md text-gray-500 hover:text-undip-blue hover:border-undip-blue/20 transition-colors cursor-default"
-                        >
-                          {m}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* --- SECTION 6: TEAM (MERGED) --- */}
+        <TeamPreview />
+
+        {/* --- SECTION 6.5: PARTNERS --- */}
+        <Partners />
+
+        {/* --- SECTION 6.75: PUBLICATIONS --- */}
+        <Publications />
 
         {/* --- SECTION 7: JOIN --- */}
         <section id="join" className="px-8 py-24 md:px-16 bg-white relative">
@@ -533,12 +468,15 @@ const Hero: React.FC = () => {
           </div>
         </section>
 
+        {/* --- SECTION 7.5: CONTACT --- */}
+        <Contact />
+
         {/* --- SECTION 8: FOOTER --- */}
         <footer className="bg-[#1a1a1a] text-white pt-24 pb-12 px-8 md:px-16">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
             <div>
               <h2 className="font-display font-black text-3xl mb-4">
-                BASCORRO
+                EWS BASCORRO
               </h2>
               <p className="text-gray-500 text-sm max-w-xs mb-6">
                 Humanoid Robosoccer Team
@@ -614,7 +552,7 @@ const Hero: React.FC = () => {
           </div>
 
           <div className="border-t border-white/10 mt-20 pt-8 text-center text-xs text-gray-600 font-mono">
-            &copy; {new Date().getFullYear()} BASCORRO TEAM. SYSTEM VERSION 4.2
+            &copy; {new Date().getFullYear()} EWS BASCORRO TEAM. SYSTEM VERSION 4.2
           </div>
         </footer>
       </motion.div>

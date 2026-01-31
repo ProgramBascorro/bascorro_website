@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -14,7 +15,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
     const timer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(onComplete, 1000); // Allow exit animation to finish
-    }, 2000); // Duration of the "yellow" state
+    }, 2500); // Duration of the "yellow" state
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -28,7 +29,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
           transition={{ duration: 0.8, ease: "easeInOut" }}
         >
           {/* The grid columns mimicking the video intro */}
-          <div className="flex w-full h-full">
+          <div className="absolute inset-0 flex w-full h-full">
             {[0, 1, 2, 3].map((i) => (
               <motion.div
                 key={i}
@@ -48,13 +49,23 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
           </div>
 
           <motion.div
-            className="absolute text-undip-blue font-display font-bold text-6xl tracking-tighter"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            className="relative z-10 flex flex-col items-center gap-6"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
-            BASCORRO
+            <div className="relative w-32 h-32 md:w-40 md:h-40 drop-shadow-2xl">
+               <Image 
+                 src="/favicon1.png" 
+                 alt="EWS Bascorro Logo" 
+                 fill 
+                 className="object-contain"
+               />
+            </div>
+            <h1 className="text-undip-blue font-display font-black text-5xl md:text-7xl tracking-tighter text-center">
+              EWS BASCORRO
+            </h1>
           </motion.div>
         </motion.div>
       )}

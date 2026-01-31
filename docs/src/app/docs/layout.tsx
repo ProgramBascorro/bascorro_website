@@ -19,7 +19,7 @@ const docsOptions: DocsLayoutProps = {
     tabs: [
       {
         title: 'Documentation',
-        description: 'BASCORRO Robosoccer',
+        description: 'EWS BASCORRO Robosoccer',
         url: '/docs',
         icon: <Bot />,
       },

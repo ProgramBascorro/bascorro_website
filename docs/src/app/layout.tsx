@@ -45,28 +45,28 @@ const getBaseUrl = () => {
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseUrl()),
   title: {
-    default: 'BASCORRO Robotics',
-    template: '%s | BASCORRO Robotics',
+    default: 'EWS BASCORRO Robotics',
+    template: '%s | EWS BASCORRO Robotics',
   },
-  description: 'BASCORRO Humanoid Robosoccer Team documentation.',
+  description: 'EWS BASCORRO Humanoid Robosoccer Team documentation.',
   openGraph: {
     type: 'website',
-    siteName: 'BASCORRO Robotics',
-    title: 'BASCORRO Robotics',
-    description: 'BASCORRO Humanoid Robosoccer Team documentation.',
+    siteName: 'EWS BASCORRO Robotics',
+    title: 'EWS BASCORRO Robotics',
+    description: 'EWS BASCORRO Humanoid Robosoccer Team documentation.',
     images: [
       {
         url: '/Banner.png',
         width: 1536,
         height: 1024,
-        alt: 'BASCORRO',
+        alt: 'EWS BASCORRO',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BASCORRO Robotics',
-    description: 'BASCORRO Humanoid Robosoccer Team documentation.',
+    title: 'EWS BASCORRO Robotics',
+    description: 'EWS BASCORRO Humanoid Robosoccer Team documentation.',
     images: ['/Banner.png'],
   },
   icons: {

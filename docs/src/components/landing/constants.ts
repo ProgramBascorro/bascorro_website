@@ -8,16 +8,16 @@ export const NAV_LINKS = [
 
 export const ROBOTS = [
   {
-    name: "OP3 BASCORRO v1",
+    name: "Alphonse",
     desc: "Our primary striker unit built on the ROBOTIS OP3 platform, enhanced with custom kinematics.",
-    specs: ["Height: 510mm", "Weight: 3.5kg", "DOF: 20", "OS: ROS 2 Humble"],
+    specs: ["Height: 690 mm", "Weight: 5.1kg", "DOF: 20", "OS: ROS 2 Humble"],
     status: "Active"
   },
   {
-    name: "BASCORRO G-1",
+    name: "Beatrice",
     desc: "Next-gen goalkeeper prototype featuring advanced trajectory prediction and stability control.",
     specs: ["Height: 525mm", "Weight: 3.8kg", "DOF: 22", "Vision: Stereo Cam"],
-    status: "In Development"
+    status: "Active"
   }
 ];
 

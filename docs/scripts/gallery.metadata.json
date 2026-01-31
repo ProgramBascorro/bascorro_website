@@ -1,53 +1,4 @@
-/**
- * Gallery configuration
- *
- * Images are listed from R2 at runtime; this file only stores metadata
- * and category labels. Keys in GALLERY_METADATA can be either:
- * - full object keys (e.g. images/gallery/robot-001.jpg), or
- * - bare filenames (e.g. robot-001.jpg)
- */
-
-export interface GalleryImage {
-  id: string;
-  src: string;
-  alt: string;
-  category?: GalleryCategory;
-  caption?: string;
-  date?: string;
-}
-
-export type GalleryCategory =
-  | 'all'
-  | 'robots'
-  | 'team'
-  | 'competitions'
-  | 'workshop'
-  | 'behind-the-scenes';
-
-export const GALLERY_CATEGORIES: { value: GalleryCategory; label: string }[] = [
-  { value: 'all', label: 'All Photos' },
-  { value: 'robots', label: 'Robots' },
-  { value: 'team', label: 'Team' },
-  { value: 'competitions', label: 'Competitions' },
-  { value: 'workshop', label: 'Workshop' },
-  { value: 'behind-the-scenes', label: 'Behind the Scenes' },
-];
-
-/**
- * GALLERY METADATA
- *
- * Optional overrides for R2-listed images.
- * If a key is not present, the image still appears in "All Photos"
- * with a generated alt text and empty caption.
- */
-export interface GalleryImageMeta {
-  caption?: string;
-  category?: GalleryCategory;
-  date?: string;
-  alt?: string;
-}
-
-export const GALLERY_METADATA: Record<string, GalleryImageMeta> = {
+{
   "1720755689603.JPG": {
     "alt": "Several humanoid robots on a green artificial turf soccer field with an orange ball and a goal during a competition.",
     "caption": "Humanoid robots competing in a robot soccer match at a competition.",
@@ -1908,4 +1859,4 @@ export const GALLERY_METADATA: Record<string, GalleryImageMeta> = {
     "category": "competitions",
     "date": ""
   }
-};
+}

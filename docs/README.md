@@ -15,6 +15,16 @@ yarn dev
 
 Open http://localhost:3000 with your browser to see the result.
 
+## Environment (R2 Gallery)
+
+Copy `.env.example` to `.env.local`, then fill in:
+
+- `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`: Cloudflare dashboard → R2 → API Tokens → Create API Token.
+- `R2_ENDPOINT`: Cloudflare dashboard → R2 → Settings → S3 API endpoint. Format is `https://<account_id>.r2.cloudflarestorage.com`.
+- `R2_BUCKET`: Your bucket name (e.g. `bascorro-landing-page`).
+- `R2_PUBLIC_BASE_URL`: Public URL used to serve images (your R2 custom domain or the public bucket URL).
+- `R2_GALLERY_PREFIX`: Folder prefix for gallery images (default `images/gallery/`).
+
 ## Explore
 
 In the project, you can see:

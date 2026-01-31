@@ -8,7 +8,7 @@ const BASE_URL =
 export const metadata: Metadata = {
     title: 'RoboCup Humanoid League',
     description:
-        'Learn about RoboCup, the international robotics competition with the goal of autonomous humanoid robots playing soccer. Discover the Humanoid League, size classes, research areas, and BASCORRO\'s journey toward RoboCup 2050.',
+        'Learn about RoboCup, the international robotics competition with the goal of autonomous humanoid robots playing soccer. Discover the Humanoid League, size classes, research areas, and EWS BASCORRO\'s journey toward RoboCup 2050.',
     keywords: [
         'RoboCup',
         'Humanoid League',
@@ -22,24 +22,24 @@ export const metadata: Metadata = {
     ],
     openGraph: {
         type: 'website',
-        title: 'RoboCup Humanoid League | BASCORRO Robotics',
+        title: 'RoboCup Humanoid League | EWS BASCORRO Robotics',
         description:
-            'Discover RoboCup, the premier international robotics competition. Learn about the Humanoid League, research areas, and BASCORRO\'s journey.',
+            'Discover RoboCup, the premier international robotics competition. Learn about the Humanoid League, research areas, and EWS BASCORRO\'s journey.',
         url: `${BASE_URL}/robocup`,
         images: [
             {
                 url: '/Banner.png',
                 width: 1536,
                 height: 1024,
-                alt: 'BASCORRO RoboCup',
+                alt: 'EWS BASCORRO RoboCup',
             },
         ],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'RoboCup Humanoid League | BASCORRO Robotics',
+        title: 'RoboCup Humanoid League | EWS BASCORRO Robotics',
         description:
-            'Discover RoboCup, the premier international robotics competition. Learn about the Humanoid League and BASCORRO\'s journey.',
+            'Discover RoboCup, the premier international robotics competition. Learn about the Humanoid League and EWS BASCORRO\'s journey.',
         images: ['/Banner.png'],
     },
     alternates: {

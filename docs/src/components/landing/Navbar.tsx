@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
     <nav className="sticky top-0 z-40 bg-[#f3f4f6]/80 backdrop-blur-md flex justify-between items-center p-6 border-b border-gray-200">
       <div className="flex items-center gap-2">
         <Bot className="w-6 h-6 text-undip-blue" />
-        <span className="font-display font-bold text-xl tracking-tight text-gray-900">BASCORRO</span>
+        <span className="font-display font-bold text-xl tracking-tight text-gray-900">EWS BASCORRO</span>
       </div>
 
       {/* Desktop Nav - Section Scrolling */}

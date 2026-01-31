@@ -408,7 +408,7 @@ export default function RoboCupPage() {
             </span>
           </div>
           <h2 className="font-display font-bold text-3xl md:text-4xl lg:text-5xl uppercase tracking-tight text-white mb-8">
-            BASCORRO's RoboCup Journey
+            EWS BASCORRO's RoboCup Journey
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -479,17 +479,14 @@ export default function RoboCupPage() {
       {/* Footer */}
       <footer className="bg-[#1a1a1a] text-white py-12 px-6">
         <div className="max-w-7xl mx-auto text-center">
-          <Link
-            href="/"
-            className="font-display font-bold text-2xl hover:text-accent-yellow transition-colors"
-          >
-            BASCORRO
-          </Link>
+          <h2 className="font-display font-black text-2xl mb-4">
+            EWS BASCORRO
+          </h2>
           <p className="text-gray-500 text-sm mt-2">
             Humanoid Robosoccer Team • Universitas Diponegoro
           </p>
-          <div className="border-t border-white/10 mt-8 pt-8 text-xs text-gray-600 font-mono">
-            &copy; {new Date().getFullYear()} BASCORRO TEAM
+          <div className="border-t border-gray-200 mt-20 pt-8 text-center text-[10px] text-gray-500 font-mono">
+            &copy; {new Date().getFullYear()} EWS BASCORRO TEAM
           </div>
         </div>
       </footer>
