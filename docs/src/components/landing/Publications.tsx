@@ -6,40 +6,12 @@ import { Download, ExternalLink, FileText } from "lucide-react";
 const PUBLICATIONS = [
   {
     title:
-      "Optimizing Bipedal Locomotion on Uneven Terrain using Deep Reinforcement Learning",
-    authors: "A. Wijaya, S. Putri, K. Chen",
-    conference:
-      "International Conference on Robotics and Automation (ICRA) 2024",
-    year: "2024",
-    link: "#",
-    type: "Conference Paper",
-  },
-  {
-    title:
-      "Real-time Ball Detection and Trajectory Prediction for Humanoid Soccer Robots",
-    authors: "B. Santoso, S. Putri",
-    conference: "RoboCup Symposium 2023",
-    year: "2023",
-    link: "#",
-    type: "Symposium",
-  },
-  {
-    title:
-      "Design and Implementation of a Low-Cost Modular Humanoid Robot for Education",
-    authors: "D. Pratama, R. Kusuma, M. Garcia",
-    conference: "Journal of Intelligent & Robotic Systems",
-    year: "2023",
-    link: "#",
-    type: "Journal Article",
-  },
-  {
-    title:
-      "Multi-Agent Coordination Strategy for Humanoid Soccer Team using Behavior Trees",
-    authors: "K. Chen, R. Ramadhan",
-    conference: "Kontes Robot Indonesia (KRI) Technical Report",
-    year: "2022",
-    link: "#",
-    type: "Technical Report",
+      "Team Description Paper - EWS BASCORRO Humanoid Robosoccer Team",
+    authors: "EWS BASCORRO Research Division",
+    conference: "RoboCup Humanoid League 2026",
+    year: "2026",
+    link: "/TDP%20EWS%20Bascorro.pdf",
+    type: "Team Description Paper",
   },
 ];
 

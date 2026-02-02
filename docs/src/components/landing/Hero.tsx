@@ -98,7 +98,7 @@ const Hero: React.FC = () => {
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 <div className="inline-block px-3 py-1 mb-6 border border-gray-300 rounded-full text-xs font-mono text-gray-500 bg-white/50 backdrop-blur-sm">
-                  EST. 2024 // UNDIP ROBOTICS
+                  EST. 2017 // UNDIP ROBOTICS
                 </div>
                 <h1 className="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[7rem] leading-[0.85] tracking-tighter text-gray-900 mb-4 sm:mb-6">
                   EWS BASCORRO
@@ -265,7 +265,7 @@ const Hero: React.FC = () => {
         </section>
 
        {/* --- SECTION 5.5: IMAGE SHOWCASE --- */}
-        <ImageShowcase />
+        {/* <ImageShowcase /> */}
 
         {/* --- SECTION 3: ROBOTS --- */}
         <section
@@ -321,16 +321,16 @@ const Hero: React.FC = () => {
                   key={index}
                   className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-200"
                 >
-                  <div className="h-64 bg-gray-200 relative overflow-hidden">
+                  <div className="aspect-[3/4] bg-gray-100 relative overflow-hidden group-hover:bg-gray-50 transition-colors">
                     <Image
                       src={robot.image}
                       alt={robot.name}
                       fill
-                      className="object-cover"
+                      className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                    <div className="absolute top-6 right-6 bg-white/10 backdrop-blur-md px-3 py-1 rounded text-xs font-mono text-white border border-white/20 z-10">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div className="absolute top-6 right-6 bg-undip-blue/90 backdrop-blur-md px-3 py-1 rounded text-[10px] font-bold font-mono text-white border border-white/20 z-10 shadow-lg">
                       STATUS: {robot.status.toUpperCase()}
                     </div>
                   </div>

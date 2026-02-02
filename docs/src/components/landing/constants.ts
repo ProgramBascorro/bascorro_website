@@ -8,16 +8,16 @@ export const NAV_LINKS = [
 
 export const ROBOTS = [
   {
-    name: "Alphonse",
-    desc: "Our primary striker unit built on the ROBOTIS OP3 platform, enhanced with custom kinematics.",
+    name: "Robot 1",
+    desc: "Our primary Goalkeeper unit built on the ROBOTIS OP3 platform, enhanced with custom kinematics.",
     specs: ["Height: 690 mm", "Weight: 5.1kg", "DOF: 20", "OS: ROS 2 Humble"],
     status: "Active",
     image: "/robot1.jpeg"
   },
   {
-    name: "Chronos",
-    desc: "Next-gen goalkeeper prototype featuring advanced trajectory prediction and stability control.",
-    specs: ["Height: 525mm", "Weight: 3.8kg", "DOF: 22", "Vision: Stereo Cam"],
+    name: "Robot 2",
+    desc: "Next-gen Striker prototype featuring advanced trajectory prediction and stability control.",
+    specs: ["Height: 690mm", "Weight: 5.8kg", "DOF: 20", "OS: ROS 2 Humble"],
     status: "Active",
     image: "/robot2.jpeg"
   }
@@ -32,8 +32,8 @@ export const COMPETITIONS = [
   },
   {
     name: "Kontes Robot Indonesia (KRI)",
-    role: "National Finalist",
-    desc: "Indonesia's national robotics contest. Participating in the KRSBI-Humanoid division to demonstrate local excellence in embedded systems and AI.",
+    role: "Consistent National Finalist",
+    desc: "A consistent National Finalist in Indonesia's premier robotics contest. We actively compete in the KRSBI-Humanoid division every year, consistently delivering strong performances and demonstrating excellence in embedded systems and AI.",
     year: "Annual"
   }
 ];
@@ -63,10 +63,17 @@ export const TECH_STACK = [
 
 export const TEAM_DIVISIONS = [
   {
+    name: "Faculty Advisors",
+    role: "Supervisors",
+    description: "Providing academic guidance, technical mentorship, and ensuring the team's alignment with university research goals.",
+    members: ["Dosen Wali"],
+    icon: "GraduationCap"
+  },
+  {
     name: "Management & Official",
     role: "Core Leadership",
     description: "Orchestrating the team's vision, handling logistics, branding, and maintaining relationships with the university and sponsors.",
-    members: ["Team Captain", "Vice Captain", "Treasurer", "Secretary", "Manager"],
+    members: ["Team Leader", "Treasurer", "Secretary", "Sponsorship", "Fundraising", "Creative Media"],
     icon: "Users"
   },
   {
@@ -110,30 +117,44 @@ export const FAQ_ITEMS = [
 export const TEAM_ACHIEVEMENTS = [
   {
     year: "2024",
-    competition: "Kontes Robot Indonesia (KRI) Nasional",
-    result: "National Finalist",
+    competition: "Kontes Robot Indonesia (KRI) National",
+    result: "Top 8th National Competition",
     category: "KRSBI-Humanoid",
     level: "National"
   },
   {
     year: "2024",
-    competition: "Kontes Robot Indonesia (KRI) Wilayah II",
-    result: "Regional Finalist",
+    competition: "Kontes Robot Indonesia (KRI) Region II",
+    result: "Top 6th Regional Competition",
     category: "KRSBI-Humanoid",
     level: "Regional"
   },
   {
     year: "2023",
-    competition: "Kontes Robot Indonesia (KRI) Nasional",
-    result: "National Participant",
+    competition: "Kontes Robot Indonesia (KRI) National",
+    result: "Top 10th National Competition",
     category: "KRSBI-Humanoid",
     level: "National"
   },
   {
-    year: "2022",
-    competition: "Kontes Robot Indonesia (KRI) Nasional",
-    result: "National Participant",
+    year: "2023",
+    competition: "Kontes Robot Indonesia (KRI) Region II",
+    result: "Top 6th Regional Competition",
     category: "KRSBI-Humanoid",
-    level: "National"
+    level: "Regional"
+  },
+  {
+    year: "2022",
+    competition: "Kontes Robot Indonesia (KRI) Region I",
+    result: "Runner Up Regional Competition",
+    category: "KRSBI-Humanoid",
+    level: "Regional"
+  },
+  {
+    year: "2019",
+    competition: "Kontes Robot Indonesia (KRI) Region I",
+    result: "1st Runner Up Regional Competition",
+    category: "KRSBI-Humanoid",
+    level: "Regional"
   }
 ];

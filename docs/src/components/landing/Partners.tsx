@@ -6,46 +6,64 @@ import Image from "next/image";
 
 const PARTNERS = [
   {
-    name: "PT PLN (Persero)",
-    logo: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=2070&auto=format&fit=crop", // Electricity/Grid
-    type: "Energy Utility",
-    tier: "Main Patron",
+    name: "PLN MOBILE",
+    logo: "/pln_mobile.png",
+    type: "Mobile App",
   },
   {
-    name: "PT Pertamina (Persero)",
-    logo: "https://images.unsplash.com/photo-1563291074-2bf867700e8e?q=80&w=2070&auto=format&fit=crop", // Oil/Gas/Industrial
-    type: "Energy & Oil",
-    tier: "Platinum Sponsor",
+    name: "PERTAMINA GAS NEGARA",
+    logo: "/pertamina_gas_negara.png",
+    type: "Gas Utility",
   },
   {
-    name: "Katup Industri Indonesia",
-    logo: "https://images.unsplash.com/photo-1535970793482-07de93762dc4?q=80&w=2070&auto=format&fit=crop", // Industrial Valves/Pipes
-    type: "Valve Manufacturing",
-    tier: "Gold Sponsor",
+    name: "PERTAMINA GAS",
+    logo: "/pertamina_gas.jpeg",
+    type: "Gas Utility",
   },
   {
-    name: "Enviromate Tech Int (ETI)",
-    logo: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1974&auto=format&fit=crop", // Green/Tech
-    type: "Green Energy Infrastructure",
-    tier: "Gold Sponsor",
+    name: "PT ENVIROMATE TECHNOLOGY INTERNATIONAL",
+    logo: "/enviromate_technology_international.jpeg",
+    type: "Technology",
   },
   {
-    name: "Bumi Agung Perkasa",
-    logo: "https://images.unsplash.com/photo-1533062657738-bfbc783b2729?q=80&w=2070&auto=format&fit=crop", // Metal/Galvanizing
-    type: "Industrial Coating",
-    tier: "Silver Sponsor",
+    name: "KATUP INDUSTRI INDONESIA",
+    logo: "/katup_industri_indonesia.jpeg",
+    type: "Manufacturing",
   },
   {
-    name: "Recare",
-    logo: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2069&auto=format&fit=crop", // Professional/Handshake
-    type: "Professional Services",
-    tier: "Silver Sponsor",
+    name: "STREAMWORX",
+    logo: "/streamworx_reka_solusi.jpeg",
+    type: "Technology",
   },
   {
-    name: "Pakuwon Jati",
-    logo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop", // City/Building
-    type: "Property Developer",
-    tier: "Bronze Sponsor",
+    name: "PT DURAQUIPT CEMERLANG",
+    logo: "/pt_duraquipt_demerlang.png",
+    type: "Industrial",
+  },
+  {
+    name: "RECARE",
+    logo: "/recare.jpg",
+    type: "Services",
+  },
+  {
+    name: "BUMI AGUNG PERKASA INDAH",
+    logo: "/bumi_agung_perkasa_indah.jpg",
+    type: "Construction",
+  },
+  {
+    name: "PELINDO JASA MARITIM",
+    logo: "/pelindo.png",
+    type: "Maritime",
+  },
+  {
+    name: "PT ARKHA JAYANTI PERSADA TBK",
+    logo: "/PT_Arka_Jayanti_Persada_Tbk.jpeg",
+    type: "Construction",
+  },
+  {
+    name: "PAKUWON JATI",
+    logo: "/pakuwon_jati.jpeg",
+    type: "Property",
   },
 ];
 
@@ -77,31 +95,35 @@ export default function Partners() {
           </a>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
           {PARTNERS.map((partner, i) => (
             <motion.div
               key={partner.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="group relative aspect-square bg-white/5 border border-white/10 rounded-2xl flex flex-col items-center justify-center p-6 hover:bg-white/10 hover:border-undip-blue/50 transition-all duration-300"
+              whileHover={{ 
+                y: -8, 
+                transition: { duration: 0.2 }
+              }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05, duration: 0.5 }}
+              className="group"
             >
-              <div className="relative w-full h-full mb-4 opacity-50 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0 overflow-hidden rounded-xl">
-                <Image
-                  src={partner.logo}
-                  alt={partner.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
+              <div className="aspect-square bg-white rounded-[2.5rem] p-8 shadow-xl flex items-center justify-center border-b-4 border-gray-200 group-hover:border-undip-blue transition-all relative overflow-hidden">
+                <div className="relative w-full h-full">
+                  <Image
+                    src={partner.logo}
+                    alt={partner.name}
+                    fill
+                    className="object-contain transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                </div>
               </div>
-              <div className="absolute bottom-4 left-0 w-full text-center opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 bg-black/60 backdrop-blur-sm py-2">
-                <p className="text-xs font-bold text-white mb-0.5">
+              
+              <div className="mt-6 text-center">
+                <p className="text-[11px] font-bold text-gray-400 group-hover:text-white transition-colors uppercase tracking-[0.2em] px-2 line-clamp-2 leading-relaxed">
                   {partner.name}
-                </p>
-                <p className="text-[10px] text-accent-yellow uppercase tracking-wider font-mono">
-                  {partner.tier}
                 </p>
               </div>
             </motion.div>
@@ -123,12 +145,15 @@ export default function Partners() {
               </p>
             </div>
           </div>
+          <a href="#contact">
+
           <button
             type="button"
             className="px-8 py-4 bg-white text-gray-900 font-bold rounded-full hover:bg-accent-yellow transition-colors whitespace-nowrap shadow-xl"
-          >
+            >
             Get Sponsorship Deck
           </button>
+            </a>
         </div>
       </div>
     </section>

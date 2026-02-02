@@ -70,8 +70,8 @@ export const metadata: Metadata = {
     images: ['/Banner.png'],
   },
   icons: {
-    icon: [{ url: '/favicon1.png', type: 'image/png' }],
-    apple: [{ url: '/favicon1.png', type: 'image/png' }],
+    icon: [{ url: '/Logo_Bascorro.png', type: 'image/png' }],
+    apple: [{ url: '/Logo_Bascorro.png', type: 'image/png' }],
   },
 };
 

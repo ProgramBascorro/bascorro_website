@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Code,
   Github,
+  GraduationCap,
   Linkedin,
   Users,
   Wrench,
@@ -62,6 +63,14 @@ export default function TeamPreview() {
               transition={{ delay: i * 0.1, duration: 0.5 }}
             >
               <div className="w-12 h-12 bg-white rounded-2xl border border-gray-200 flex items-center justify-center mb-6 text-gray-400 group-hover:text-undip-blue shadow-sm transition-colors">
+                {div.icon === "GraduationCap" && (
+                  <motion.div
+                    whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <GraduationCap size={24} />
+                  </motion.div>
+                )}
                 {div.icon === "Users" && (
                   <motion.div
                     whileHover={{ scale: 1.15, y: -2 }}

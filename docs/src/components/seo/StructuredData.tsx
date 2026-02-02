@@ -30,10 +30,10 @@ export function OrganizationSchema() {
     name: 'BASCORRO',
     alternateName: 'BASCORRO Humanoid Robosoccer Team',
     url: BASE_URL,
-    logo: `${BASE_URL}/favicon1.png`,
+    logo: `${BASE_URL}/Logo_Bascorro.png`,
     description:
       'Student-driven humanoid robosoccer research team from Universitas Diponegoro, Indonesia. Competing in RoboCup and developing autonomous humanoid robots.',
-    foundingDate: '2024',
+    foundingDate: '2017',
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Semarang',
@@ -200,7 +200,7 @@ export function ArticleSchema({
       name: 'BASCORRO',
       logo: {
         '@type': 'ImageObject',
-        url: `${BASE_URL}/favicon1.png`,
+        url: `${BASE_URL}/Logo_Bascorro.png`,
       },
     },
     mainEntityOfPage: {

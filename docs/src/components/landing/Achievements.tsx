@@ -16,7 +16,7 @@ export default function Achievements() {
             </span>
           </div>
           <h2 className="font-display font-black text-4xl md:text-6xl uppercase tracking-tight">
-            Prestasi & Kompetisi
+            Competitions
           </h2>
         </div>
 

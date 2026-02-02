@@ -7,7 +7,8 @@ export interface TeamMember {
     | "Mechanical"
     | "Electrical"
     | "Software"
-    | "Official";
+    | "Official"
+    | "Advisor";
   year: number;
   image: string;
   socials?: {
@@ -22,6 +23,16 @@ export const TEAM_YEARS = [2025, 2024, 2023];
 
 export const TEAM_MEMBERS: TeamMember[] = [
   // 2025 Team (Current)
+  {
+    id: "2025-0",
+    name: "Laily Asna Safira, S.T., M.T.",
+    role: "Faculty Advisor",
+    division: "Advisor",
+    year: 2025,
+    isLead: true,
+    image: "/laily_asna_safira.png",
+    socials: { linkedin: "#" },
+  },
   {
     id: "2025-1",
     name: "Arya Wijaya",

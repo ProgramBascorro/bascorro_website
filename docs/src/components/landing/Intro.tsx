@@ -55,15 +55,15 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
             exit={{ opacity: 0, scale: 1.1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div className="relative w-32 h-32 md:w-40 md:h-40 drop-shadow-2xl">
+            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-[3rem] bg-white p-6 shadow-[0_0_50px_rgba(255,255,255,0.3)] border-4 border-white/20 overflow-hidden">
                <Image 
-                 src="/favicon1.png" 
+                 src="/Logo_Bascorro.png" 
                  alt="EWS Bascorro Logo" 
                  fill 
-                 className="object-contain"
+                 className="object-contain p-4"
                />
             </div>
-            <h1 className="text-undip-blue font-display font-black text-5xl md:text-7xl tracking-tighter text-center">
+            <h1 className="text-undip-blue font-display font-black text-5xl md:text-7xl tracking-tighter text-center drop-shadow-lg">
               EWS BASCORRO
             </h1>
           </motion.div>

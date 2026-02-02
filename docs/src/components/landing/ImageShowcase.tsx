@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 const SHOWCASE_IMAGES = [
   {
     id: 1,
-    url: "https://images.unsplash.com/photo-1517055729445-db718dc5b89d?q=80&w=2070&auto=format&fit=crop",
+    url: "https://images.unsplash.com/photo-1535378437321-6a8fd74f9c01?q=80&w=2070&auto=format&fit=crop",
     title: "RoboCup 2024",
     location: "Eindhoven, Netherlands",
     category: "Competition",
