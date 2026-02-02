@@ -197,6 +197,18 @@ export default function TeamPreview() {
               </motion.div>
             ))}
           </div>
+          <div className="mt-10 flex justify-center">
+            <Link
+              href="/team"
+              className="group flex items-center gap-3 px-6 py-3 bg-gray-50 border border-gray-200 rounded-full font-bold text-gray-900 hover:bg-undip-blue hover:text-white hover:border-undip-blue transition-all duration-300"
+            >
+              View All Members
+              <ArrowRight
+                size={18}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
