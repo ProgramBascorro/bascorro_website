@@ -11,6 +11,9 @@ export interface TeamMember {
     | "Advisor";
   year: number;
   image: string;
+  angkatan?: number;
+  domisili?: string;
+  funFact?: string;
   socials?: {
     linkedin?: string;
     github?: string;
@@ -19,7 +22,7 @@ export interface TeamMember {
   isLead?: boolean;
 }
 
-export const TEAM_YEARS = [2025, 2024, 2023];
+export const TEAM_YEARS = [2026, 2025, 2024, 2023];
 
 export const TEAM_MEMBERS: TeamMember[] = [
   // 2025 Team (Current)
