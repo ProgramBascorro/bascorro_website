@@ -3,6 +3,7 @@ export const NAV_LINKS = [
   { label: 'Robots', href: '#robots' },
   { label: 'Tech', href: '#tech' },
   { label: 'Team', href: '#team' },
+  { label: 'Gallery', href: '/gallery' },
   { label: 'RoboCup', href: '/robocup' },
 ];
 
