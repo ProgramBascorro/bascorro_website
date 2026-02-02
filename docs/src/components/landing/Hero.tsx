@@ -266,6 +266,28 @@ const Hero: React.FC = () => {
           </div>
         </section>
 
+        {/* --- SECTION 2.5: FEATURED VIDEO --- */}
+        <section className="px-8 py-20 md:px-16 border-t border-gray-200 bg-[#f3f4f6]">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeader
+              title="EWS Bascorro Qualification RoboCup Humanoid Soccer League Kid Size 2026"
+              subtitle="Featured Video"
+            />
+            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="aspect-video w-full">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube-nocookie.com/embed/C7drE_bRktE"
+                  title="EWS Bascorro Qualification RoboCup Humanoid Soccer League Kid Size 2026"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
        {/* --- SECTION 5.5: IMAGE SHOWCASE --- */}
         {/* <ImageShowcase /> */}
 
