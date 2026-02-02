@@ -52,23 +52,23 @@ export default function TeamPreview() {
         </div>
 
         {/* Divisions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-20">
           {TEAM_DIVISIONS.map((div, i) => (
             <motion.div
               key={div.name}
-              className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-undip-blue/30 transition-colors group"
+              className="bg-gray-50 p-4 md:p-8 rounded-2xl md:rounded-3xl border border-gray-100 hover:border-undip-blue/30 transition-colors group"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: i * 0.1, duration: 0.5 }}
             >
-              <div className="w-12 h-12 bg-white rounded-2xl border border-gray-200 flex items-center justify-center mb-6 text-gray-400 group-hover:text-undip-blue shadow-sm transition-colors">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl md:rounded-2xl border border-gray-200 flex items-center justify-center mb-4 md:mb-6 text-gray-400 group-hover:text-undip-blue shadow-sm transition-colors">
                 {div.icon === "GraduationCap" && (
                   <motion.div
                     whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
                     transition={{ duration: 0.5 }}
                   >
-                    <GraduationCap size={24} />
+                    <GraduationCap className="w-5 h-5 md:w-6 md:h-6" />
                   </motion.div>
                 )}
                 {div.icon === "Users" && (
@@ -80,7 +80,7 @@ export default function TeamPreview() {
                       damping: 10,
                     }}
                   >
-                    <Users size={24} />
+                    <Users className="w-5 h-5 md:w-6 md:h-6" />
                   </motion.div>
                 )}
                 {div.icon === "Wrench" && (
@@ -88,7 +88,7 @@ export default function TeamPreview() {
                     whileHover={{ rotate: [0, -20, 20, -10, 10, 0] }}
                     transition={{ duration: 0.6, ease: "easeInOut" }}
                   >
-                    <Wrench size={24} />
+                    <Wrench className="w-5 h-5 md:w-6 md:h-6" />
                   </motion.div>
                 )}
                 {div.icon === "Zap" && (
@@ -99,7 +99,7 @@ export default function TeamPreview() {
                     }}
                     transition={{ duration: 0.4, repeat: Infinity }}
                   >
-                    <Zap size={24} />
+                    <Zap className="w-5 h-5 md:w-6 md:h-6" />
                   </motion.div>
                 )}
                 {div.icon === "Code" && (
@@ -107,26 +107,26 @@ export default function TeamPreview() {
                     whileHover={{ scale: 1.15 }}
                     transition={{ type: "spring", stiffness: 400 }}
                   >
-                    <Code size={24} />
+                    <Code className="w-5 h-5 md:w-6 md:h-6" />
                   </motion.div>
                 )}
               </div>
-              <h4 className="font-bold text-xl mb-1">{div.name}</h4>
-              <span className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 block">
+              <h4 className="font-bold text-sm md:text-xl mb-1">{div.name}</h4>
+              <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 md:mb-4 block">
                 {div.role}
               </span>
-              <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+              <p className="text-xs md:text-sm text-gray-600 mb-4 md:mb-6 leading-relaxed line-clamp-3 md:line-clamp-none">
                 {div.description}
               </p>
-              <div className="border-t border-gray-200 pt-4">
-                <div className="text-xs font-bold text-gray-900 mb-3">
+              <div className="border-t border-gray-200 pt-3 md:pt-4">
+                <div className="text-[10px] md:text-xs font-bold text-gray-900 mb-2 md:mb-3">
                   Key Roles:
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1 md:gap-2">
                   {div.members.map((m) => (
                     <span
                       key={m}
-                      className="text-[10px] font-medium bg-white border border-gray-200 px-2 py-1 rounded-md text-gray-500 hover:text-undip-blue hover:border-undip-blue/20 transition-colors cursor-default"
+                      className="text-[9px] md:text-[10px] font-medium bg-white border border-gray-200 px-1.5 py-0.5 md:px-2 md:py-1 rounded-md text-gray-500 hover:text-undip-blue hover:border-undip-blue/20 transition-colors cursor-default"
                     >
                       {m}
                     </span>
@@ -140,7 +140,7 @@ export default function TeamPreview() {
         {/* Featured Members Preview */}
         <div>
           <h3 className="font-display font-bold text-2xl mb-8">Team Leads</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {featuredMembers.map((member, idx) => (
               <motion.div
                 key={member.id}
@@ -150,7 +150,7 @@ export default function TeamPreview() {
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
                 className="group relative"
               >
-                <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100 mb-6">
+                <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100 mb-4 md:mb-6">
                   <Image
                     src={member.image}
                     alt={member.name}
@@ -160,36 +160,36 @@ export default function TeamPreview() {
                   />
 
                   {/* Social Overlay */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 backdrop-blur-[2px]">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 md:gap-4 backdrop-blur-[2px]">
                     {member.socials?.linkedin && (
                       <a
                         href={member.socials.linkedin}
-                        className="p-3 bg-white text-gray-900 rounded-full hover:bg-accent-yellow hover:text-black transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 delay-75"
+                        className="p-2 md:p-3 bg-white text-gray-900 rounded-full hover:bg-accent-yellow hover:text-black transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 delay-75"
                       >
-                        <Linkedin size={20} />
+                        <Linkedin className="w-4 h-4 md:w-5 md:h-5" />
                       </a>
                     )}
                     {member.socials?.github && (
                       <a
                         href={member.socials.github}
-                        className="p-3 bg-white text-gray-900 rounded-full hover:bg-accent-yellow hover:text-black transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 delay-100"
+                        className="p-2 md:p-3 bg-white text-gray-900 rounded-full hover:bg-accent-yellow hover:text-black transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 delay-100"
                       >
-                        <Github size={20} />
+                        <Github className="w-4 h-4 md:w-5 md:h-5" />
                       </a>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-display font-bold text-xl text-gray-900 mb-1 group-hover:text-undip-blue transition-colors">
+                  <h3 className="font-display font-bold text-sm md:text-xl text-gray-900 mb-1 group-hover:text-undip-blue transition-colors truncate">
                     {member.name}
                   </h3>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs font-bold uppercase tracking-wider text-accent-yellow">
+                    <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-accent-yellow truncate">
                       {member.division}
                     </span>
-                    <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                    <span className="text-xs text-gray-500 font-mono">
+                    <span className="hidden md:inline-block w-1 h-1 rounded-full bg-gray-300"></span>
+                    <span className="hidden md:inline-block text-xs text-gray-500 font-mono truncate">
                       {member.role}
                     </span>
                   </div>

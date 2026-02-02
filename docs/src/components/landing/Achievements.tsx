@@ -21,32 +21,32 @@ export default function Achievements() {
         </div>
 
         {/* Competitions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 md:gap-12 mb-20">
           {COMPETITIONS.map((comp, i) => (
             <motion.div
               key={comp.name}
-              className="border-t-2 border-undip-blue/20 pt-6"
+              className="border-t-2 border-undip-blue/20 pt-4 md:pt-6"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               viewport={{ once: true }}
             >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="font-bold text-2xl text-undip-blue">
+              <div className="flex justify-between items-start mb-2 md:mb-4">
+                <h3 className="font-bold text-lg md:text-2xl text-undip-blue leading-tight">
                   {comp.name}
                 </h3>
-                <span className="bg-undip-blue/10 px-3 py-1 rounded-full text-xs font-bold text-undip-blue">
+                <span className="bg-undip-blue/10 px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-bold text-undip-blue shrink-0 ml-2">
                   {comp.year}
                 </span>
               </div>
-              <div className="text-sm font-bold uppercase tracking-wider text-undip-blue/60 mb-2">
+              <div className="text-[10px] md:text-sm font-bold uppercase tracking-wider text-undip-blue/60 mb-2">
                 {comp.role}
               </div>
-              <p className="text-undip-blue/80 leading-relaxed">{comp.desc}</p>
+              <p className="text-sm md:text-base text-undip-blue/80 leading-relaxed mb-4">{comp.desc}</p>
               {comp.name.includes("RoboCup") && (
                 <a
                   href="/robocup"
-                  className="inline-flex items-center gap-1 mt-4 text-sm font-bold text-undip-blue hover:underline"
+                  className="inline-flex items-center gap-1 text-xs md:text-sm font-bold text-undip-blue hover:underline"
                 >
                   Learn More <ArrowRight size={14} />
                 </a>
@@ -62,34 +62,33 @@ export default function Achievements() {
             Recent Achievements
           </h3>
 
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-1 gap-3 md:gap-6">
             {TEAM_ACHIEVEMENTS.map((item, idx) => (
               <motion.div
                 key={item.year + item.competition}
-                className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl bg-white/60 border border-undip-blue/5 hover:border-undip-blue/20 transition-colors"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
+                className="flex flex-col md:flex-row items-center md:justify-between gap-3 md:gap-4 p-3 md:p-4 rounded-xl bg-white/60 border border-undip-blue/5 hover:border-undip-blue/20 transition-colors h-full"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: idx * 0.05 }}
                 viewport={{ once: true }}
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-accent-yellow rounded-lg flex items-center justify-center text-undip-blue font-bold font-display text-xl shrink-0">
+                <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 w-full md:w-auto">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-accent-yellow rounded-lg flex items-center justify-center text-undip-blue font-bold font-display text-lg md:text-xl shrink-0 shadow-sm">
                     {item.year.slice(-2)}
                   </div>
-                  <div>
-                    <h4 className="font-bold text-lg text-undip-blue">
+                  <div className="text-center md:text-left">
+                    <h4 className="font-bold text-xs md:text-lg text-undip-blue leading-tight mb-1">
                       {item.competition}
                     </h4>
-                    <div className="flex gap-2 text-xs font-mono text-undip-blue/60 mt-1">
-                      <span>{item.category}</span>
-                      <span>•</span>
-                      <span>{item.level}</span>
+                    <div className="flex flex-wrap justify-center md:justify-start gap-1.5 md:gap-2 text-[9px] md:text-xs font-mono text-undip-blue/60">
+                      <span className="bg-white/50 px-1.5 py-0.5 rounded border border-undip-blue/10">{item.category}</span>
+                      <span className="bg-white/50 px-1.5 py-0.5 rounded border border-undip-blue/10">{item.level}</span>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 pl-16 md:pl-0">
-                  <Award size={18} className="text-undip-blue" />
-                  <span className="font-bold text-undip-blue">
+                <div className="flex items-center gap-1.5 md:gap-2 bg-undip-blue/5 px-3 py-1.5 rounded-full md:bg-transparent md:p-0">
+                  <Award size={14} className="text-undip-blue md:w-[18px] md:h-[18px]" />
+                  <span className="font-bold text-[10px] md:text-base text-undip-blue text-center leading-tight">
                     {item.result}
                   </span>
                 </div>

@@ -22,7 +22,7 @@ import {
   Zap,
 } from "lucide-react";
 import Image from "next/image";
-import type React from "react";
+import React, { useState } from "react";
 import {
   COMPETITIONS,
   FAQ_ITEMS,
@@ -61,6 +61,7 @@ const SectionHeader = ({
 
 const Hero: React.FC = () => {
   const { setOpenSearch } = useSearchContext();
+  const [show3D, setShow3D] = useState(false);
 
   return (
     <div className="w-full h-screen flex flex-col relative overflow-hidden bg-[#1a1a1a] ">
@@ -271,7 +272,7 @@ const Hero: React.FC = () => {
         {/* --- SECTION 3: ROBOTS --- */}
         <section
           id="robots"
-          className="px-8 py-24 md:px-16 bg-[#f3f4f6] relative"
+          className="px-4 py-16 md:px-16 bg-[#f3f4f6] relative"
         >
           {/* Decorative Grid */}
           <div className="absolute top-0 right-0 p-12 opacity-10">
@@ -281,8 +282,27 @@ const Hero: React.FC = () => {
           <div className="max-w-7xl mx-auto relative z-10">
             <SectionHeader title="Our Machines" subtitle="Engineering" />
 
+            {/* Mobile 3D Model Toggle */}
+            <div className="md:hidden mb-6">
+              <button
+                type="button"
+                onClick={() => setShow3D(!show3D)}
+                className="w-full py-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                {show3D ? (
+                  <>
+                    Hide 3D Model <ChevronDown className="rotate-180" size={16} />
+                  </>
+                ) : (
+                  <>
+                    View 3D Robot Model <ChevronDown size={16} />
+                  </>
+                )}
+              </button>
+            </div>
+
             {/* 3D Model Showcase */}
-            <div className="mb-16 bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className={`mb-16 bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden ${show3D ? "block" : "hidden"} md:block`}>
               <div className="flex flex-col lg:flex-row">
                 {/* 3D Viewer */}
                 <div className="w-full lg:w-2/3 h-[400px] md:h-[500px] bg-gradient-to-br from-gray-50 to-gray-100">
@@ -316,11 +336,11 @@ const Hero: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8">
               {ROBOTS.map((robot, index) => (
                 <div
                   key={index}
-                  className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-200"
+                  className="group bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-200"
                 >
                   <div className="aspect-[3/4] bg-gray-100 relative overflow-hidden group-hover:bg-gray-50 transition-colors">
                     <Image
@@ -331,25 +351,25 @@ const Hero: React.FC = () => {
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                    <div className="absolute top-6 right-6 bg-undip-blue/90 backdrop-blur-md px-3 py-1 rounded text-[10px] font-bold font-mono text-white border border-white/20 z-10 shadow-lg">
-                      STATUS: {robot.status.toUpperCase()}
+                    <div className="absolute top-3 right-3 md:top-6 md:right-6 bg-undip-blue/90 backdrop-blur-md px-2 py-0.5 md:px-3 md:py-1 rounded text-[8px] md:text-[10px] font-bold font-mono text-white border border-white/20 z-10 shadow-lg">
+                      {robot.status.toUpperCase()}
                     </div>
                   </div>
-                  <div className="p-8">
-                    <h3 className="text-2xl font-bold font-display mb-2">
+                  <div className="p-4 md:p-8">
+                    <h3 className="text-lg md:text-2xl font-bold font-display mb-1 md:mb-2">
                       {robot.name}
                     </h3>
-                    <p className="text-gray-600 mb-6 text-sm">{robot.desc}</p>
+                    <p className="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm line-clamp-3 md:line-clamp-none">{robot.desc}</p>
 
-                    <div className="space-y-3">
-                      <div className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                    <div className="space-y-2 md:space-y-3">
+                      <div className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-400 mb-1 md:mb-2">
                         Specifications
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-1 md:gap-2">
                         {robot.specs.map((spec, i) => (
                           <div
                             key={i}
-                            className="bg-gray-50 px-3 py-2 rounded border border-gray-100 text-xs font-mono text-gray-700"
+                            className="bg-gray-50 px-2 py-1 md:px-3 md:py-2 rounded border border-gray-100 text-[9px] md:text-xs font-mono text-gray-700 truncate"
                           >
                             {spec}
                           </div>
@@ -366,7 +386,7 @@ const Hero: React.FC = () => {
         {/* --- SECTION 4: TECH STACK --- */}
         <section
           id="tech"
-          className="px-8 py-24 md:px-16 bg-[#1a1a1a] text-white"
+          className="px-4 py-16 md:px-16 bg-[#1a1a1a] text-white"
         >
           <div className="max-w-7xl mx-auto">
             <div className="mb-12">
@@ -379,20 +399,20 @@ const Hero: React.FC = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
               {TECH_STACK.map((tech, i) => (
                 <div
                   key={i}
-                  className="border border-white/10 p-6 rounded-2xl hover:bg-white/5 transition-colors group"
+                  className="border border-white/10 p-4 md:p-6 rounded-2xl hover:bg-white/5 transition-colors group"
                 >
-                  <div className="w-12 h-12 bg-undip-blue/20 rounded-xl flex items-center justify-center text-accent-yellow mb-6 group-hover:scale-110 transition-transform">
-                    {tech.icon === "Eye" && <Eye />}
-                    {tech.icon === "Activity" && <Activity />}
-                    {tech.icon === "Brain" && <Brain />}
-                    {tech.icon === "Monitor" && <Monitor />}
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-undip-blue/20 rounded-xl flex items-center justify-center text-accent-yellow mb-4 md:mb-6 group-hover:scale-110 transition-transform">
+                    {tech.icon === "Eye" && <Eye className="w-5 h-5 md:w-6 md:h-6" />}
+                    {tech.icon === "Activity" && <Activity className="w-5 h-5 md:w-6 md:h-6" />}
+                    {tech.icon === "Brain" && <Brain className="w-5 h-5 md:w-6 md:h-6" />}
+                    {tech.icon === "Monitor" && <Monitor className="w-5 h-5 md:w-6 md:h-6" />}
                   </div>
-                  <h4 className="font-bold text-lg mb-2">{tech.title}</h4>
-                  <p className="text-sm text-gray-400 leading-relaxed">
+                  <h4 className="font-bold text-sm md:text-lg mb-1 md:mb-2">{tech.title}</h4>
+                  <p className="text-xs md:text-sm text-gray-400 leading-relaxed line-clamp-3 md:line-clamp-none">
                     {tech.desc}
                   </p>
                 </div>
