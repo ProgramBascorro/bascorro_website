@@ -64,13 +64,6 @@ export const TECH_STACK = [
 
 export const TEAM_DIVISIONS = [
   {
-    name: "Faculty Advisors",
-    role: "Supervisors",
-    description: "Providing academic guidance, technical mentorship, and ensuring the team's alignment with university research goals.",
-    members: ["Dosen Wali"],
-    icon: "GraduationCap"
-  },
-  {
     name: "Management & Official",
     role: "Core Leadership",
     description: "Orchestrating the team's vision, handling logistics, branding, and maintaining relationships with the university and sponsors.",
@@ -92,11 +85,18 @@ export const TEAM_DIVISIONS = [
     icon: "Zap"
   },
   {
-    name: "Software & AI",
-    role: "Intelligence Division",
-    description: "The brain of the robot. Implementing computer vision, localization, walking algorithms, and game strategy using ROS 2.",
-    members: ["Lead Programmer", "Computer Vision Specialist", "AI & Strategy Dev", "Simulation Eng."],
-    icon: "Code"
+    name: "Motion Division",
+    role: "Kinematics & Control",
+    description: "Developing advanced walking algorithms, balance control, and dynamic movement strategies.",
+    members: ["Motion Lead", "Kinematics Eng.", "GameController", "Team Communication"],
+    icon: "Activity"
+  },
+  {
+    name: "Vision Division",
+    role: "Perception & AI",
+    description: "Implementing real-time object detection, localization, and field mapping using computer vision.",
+    members: ["Vision Lead", "AI Specialist", "Localization"],
+    icon: "Eye"
   }
 ];
 

@@ -8,7 +8,9 @@ export interface TeamMember {
     | "Electrical"
     | "Software"
     | "Official"
-    | "Advisor";
+    | "Advisor"
+    | "Motion"
+    | "Vision";
   year: number;
   image: string;
   angkatan?: number;
@@ -29,65 +31,101 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "2025-0",
     name: "Laily Asna Safira, S.T., M.T.",
-    role: "Faculty Advisor",
+    role: "Team Advisor",
     division: "Advisor",
     year: 2025,
     isLead: true,
     image: "/laily_asna_safira.png",
-    socials: { linkedin: "#" },
+    socials: { linkedin: "https://www.linkedin.com/in/laily-asna-safira-bb323a169/" },
   },
   {
     id: "2025-1",
-    name: "Arya Wijaya",
-    role: "Team Captain",
+    name: "Muhammad Farhan Suri",
+    role: "Team Leader",
     division: "Management",
     year: 2025,
     isLead: true,
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887&auto=format&fit=crop",
-    socials: { linkedin: "#", github: "#" },
+    image: "/team_leader.jpeg",
+    socials: { linkedin: "https://www.linkedin.com/in/muhammad-farhan-suri-810a36291/" },
   },
   {
-    id: "2025-2",
-    name: "Sarah Putri",
-    role: "Head of Software",
-    division: "Software",
+    id: "2025-9",
+    name: "Hanadia Aulia Nisa",
+    role: "Manager",
+    division: "Management",
     year: 2025,
     isLead: true,
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1887&auto=format&fit=crop",
-    socials: { linkedin: "#", github: "#" },
+    image: "/Manager.jpeg",
+    socials: { linkedin: "https://www.linkedin.com/in/hanadia-aulia-nisa-26721236b/" },
+  },
+  {
+    id: "2025-2a",
+    name: "Muhammad Fauzi Isnanto",
+    role: "Head of Motion",
+    division: "Motion",
+    year: 2025,
+    isLead: true,
+    image: "/head_motion.jpg",
+    socials: { linkedin: "https://www.linkedin.com/in/muhammad-fauzi-isnanto/" },
+  },
+  {
+    id: "2025-2b",
+    name: "Banar Pambudi",
+    role: "Head of Vision",
+    division: "Vision",
+    year: 2025,
+    isLead: true,
+    image: "/head_vision.jpg",
+    socials: { linkedin: "https://www.linkedin.com/in/banarpambudi/" },
   },
   {
     id: "2025-3",
-    name: "Dimas Pratama",
+    name: "Enrico Julianto",
     role: "Head of Mechanics",
     division: "Mechanical",
     year: 2025,
     isLead: true,
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop",
-    socials: { linkedin: "#" },
+    image: "/head_mechanics.jpg",
+    socials: { linkedin: "https://www.linkedin.com/in/enrico-julian-wiguna-a3554a343/" },
   },
   {
     id: "2025-4",
-    name: "Muhamad Fayad",
+    name: "Muhammad Fayyadh Ilham",
     role: "Head of Electronics",
     division: "Electrical",
     year: 2025,
     isLead: true,
     image: "/headElectric.jpeg",
-    socials: { linkedin: "http://linkedin.com/in/mfayyadhilham" },
+    socials: { linkedin: "https://www.linkedin.com/in/mfayyadhilham/" },
+  },
+  {
+    id: "2025-10",
+    name: "Maria Vincentia Evelllyn Widhianto",
+    role: "Head of Media",
+    division: "Official",
+    year: 2025,
+    isLead: true,
+    image: "/head_media.jpg",
+    socials: { linkedin: "https://www.linkedin.com/in/evellyn-widhianto-081bb2320/" },
+  },
+  {
+    id: "2025-11",
+    name: "Alifiyah Afindina",
+    role: "Head of Business Development",
+    division: "Management",
+    year: 2025,
+    isLead: true,
+    image: "/head_business_dev.jpeg",
+    socials: { linkedin: "https://www.linkedin.com/in/alifiyah-afindina-296540330/" },
   },
   {
     id: "2025-5",
     name: "Budi Santoso",
     role: "Computer Vision Lead",
-    division: "Software",
+    division: "Vision",
     year: 2025,
     image:
       "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1887&auto=format&fit=crop",
-    socials: { github: "#" },
   },
   {
     id: "2025-6",
@@ -102,7 +140,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: "2025-7",
     name: "Kevin Chen",
     role: "AI Engineer",
-    division: "Software",
+    division: "Motion",
     year: 2025,
     image:
       "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop",

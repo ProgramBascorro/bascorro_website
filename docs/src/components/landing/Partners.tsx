@@ -42,7 +42,7 @@ const PARTNERS = [
   },
   {
     name: "RECARE",
-    logo: "/recare.jpg",
+    logo: "/recare.jpeg",
     type: "Services",
   },
   {
