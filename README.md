@@ -1,6 +1,4 @@
 # PLAN TESSS 
-kk
-asd
 
 
 # Robotic Code OP3
