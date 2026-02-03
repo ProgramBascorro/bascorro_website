@@ -5,8 +5,10 @@ import { TEAM_MEMBERS, type TeamMember } from "@/lib/team-data";
 
 const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
 const FALLBACK_IMAGE = "/Logo_Bascorro.png";
-const CSV_FILE = "database_ews_bascorro-2026.csv";
-const IMAGE_DIR = "team/2026";
+const CSV_FILE_2026 = "database_ews_bascorro-2026.csv";
+const CSV_FILE_2025 = "database_ews_bascorro-2025.csv";
+const IMAGE_DIR_2026 = "team/2026";
+const IMAGE_DIR_2025 = "team/2025"; // Directory might not exist yet, but logic handles it
 
 type CsvRow = string[];
 
@@ -78,16 +80,16 @@ function extractDriveId(url: string) {
   return "";
 }
 
-function resolveLocalImage(fileId: string) {
+function resolveLocalImage(fileId: string, imageDir: string) {
   if (!fileId) {
     return FALLBACK_IMAGE;
   }
 
-  const publicDir = path.join(process.cwd(), "public", IMAGE_DIR);
+  const publicDir = path.join(process.cwd(), "public", imageDir);
   for (const ext of IMAGE_EXTENSIONS) {
     const candidate = path.join(publicDir, `${fileId}${ext}`);
     if (fs.existsSync(candidate)) {
-      return `/${IMAGE_DIR}/${fileId}${ext}`;
+      return `/${imageDir}/${fileId}${ext}`;
     }
   }
 
@@ -125,8 +127,8 @@ function normalizeRole(rawDivision: string) {
     .join(" / ");
 }
 
-function loadTeam2026(): TeamMember[] {
-  const csvPath = path.join(process.cwd(), CSV_FILE);
+function loadTeamFromCsv(csvFile: string, year: number, imageDir: string): TeamMember[] {
+  const csvPath = path.join(process.cwd(), csvFile);
   if (!fs.existsSync(csvPath)) {
     return [];
   }
@@ -145,8 +147,9 @@ function loadTeam2026(): TeamMember[] {
   };
 
   return dataRows.map((row, index) => {
+    // Try to handle both 2025 and 2026 variations
     const fullName = getValue(row, "Nama Lengkap");
-    const nickname = getValue(row, "Nama Panggilan");
+    const nickname = getValue(row, "Nama Panggilan") || getValue(row, "Nama Panggilan (Buat baju bisa)");
     const divisionRaw = getValue(row, "Divisi");
     const imageUrl = getValue(row, "Foto Diri (Bebas, Semi Formal)");
     const driveId = extractDriveId(imageUrl);
@@ -157,12 +160,12 @@ function loadTeam2026(): TeamMember[] {
     const angkatan = Number.parseInt(angkatanRaw, 10);
 
     return {
-      id: `2026-${nim || index}`,
+      id: `${year}-${nim || index}`,
       name: fullName || nickname || `Member ${index + 1}`,
       role: normalizeRole(divisionRaw),
       division: mapDivision(divisionRaw),
-      year: 2026,
-      image: resolveLocalImage(driveId),
+      year: year,
+      image: resolveLocalImage(driveId, imageDir),
       angkatan: Number.isFinite(angkatan) ? angkatan : undefined,
       domisili: domisili || undefined,
       funFact: funFact || undefined,
@@ -171,8 +174,11 @@ function loadTeam2026(): TeamMember[] {
 }
 
 export default function TeamPage() {
-  const team2026 = loadTeam2026();
-  const members = [...team2026, ...TEAM_MEMBERS];
+  const team2026 = loadTeamFromCsv(CSV_FILE_2026, 2026, IMAGE_DIR_2026);
+  const team2025 = loadTeamFromCsv(CSV_FILE_2025, 2025, IMAGE_DIR_2025);
+  const legacyMembers = TEAM_MEMBERS.filter((member) => member.year < 2025);
+
+  const members = [...team2026, ...team2025, ...legacyMembers];
   const years = Array.from(new Set(members.map((member) => member.year))).sort(
     (a, b) => b - a
   );

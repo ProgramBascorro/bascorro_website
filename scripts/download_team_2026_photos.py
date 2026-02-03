@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import csv
 import re
 import subprocess
@@ -6,8 +7,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CSV_PATH = ROOT / "docs" / "database_ews_bascorro-2026.csv"
-OUT_DIR = ROOT / "docs" / "public" / "team" / "2026"
+DEFAULT_CSV = "docs/database_ews_bascorro-2026.csv"
+DEFAULT_OUT_DIR = "docs/public/team/2026"
 
 EXT_BY_MIME = {
     "image/jpeg": "jpg",
@@ -62,13 +63,29 @@ def download_image(url: str, target_base: Path) -> Path:
 
 
 def main() -> int:
-    if not CSV_PATH.exists():
-        print(f"CSV not found: {CSV_PATH}")
+    parser = argparse.ArgumentParser(description="Download team photos via gdown.")
+    parser.add_argument(
+        "--csv",
+        default=DEFAULT_CSV,
+        help="Path to the CSV file (relative to repo root).",
+    )
+    parser.add_argument(
+        "--out",
+        default=DEFAULT_OUT_DIR,
+        help="Output directory for images (relative to repo root).",
+    )
+    args = parser.parse_args()
+
+    csv_path = ROOT / args.csv
+    out_dir = ROOT / args.out
+
+    if not csv_path.exists():
+        print(f"CSV not found: {csv_path}")
         return 1
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-    with CSV_PATH.open(newline="", encoding="utf-8") as file:
+    with csv_path.open(newline="", encoding="utf-8") as file:
         reader = csv.reader(file)
         headers = next(reader, [])
         header_map = {header.strip(): index for index, header in enumerate(headers)}
@@ -93,12 +110,12 @@ def main() -> int:
                 skipped += 1
                 continue
 
-            if any((OUT_DIR / f"{file_id}.{ext}").exists() for ext in EXT_BY_MIME.values()):
+            if any((out_dir / f"{file_id}.{ext}").exists() for ext in EXT_BY_MIME.values()):
                 continue
 
             total += 1
             try:
-                download_image(url, OUT_DIR / file_id)
+                download_image(url, out_dir / file_id)
             except Exception as exc:
                 failures.append(f"{file_id}: {exc}")
 
