@@ -584,17 +584,32 @@ const Hero: React.FC = () => {
                 </h4>
                 <ul className="space-y-2">
                   <li>
-                    <a href="#" className="hover:text-accent-yellow">
+                    <a
+                      href="https://wa.me/6287876638978"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-accent-yellow"
+                    >
                       Contact Support
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-accent-yellow">
+                    <a
+                      href="https://mail.google.com/mail/?view=cm&to=ewsbascorro@gmail.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-accent-yellow"
+                    >
                       Sponsorship
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-accent-yellow">
+                    <a
+                      href="https://undip.ac.id/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-accent-yellow"
+                    >
                       UNDIP Official
                     </a>
                   </li>
