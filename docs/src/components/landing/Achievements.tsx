@@ -87,7 +87,7 @@ export default function Achievements() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 md:gap-2 bg-undip-blue/5 px-3 py-1.5 rounded-full md:bg-transparent md:p-0">
-                  <Award size={14} className="text-undip-blue md:w-[18px] md:h-[18px]" />
+                  <Award className="hidden md:block text-undip-blue md:w-[18px] md:h-[18px]" />
                   <span className="font-bold text-[10px] md:text-base text-undip-blue text-center leading-tight">
                     {item.result}
                   </span>
