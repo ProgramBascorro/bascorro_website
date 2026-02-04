@@ -155,7 +155,8 @@ function loadTeamFromCsv(csvFile: string, year: number, imageDir: string): TeamM
     const driveId = extractDriveId(imageUrl);
     const nim = getValue(row, "NIM");
     const angkatanRaw = getValue(row, "Angkatan");
-    const domisili = getValue(row, "Domisili (Asal Daerah)");
+    const domisiliRaw = getValue(row, "Domisili (Asal Daerah)");
+    const domisili = year >= 2024 ? "" : domisiliRaw;
     const funFact = getValue(row, "Fun Fact tentang kamu");
     const angkatan = Number.parseInt(angkatanRaw, 10);
 
