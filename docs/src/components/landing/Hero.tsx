@@ -10,15 +10,15 @@ import {
   ChevronDown,
   Code,
   Eye,
-  Github,
   Images,
   Instagram,
-  Mail,
+  Linkedin,
   Monitor,
   Search,
   Trophy,
   Users,
   Wrench,
+  Youtube,
   Zap,
 } from "lucide-react";
 import Image from "next/image";
@@ -515,14 +515,37 @@ const Hero: React.FC = () => {
                 Semarang, Indonesia
               </p>
               <div className="flex gap-4 text-gray-400">
-                <a href="#" className="hover:text-white transition-colors">
+                <a
+                  href="https://www.instagram.com/ewsbascorroundip/"
+                  className="hover:text-white transition-colors"
+                >
                   <Instagram size={20} />
                 </a>
-                <a href="#" className="hover:text-white transition-colors">
-                  <Github size={20} />
+                <a
+                  href="https://www.tiktok.com/search?q=ewsbascorro&t=1770203046348"
+                  className="hover:text-white transition-colors"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-label="TikTok"
+                  >
+                    <path d="M17.4 5.1c-1-.9-1.6-2.1-1.7-3.4h-3.6v13.2c0 1.2-1 2.2-2.2 2.2-1.2 0-2.2-1-2.2-2.2 0-1.2 1-2.2 2.2-2.2.3 0 .6 0 .9.1V8.6c-.3 0-.6-.1-.9-.1-3.2 0-5.8 2.6-5.8 5.8 0 3.2 2.6 5.8 5.8 5.8 3.2 0 5.8-2.6 5.8-5.8V9.2c1.3 1 3 1.6 4.8 1.6V7.3c-1.1 0-2.2-.4-3-1.2z" />
+                  </svg>
                 </a>
-                <a href="#" className="hover:text-white transition-colors">
-                  <Mail size={20} />
+                <a
+                  href="https://www.linkedin.com/company/ewsbascorro/"
+                  className="hover:text-white transition-colors"
+                >
+                  <Linkedin size={20} />
+                </a>
+                <a
+                  href="https://www.youtube.com/@EWSBascorroUNDIP"
+                  className="hover:text-white transition-colors"
+                >
+                  <Youtube size={20} />
                 </a>
               </div>
             </div>
