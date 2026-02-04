@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="sticky top-0 z-50 bg-[#f3f4f6]/80 backdrop-blur-md flex justify-between items-center p-6 border-b border-gray-200">
       <Link href="/" className="flex items-center gap-2">
-        <Image src="/Bascorro.png" alt="EWS Bascorro logo" width={22} height={22} />
+        <Image src="/Bascorro_no_bg.png" alt="EWS Bascorro logo" width={22} height={22} />
         <span className="font-display font-bold text-xl tracking-tight text-gray-900">
           EWS BASCORRO
         </span>
