@@ -71,6 +71,14 @@ export default function Contact() {
                   >
                     ewsbascorro@gmail.com
                   </a>
+                  <div className="mt-2">
+                    <a
+                      href="tel:+6287876638978"
+                      className="text-gray-500 text-sm hover:text-undip-blue transition-colors"
+                    >
+                      +62 878-7663-8978 (Fia)
+                    </a>
+                  </div>
                   <p className="text-xs text-gray-400 mt-1">
                     Response time: 24-48 hours
                   </p>
