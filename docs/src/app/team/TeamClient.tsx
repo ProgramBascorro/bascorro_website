@@ -81,7 +81,7 @@ export default function TeamClient({
       </header>
 
       {/* Controls */}
-      <div className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm px-4 sm:px-8 py-4">
+      <div className="sticky top-[72px] z-30 bg-white border-b border-gray-200 shadow-sm px-4 sm:px-8 py-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 justify-between items-center">
           {/* Year Filter */}
           <div className="flex bg-gray-100 p-1 rounded-full overflow-x-auto max-w-full no-scrollbar">
