@@ -159,7 +159,6 @@ export default function TeamClient({
                       {typeof member.angkatan === "number" && (
                         <p>Angkatan: {member.angkatan}</p>
                       )}
-                      {member.domisili && <p>Domisili: {member.domisili}</p>}
                       {member.funFact && (
                         <p className="text-gray-400">Fun fact: {member.funFact}</p>
                       )}

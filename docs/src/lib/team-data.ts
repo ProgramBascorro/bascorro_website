@@ -14,7 +14,6 @@ export interface TeamMember {
   year: number;
   image: string;
   angkatan?: number;
-  domisili?: string;
   funFact?: string;
   socials?: {
     linkedin?: string;

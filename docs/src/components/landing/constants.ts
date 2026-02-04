@@ -11,14 +11,14 @@ export const ROBOTS = [
   {
     name: "Robot 1",
     desc: "Our primary Goalkeeper unit built on the ROBOTIS OP3 platform, enhanced with custom kinematics.",
-    specs: ["Height: 690 mm", "Weight: 5.1kg", "DOF: 20", "OS: ROS 2 Humble"],
+    specs: ["Height: 690 mm", "Weight: 5.1kg", "DOF: 20", "Middleware: ROS 2 Humble"],
     status: "Active",
     image: "/robot1.jpeg"
   },
   {
     name: "Robot 2",
     desc: "Next-gen Striker prototype featuring advanced trajectory prediction and stability control.",
-    specs: ["Height: 690mm", "Weight: 5.8kg", "DOF: 20", "OS: ROS 2 Humble"],
+    specs: ["Height: 690mm", "Weight: 5.8kg", "DOF: 20", "Middleware: ROS 2 Humble"],
     status: "Active",
     image: "/robot2.jpeg"
   }
