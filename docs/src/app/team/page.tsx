@@ -175,8 +175,17 @@ export default function TeamPage() {
   const team2026 = loadTeamFromCsv(CSV_FILE_2026, 2026, IMAGE_DIR_2026);
   const team2025 = loadTeamFromCsv(CSV_FILE_2025, 2025, IMAGE_DIR_2025);
   const legacyMembers = TEAM_MEMBERS.filter((member) => member.year < 2025);
+  const mascot2026: TeamMember = {
+    id: "2026-mascot",
+    name: "Tammy",
+    role: "Emotional Support",
+    division: "Official",
+    year: 2026,
+    image: "/Tammy.jpeg",
+    isMascot: true,
+  };
 
-  const members = [...team2026, ...team2025, ...legacyMembers];
+  const members = [...team2026, mascot2026, ...team2025, ...legacyMembers];
   const years = Array.from(new Set(members.map((member) => member.year))).sort(
     (a, b) => b - a
   );

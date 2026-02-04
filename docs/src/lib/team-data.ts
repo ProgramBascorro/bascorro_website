@@ -21,6 +21,7 @@ export interface TeamMember {
     instagram?: string;
   };
   isLead?: boolean;
+  isMascot?: boolean;
 }
 
 export const TEAM_YEARS = [2026, 2025, 2024, 2023];

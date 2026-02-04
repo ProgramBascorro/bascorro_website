@@ -21,15 +21,29 @@ export default function TeamClient({
   const [selectedYear, setSelectedYear] = useState<number>(initialYear);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const matchesQuery = (value: string) =>
+    value.toLowerCase().includes(normalizedQuery);
+
   const filteredMembers = members.filter((member) => {
     const matchesYear = member.year === selectedYear;
     const matchesSearch =
-      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.division.toLowerCase().includes(searchQuery.toLowerCase());
+      matchesQuery(member.name) ||
+      matchesQuery(member.role) ||
+      matchesQuery(member.division);
     return matchesYear && matchesSearch;
   });
-  const sortedMembers = [...filteredMembers].sort((a, b) => {
+  const mascotMember = members.find(
+    (member) => member.isMascot && member.year === selectedYear,
+  );
+  const showMascot =
+    mascotMember &&
+    (normalizedQuery.length === 0 ||
+      matchesQuery(mascotMember.name) ||
+      matchesQuery(mascotMember.role) ||
+      matchesQuery(mascotMember.division));
+  const visibleMembers = filteredMembers.filter((member) => !member.isMascot);
+  const sortedVisibleMembers = [...visibleMembers].sort((a, b) => {
     const aAngkatan =
       typeof a.angkatan === "number" ? a.angkatan : Number.POSITIVE_INFINITY;
     const bAngkatan =
@@ -102,7 +116,7 @@ export default function TeamClient({
 
       {/* Grid */}
       <main className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-16">
-        {filteredMembers.length === 0 ? (
+        {visibleMembers.length === 0 && !showMascot ? (
           <div className="text-center py-20">
             <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
               <Filter size={24} />
@@ -117,7 +131,7 @@ export default function TeamClient({
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             <AnimatePresence mode="popLayout">
-              {sortedMembers.map((member) => (
+              {sortedVisibleMembers.map((member) => (
                 <motion.div
                   layout
                   key={member.id}
@@ -191,6 +205,43 @@ export default function TeamClient({
                 </motion.div>
               ))}
             </AnimatePresence>
+          </div>
+        )}
+        {showMascot && mascotMember && (
+          <div className="mt-16">
+            <div className="text-center mb-8">
+              <div className="inline-block px-4 py-1.5 mb-4 border border-gray-200 rounded-full text-sm font-mono text-gray-600 bg-white">
+                TEAM MASCOT
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <motion.div
+                layout
+                key={mascotMember.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="group bg-white rounded-3xl overflow-hidden border border-gray-100 hover:shadow-xl hover:border-undip-blue/20 transition-all duration-300 w-full max-w-sm"
+              >
+                <div className="relative aspect-square bg-gray-200 overflow-hidden">
+                  <Image
+                    src={mascotMember.image}
+                    alt={mascotMember.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, 400px"
+                  />
+                </div>
+                <div className="p-6 text-center">
+                  <h3 className="font-display font-bold text-xl text-gray-900 mb-1 group-hover:text-undip-blue transition-colors">
+                    {mascotMember.name}
+                  </h3>
+                  <p className="text-sm font-mono text-gray-500">
+                    {mascotMember.role}
+                  </p>
+                </div>
+              </motion.div>
+            </div>
           </div>
         )}
       </main>
