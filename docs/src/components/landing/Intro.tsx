@@ -57,7 +57,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
           >
             <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-[3rem] bg-white p-6 shadow-[0_0_50px_rgba(255,255,255,0.3)] border-4 border-white/20 overflow-hidden">
                <Image 
-                 src="/Logo_Bascorro.png" 
+                 src="/Bascorro.png" 
                  alt="EWS Bascorro Logo" 
                  fill 
                  className="object-contain p-4"

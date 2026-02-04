@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ExternalLink, Handshake } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 
 const PARTNERS = [
   {
@@ -68,6 +69,9 @@ const PARTNERS = [
 ];
 
 export default function Partners() {
+  const [showAll, setShowAll] = useState(false);
+  const visiblePartners = showAll ? PARTNERS : PARTNERS.slice(0, 4);
+
   return (
     <section className="py-24 px-8 bg-[#111111] border-t border-white/10 relative">
       {/* Background decoration */}
@@ -96,7 +100,7 @@ export default function Partners() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-          {PARTNERS.map((partner, i) => (
+          {visiblePartners.map((partner, i) => (
             <motion.div
               key={partner.name}
               initial={{ opacity: 0, y: 20 }}
@@ -128,6 +132,15 @@ export default function Partners() {
               </div>
             </motion.div>
           ))}
+        </div>
+        <div className="mt-10 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setShowAll((prev) => !prev)}
+            className="px-6 py-3 rounded-full border border-white/20 text-sm font-bold text-gray-300 hover:text-white hover:border-white/40 transition-colors"
+          >
+            {showAll ? "Show Less Sponsors" : "View All Sponsors"}
+          </button>
         </div>
 
         <div className="mt-20 p-8 md:p-12 rounded-3xl bg-gradient-to-br from-undip-blue/20 to-transparent border border-undip-blue/30 flex flex-col md:flex-row items-center justify-between gap-8">
