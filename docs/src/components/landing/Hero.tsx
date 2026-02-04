@@ -210,8 +210,8 @@ const Hero: React.FC = () => {
                 <p className="text-gray-500 leading-relaxed mb-6">
                   EWS BASCORRO aims to compete in the Regional and National
                   Indonesian Robot Contest (KRI) and participate in RoboCup
-                  (Asia-Pacific & World). We operate under UNDIP's 4th Research
-                  Pillar (BAPPENAS 2025).
+                  (Asia-Pacific & World). We operate under UNDIP ROBOTIC
+                  DEVELOPMENT CENTRE.
                 </p>
                 <div className="grid grid-cols-3 gap-8 mt-12">
                   <div>
