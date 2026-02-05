@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     },
 };
 
-export default function RoboCupLayout({ children }: { children: ReactNode }) {
+export default function CompetitionsLayout({ children }: { children: ReactNode }) {
     return (
         <>
             <BreadcrumbSchema

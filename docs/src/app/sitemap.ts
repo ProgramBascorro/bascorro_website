@@ -33,7 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
     {
-      url: `${BASE_URL}/robocup`,
+      url: `${BASE_URL}/competitions`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,

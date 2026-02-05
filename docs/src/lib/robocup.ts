@@ -61,16 +61,28 @@ export const ROBOCUP_HISTORY = [
     year: '2025',
     title: 'Salvador, Brazil',
     description:
-      'The latest edition continues pushing boundaries with improved autonomy and perception requirements.',
+      'A major edition focused on improved autonomy, perception, and compliance with stricter rules.',
+  },
+  {
+    year: '2026',
+    title: 'Next Target',
+    description:
+      'Our current target year to qualify and compete in the RoboCup Humanoid League.',
   },
 ];
 
 export const EVENTS = [
   {
+    year: '2026',
+    location: 'TBD',
+    date: 'Target 2026',
+    status: 'upcoming',
+  },
+  {
     year: '2025',
     location: 'Salvador, Brazil',
     date: 'July 15-21, 2025',
-    status: 'upcoming',
+    status: 'past',
   },
   {
     year: '2024',
@@ -153,9 +165,9 @@ export const RESEARCH_AREAS = [
 ];
 
 export const BASCORRO_JOURNEY = {
-  goal: 'Represent Indonesia at RoboCup Humanoid League',
+  goal: 'Compete in RoboCup Humanoid League and KRSBI-Humanoid',
   targetYear: '2026',
-  currentFocus: 'KidSize category development',
+  currentFocus: 'KidSize development and KRSBI-Humanoid readiness',
   milestones: [
     {
       year: '2024',
@@ -165,15 +177,77 @@ export const BASCORRO_JOURNEY = {
     {
       year: '2025',
       title: 'National Competition',
-      description: 'Competing in KRSBI-Humanoid (Kontes Robot Indonesia)',
+      description: 'KRSBI-Humanoid preparation and competition experience',
     },
     {
       year: '2026',
-      title: 'International Debut',
-      description: 'Target: RoboCup qualification',
+      title: 'Competition Targets',
+      description: 'Target: KRI KRSBI-Humanoid and RoboCup qualification',
     },
   ],
 };
+
+export const KRI_OVERVIEW = {
+  title: 'KRI KRSBI-Humanoid',
+  subtitle: 'National Competition',
+  description:
+    'Kontes Robot Indonesia (KRI) is the national robotics competition that brings together top university teams in Indonesia. The KRSBI-Humanoid division focuses on autonomous humanoid soccer, emphasizing full system integration, robustness, and real-world performance.',
+};
+
+export const KRI_HIGHLIGHTS = [
+  'National stage for Indonesian university teams',
+  'Humanoid soccer matches with autonomous robots',
+  'Focus on mechanical, electronic, and software integration',
+  'Pathway to international competitions like RoboCup',
+];
+
+export const KRI_FOCUS_AREAS = [
+  {
+    title: 'Systems Integration',
+    description:
+      'End-to-end integration of mechanics, electronics, and software for stable humanoid soccer.',
+    icon: 'Activity',
+  },
+  {
+    title: 'Match Strategy',
+    description:
+      'Role assignment, tactical decisions, and teamwork under competition rules.',
+    icon: 'Users',
+  },
+  {
+    title: 'Reliable Perception',
+    description:
+      'Robust detection of ball, field lines, and goals in varied lighting conditions.',
+    icon: 'Eye',
+  },
+  {
+    title: 'Hardware Readiness',
+    description:
+      'Durable actuators, power systems, and maintenance practices for match day.',
+    icon: 'Zap',
+  },
+];
+
+export const KRI_EVENTS = [
+  {
+    year: '2026',
+    location: 'TBD',
+    date: 'Target 2026',
+    status: 'upcoming',
+  },
+  {
+    year: '2025',
+    location: 'Indonesia (Regional/National)',
+    date: '2025 Season',
+    status: 'past',
+  },
+  {
+    year: '2024',
+    location: 'Indonesia (Regional/National)',
+    date: '2024 Season',
+    status: 'past',
+  },
+];
 
 export const SOURCES = [
   {
@@ -195,5 +269,17 @@ export const SOURCES = [
   {
     name: 'RoboCup 2025 Rules',
     url: 'http://humanoid.robocup.org/wp-content/uploads/RC-HL-2025-Rules.pdf',
+  },
+  {
+    name: 'Kontes Robot Indonesia (KRI)',
+    url: 'https://kri.unri.ac.id/',
+  },
+  {
+    name: 'KRI (Direktorat Pendidikan Tinggi)',
+    url: 'https://dikti.kemdikbud.go.id/',
+  },
+  {
+    name: 'KRSBI Humanoid',
+    url: 'https://kri.pusatprestasi.id/',
   },
 ];

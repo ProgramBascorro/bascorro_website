@@ -4,8 +4,8 @@ export interface TeamMember {
   role: string;
   division:
     | "Management"
-    | "Mechanical"
-    | "Electrical"
+    | "Mechanic"
+    | "Electronic"
     | "Software"
     | "Official"
     | "Advisor"
@@ -13,6 +13,7 @@ export interface TeamMember {
     | "Vision";
   year: number;
   image: string;
+  nidn?: string;
   angkatan?: number;
   funFact?: string;
   socials?: {
@@ -82,7 +83,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: "2025-3",
     name: "Enrico Julianto",
     role: "Head of Mechanics",
-    division: "Mechanical",
+    division: "Mechanic",
     year: 2025,
     isLead: true,
     image: "/head_mechanics.jpg",
@@ -92,7 +93,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: "2025-4",
     name: "Muhammad Fayyadh Ilham",
     role: "Head of Electronics",
-    division: "Electrical",
+    division: "Electronic",
     year: 2025,
     isLead: true,
     image: "/headElectric.jpeg",
@@ -149,7 +150,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: "2025-8",
     name: "Maria Garcia",
     role: "Mechanical Design",
-    division: "Mechanical",
+    division: "Mechanic",
     year: 2025,
     image:
       "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1887&auto=format&fit=crop",
@@ -179,7 +180,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: "2024-3",
     name: "Ahmad Faisal",
     role: "Electrical Lead",
-    division: "Electrical",
+    division: "Electronic",
     year: 2024,
     image:
       "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?q=80&w=1887&auto=format&fit=crop",
@@ -191,6 +192,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     division: "Advisor",
     year: 2024,
     isLead: true,
+    nidn: "H.7.199104172018071002",
     image: "/hadha_afrisal_1.jpg",
   },
 ];

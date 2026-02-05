@@ -4,7 +4,7 @@ export const NAV_LINKS = [
   { label: 'Tech', href: '#tech' },
   { label: 'Team', href: '#team' },
   { label: 'Gallery', href: '/gallery' },
-  { label: 'RoboCup', href: '/robocup' },
+  { label: 'Competitions', href: '/competitions' },
 ];
 
 export const ROBOTS = [
@@ -34,8 +34,8 @@ export const COMPETITIONS = [
   {
     name: "Kontes Robot Indonesia (KRI)",
     role: "Consistent National Finalist",
-    desc: "A consistent National Finalist in Indonesia's premier robotics contest. We actively compete in the KRSBI-Humanoid division every year, consistently delivering strong performances and demonstrating excellence in embedded systems and AI.",
-    year: "Annual"
+    desc: "Indonesia's premier robotics contest. We focus on the KRSBI-Humanoid division with a target to compete at the national stage in 2026.",
+    year: "Target 2026"
   }
 ];
 

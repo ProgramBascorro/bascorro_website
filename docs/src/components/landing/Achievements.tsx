@@ -45,7 +45,7 @@ export default function Achievements() {
               <p className="text-sm md:text-base text-undip-blue/80 leading-relaxed mb-4">{comp.desc}</p>
               {comp.name.includes("RoboCup") && (
                 <a
-                  href="/robocup"
+                  href="/competitions"
                   className="inline-flex items-center gap-1 text-xs md:text-sm font-bold text-undip-blue hover:underline"
                 >
                   Learn More <ArrowRight size={14} />

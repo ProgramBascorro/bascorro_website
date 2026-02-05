@@ -14,6 +14,7 @@ import {
   Filter,
 } from 'lucide-react';
 import type { GalleryCategory, GalleryImage } from '@/lib/gallery';
+import SiteFooter from '@/components/shared/SiteFooter';
 
 type GalleryClientProps = {
   images: GalleryImage[];
@@ -360,20 +361,7 @@ export default function GalleryClient({ images, categories }: GalleryClientProps
         )}
       </AnimatePresence>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white py-8 mt-12">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-sm text-gray-500">
-            Want to contribute photos?{' '}
-            <a
-              href="mailto:bascorro@undip.ac.id"
-              className="text-undip-blue hover:underline"
-            >
-              Contact us
-            </a>
-          </p>
-        </div>
-      </footer>
+      <SiteFooter className="mt-12" />
     </div>
   );
 }

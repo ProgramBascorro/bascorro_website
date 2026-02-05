@@ -17,6 +17,15 @@ const r2Host = (() => {
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: '/robocup',
+        destination: '/competitions',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: r2Host },

@@ -102,10 +102,10 @@ function mapDivision(rawDivision: string): TeamMember["division"] {
     return "Software";
   }
   if (value.includes("elektrik") || value.includes("electrical") || value.includes("elektro")) {
-    return "Electrical";
+    return "Electronic";
   }
   if (value.includes("mekanik") || value.includes("mechanical")) {
-    return "Mechanical";
+    return "Mechanic";
   }
   if (value.includes("official")) {
     return "Official";
