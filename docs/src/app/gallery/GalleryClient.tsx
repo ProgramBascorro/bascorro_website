@@ -27,6 +27,7 @@ export default function GalleryClient({ images, categories }: GalleryClientProps
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const filteredImages = useMemo(
     () =>
@@ -50,6 +51,37 @@ export default function GalleryClient({ images, categories }: GalleryClientProps
   useEffect(() => {
     setVisibleCount((count) => Math.min(count, filteredImages.length));
   }, [filteredImages.length]);
+
+  useEffect(() => {
+    if (!selectedImage) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        goToPrevious();
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goToNext();
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSelectedImage(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedImage, currentIndex]);
 
   useEffect(() => {
     const node = loadMoreRef.current;
@@ -79,6 +111,19 @@ export default function GalleryClient({ images, categories }: GalleryClientProps
   const goToNext = () => {
     if (currentIndex < filteredImages.length - 1) {
       setSelectedImage(filteredImages[currentIndex + 1]);
+    }
+  };
+
+  const handleSwipe = (deltaX: number, deltaY: number) => {
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+    if (absX < 50 || absX < absY * 1.2) {
+      return;
+    }
+    if (deltaX > 0) {
+      goToPrevious();
+    } else {
+      goToNext();
     }
   };
 
@@ -205,7 +250,11 @@ export default function GalleryClient({ images, categories }: GalleryClientProps
             {/* Navigation */}
             {currentIndex > 0 && (
               <button
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                }}
                 onClick={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   goToPrevious();
                 }}
@@ -217,7 +266,11 @@ export default function GalleryClient({ images, categories }: GalleryClientProps
             )}
             {currentIndex < filteredImages.length - 1 && (
               <button
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                }}
                 onClick={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   goToNext();
                 }}
@@ -236,6 +289,48 @@ export default function GalleryClient({ images, categories }: GalleryClientProps
               exit={{ opacity: 0, scale: 0.9 }}
               className="mx-4 w-[92vw] max-w-5xl"
               onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                if (e.pointerType === "mouse" && e.button !== 0) {
+                  return;
+                }
+                swipeStartRef.current = { x: e.clientX, y: e.clientY };
+                (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+              }}
+              onPointerUp={(e) => {
+                e.stopPropagation();
+                if (!swipeStartRef.current) {
+                  return;
+                }
+                const { x, y } = swipeStartRef.current;
+                swipeStartRef.current = null;
+                handleSwipe(e.clientX - x, e.clientY - y);
+              }}
+              onPointerCancel={() => {
+                swipeStartRef.current = null;
+              }}
+              onTouchStart={(e) => {
+                if (!e.touches[0]) {
+                  return;
+                }
+                swipeStartRef.current = {
+                  x: e.touches[0].clientX,
+                  y: e.touches[0].clientY,
+                };
+              }}
+              onTouchEnd={(e) => {
+                if (!swipeStartRef.current) {
+                  return;
+                }
+                const touch = e.changedTouches[0];
+                if (!touch) {
+                  swipeStartRef.current = null;
+                  return;
+                }
+                const { x, y } = swipeStartRef.current;
+                swipeStartRef.current = null;
+                handleSwipe(touch.clientX - x, touch.clientY - y);
+              }}
             >
               <div className="relative h-[75vh] w-full">
                 <Image

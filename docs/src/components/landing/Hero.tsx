@@ -67,7 +67,7 @@ const Hero: React.FC = () => {
     <div className="w-full h-screen flex flex-col relative overflow-hidden bg-[#1a1a1a] ">
       {/* Main Card Container - Scrollable */}
       <motion.div
-        className="flex-1 bg-[#f3f4f6]  shadow-2xl relative flex flex-col w-full h-full overflow-y-auto scroll-smooth custom-scrollbar"
+        className="flex-1 bg-[#f3f4f6] shadow-2xl relative flex flex-col w-full h-full overflow-y-auto overscroll-y-contain scroll-smooth custom-scrollbar"
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
