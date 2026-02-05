@@ -184,4 +184,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     image:
       "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?q=80&w=1887&auto=format&fit=crop",
   },
+  {
+    id: "2024-4",
+    name: "Ir. Hadha Afrisal, S.T., M.Sc., IPP.",
+    role: "Ex Advisor",
+    division: "Advisor",
+    year: 2024,
+    isLead: true,
+    image: "/hadha_afrisal_1.jpg",
+  },
 ];
