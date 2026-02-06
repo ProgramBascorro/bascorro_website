@@ -17,6 +17,19 @@ const TEAM_2024_DIVISION_MAP: Record<string, TeamMember["division"]> = {
   Official: "Official",
   Software: "Software",
 };
+const TEAM_2024_ROLE_MAP: Record<TeamMember["division"], string> = {
+  Management: "Management",
+  Mechanic: "Mechanic",
+  Electronic: "Electronic",
+  Software: "Programming",
+  Official: "Official",
+  Advisor: "Advisor",
+  Motion: "Motion",
+  Vision: "Vision",
+};
+const TEAM_2024_ROLE_OVERRIDES: Record<string, string> = {
+  "ahmad nadhif masruri": "Programming / Electronic / Mechanic / Official",
+};
 
 type CsvRow = string[];
 
@@ -124,15 +137,48 @@ function mapDivision(rawDivision: string): TeamMember["division"] {
   return "Management";
 }
 
-function normalizeRole(rawDivision: string) {
-  if (!rawDivision) {
-    return "Member";
+function normalizeRoleToken(token: string): string | null {
+  const value = token.toLowerCase().trim();
+  if (value.includes("programming") || value.includes("software")) {
+    return "Programming";
   }
-  return rawDivision
-    .split(",")
+  if (value.includes("elektrik") || value.includes("electrical") || value.includes("elektro")) {
+    return "Electronic";
+  }
+  if (value.includes("mekanik") || value.includes("mechanic") || value.includes("mechanical")) {
+    return "Mechanic";
+  }
+  if (value.includes("official")) {
+    return "Official";
+  }
+  if (value.includes("management") || value.includes("manajemen")) {
+    return "Management";
+  }
+  if (value.includes("advisor")) {
+    return "Advisor";
+  }
+  if (value.includes("vision")) {
+    return "Vision";
+  }
+  if (value.includes("motion")) {
+    return "Motion";
+  }
+  return null;
+}
+
+function normalizeRole(rawDivision: string, division: TeamMember["division"]) {
+  const mapped = rawDivision
+    .split(/[,|/;]+/)
     .map((item) => item.trim())
     .filter(Boolean)
-    .join(" / ");
+    .map(normalizeRoleToken)
+    .filter((role): role is string => Boolean(role));
+
+  const uniqueMapped = Array.from(new Set(mapped));
+  if (uniqueMapped.length > 0) {
+    return uniqueMapped.join(" / ");
+  }
+  return TEAM_2024_ROLE_MAP[division];
 }
 
 function loadTeamFromCsv(csvFile: string, year: number, imageDir: string): TeamMember[] {
@@ -166,11 +212,13 @@ function loadTeamFromCsv(csvFile: string, year: number, imageDir: string): TeamM
     const funFact = getValue(row, "Fun Fact tentang kamu");
     const angkatan = Number.parseInt(angkatanRaw, 10);
 
+    const mappedDivision = mapDivision(divisionRaw);
+
     return {
       id: `${year}-${nim || index}`,
       name: fullName || nickname || `Member ${index + 1}`,
-      role: normalizeRole(divisionRaw),
-      division: mapDivision(divisionRaw),
+      role: normalizeRole(divisionRaw, mappedDivision),
+      division: mappedDivision,
       year: year,
       image: resolveLocalImage(driveId, imageDir),
       angkatan: Number.isFinite(angkatan) ? angkatan : undefined,
@@ -212,7 +260,9 @@ function loadTeamFromFolder(year: number, imageDir: string): TeamMember[] {
       members.push({
         id: `${year}-${division}-${baseName}`.toLowerCase().replace(/\s+/g, "-"),
         name: rawName,
-        role: `${division} Member`,
+        role:
+          TEAM_2024_ROLE_OVERRIDES[rawName.toLowerCase()] ??
+          TEAM_2024_ROLE_MAP[division],
         division,
         year,
         image: `/${imageDir}/${encodedFolder}/${encodedFile}`,
