@@ -9,6 +9,14 @@ const CSV_FILE_2026 = "database_ews_bascorro-2026.csv";
 const CSV_FILE_2025 = "database_ews_bascorro-2025.csv";
 const IMAGE_DIR_2026 = "team/2026";
 const IMAGE_DIR_2025 = "team/2025"; // Directory might not exist yet, but logic handles it
+const IMAGE_DIR_2024 = "team/2024";
+
+const TEAM_2024_DIVISION_MAP: Record<string, TeamMember["division"]> = {
+  Electronic: "Electronic",
+  Mechanic: "Mechanic",
+  Official: "Official",
+  Software: "Software",
+};
 
 type CsvRow = string[];
 
@@ -171,10 +179,59 @@ function loadTeamFromCsv(csvFile: string, year: number, imageDir: string): TeamM
   });
 }
 
+function loadTeamFromFolder(year: number, imageDir: string): TeamMember[] {
+  const baseDir = path.join(process.cwd(), "public", imageDir);
+  if (!fs.existsSync(baseDir)) {
+    return [];
+  }
+
+  const members: TeamMember[] = [];
+
+  for (const [folderName, division] of Object.entries(TEAM_2024_DIVISION_MAP)) {
+    const divisionDir = path.join(baseDir, folderName);
+    if (!fs.existsSync(divisionDir) || !fs.statSync(divisionDir).isDirectory()) {
+      continue;
+    }
+
+    const files = fs.readdirSync(divisionDir);
+    for (const fileName of files) {
+      const ext = path.extname(fileName).toLowerCase();
+      if (!IMAGE_EXTENSIONS.includes(ext)) {
+        continue;
+      }
+
+      const baseName = path.basename(fileName, path.extname(fileName));
+      const match = /^(.*)_(\d{4})$/.exec(baseName);
+      const rawName = match?.[1]?.trim() || baseName;
+      const angkatanRaw = match?.[2] || "";
+      const angkatan = Number.parseInt(angkatanRaw, 10);
+
+      const encodedFolder = encodeURIComponent(folderName);
+      const encodedFile = encodeURIComponent(fileName);
+
+      members.push({
+        id: `${year}-${division}-${baseName}`.toLowerCase().replace(/\s+/g, "-"),
+        name: rawName,
+        role: `${division} Member`,
+        division,
+        year,
+        image: `/${imageDir}/${encodedFolder}/${encodedFile}`,
+        angkatan: Number.isFinite(angkatan) ? angkatan : undefined,
+      });
+    }
+  }
+
+  return members.sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export default function TeamPage() {
   const team2026 = loadTeamFromCsv(CSV_FILE_2026, 2026, IMAGE_DIR_2026);
   const team2025 = loadTeamFromCsv(CSV_FILE_2025, 2025, IMAGE_DIR_2025);
-  const legacyMembers = TEAM_MEMBERS.filter((member) => member.year < 2025);
+  const team2024 = loadTeamFromFolder(2024, IMAGE_DIR_2024);
+  const advisors2024 = TEAM_MEMBERS.filter(
+    (member) => member.year === 2024 && member.division === "Advisor",
+  );
+  const legacyMembers = TEAM_MEMBERS.filter((member) => member.year < 2024);
   const mascot2026: TeamMember = {
     id: "2026-mascot",
     name: "Tammy",
@@ -185,7 +242,14 @@ export default function TeamPage() {
     isMascot: true,
   };
 
-  const members = [...team2026, mascot2026, ...team2025, ...legacyMembers];
+  const members = [
+    ...team2026,
+    mascot2026,
+    ...team2025,
+    ...team2024,
+    ...advisors2024,
+    ...legacyMembers,
+  ];
   const years = Array.from(new Set(members.map((member) => member.year))).sort(
     (a, b) => b - a
   );
