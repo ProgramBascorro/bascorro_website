@@ -31,9 +31,9 @@ export const metadata: Metadata = {
         url: `${BASE_URL}/competitions`,
         images: [
             {
-                url: '/Banner.png',
-                width: 1536,
-                height: 1024,
+                url: '/Logo_Bascorro.png',
+                width: 512,
+                height: 512,
                 alt: 'EWS BASCORRO Competitions',
             },
         ],
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         title: 'Competitions | EWS BASCORRO Robotics',
         description:
             'Discover RoboCup Humanoid League and KRI KRSBI-Humanoid. See our 2026 targets and competition focus.',
-        images: ['/Banner.png'],
+        images: ['/Logo_Bascorro.png'],
     },
     alternates: {
         canonical: `${BASE_URL}/competitions`,

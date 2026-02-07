@@ -39,7 +39,7 @@ const getBaseUrl = () => {
     return `https://${process.env.VERCEL_URL}`;
   }
   // Fallback to production domain
-  return 'https://motion-webots.vercel.app/';
+  return 'https://bascorro.com';
 };
 
 export const metadata: Metadata = {
@@ -56,9 +56,9 @@ export const metadata: Metadata = {
     description: 'EWS BASCORRO Humanoid Robosoccer Team documentation.',
     images: [
       {
-        url: '/Banner.png',
-        width: 1536,
-        height: 1024,
+        url: '/Logo_Bascorro.png',
+        width: 512,
+        height: 512,
         alt: 'EWS BASCORRO',
       },
     ],
@@ -67,10 +67,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'EWS BASCORRO Robotics',
     description: 'EWS BASCORRO Humanoid Robosoccer Team documentation.',
-    images: ['/Banner.png'],
+    images: ['/Logo_Bascorro.png'],
   },
   icons: {
     icon: [{ url: '/Bascorro.png', type: 'image/png' }],
+    shortcut: [{ url: '/Bascorro.png', type: 'image/png' }],
     apple: [{ url: '/Bascorro.png', type: 'image/png' }],
   },
 };
