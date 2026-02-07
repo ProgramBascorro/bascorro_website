@@ -1,0 +1,227 @@
+import type { TeamMember } from "@/lib/team-data";
+
+export const TEAM_IMAGE_EXTENSION_BY_YEAR: Record<number, Record<string, string>> = {
+  2026: {
+    "1-OY1XwNWb9PPyUN7mYW94Ivgl-4wPR2H": ".jpg",
+    "17f1zuYFZmcDsmgP5MkHqpXuNdh2mvLZN": ".jpg",
+    "18ozGDHODsYzVPR7-dpPUPStu1BNe8G0F": ".jpg",
+    "18upjh1oTkA8yDUuu_UWhK-5huM9S90aH": ".jpg",
+    "19LgdqjucsRYdtzqSHyQtU8ySupY8L2c9": ".jpg",
+    "19trx8GM6s7x2QHE3DwsQ3emg8grp1s-B": ".jpg",
+    "1Ab_v2r-tnOsUg7MsY-vMug7LuS9LBG4f": ".jpg",
+    "1F_vn5mi-qNpouSPAO5NnXKxdVUpb8ujl": ".jpg",
+    "1Mn_Kr_MWQe5EqdFlwGl63BdTpKC1pUfw": ".jpg",
+    "1NTrblWd1PnhgCDmDJ00HwtJZoDJjKJ-V": ".png",
+    "1Nd2YPD0o4OxBQUajLm9Nb7UY3DZTit1M": ".jpg",
+    "1P2p5LcFFJ5P-h4ucNpBx9ltzk43u0xwM": ".jpg",
+    "1Prr5JJrUJqMsc_PPcAXs5MjNvusKcmJj": ".jpg",
+    "1RWaZNX0JhE9-NHz703i5KtEDOXeD61ri": ".jpg",
+    "1RrK8m3a8Kt3iaaUg8E_PR0UNLstEYZ6l": ".jpg",
+    "1SoQIIy3SYjRShAGHeKh90d2Tb3_KZne4": ".jpg",
+    "1XaJQPscxK6ZcjaXPclQ2JflCv0ow-5Ku": ".jpg",
+    "1YiPO3t2YB_9L6cOcUR9G7Rkdtr6sXnK4": ".jpg",
+    "1ZJL4D4Ai_UUPUC3Lb8BKNIPba_sRn6sC": ".jpg",
+    "1cWL4Km53W1I7R721txiQoWV4sdkgW2gE": ".jpg",
+    "1cgWhxD9PbPZpIBElxcoSaVVRJQek6Kmm": ".jpg",
+    "1gVZy7lSJHfpbIeZ7CY2z7CD_rKlyMMH7": ".jpg",
+    "1iBxyxlmmgEIScXlj_mn1TlY--821sOGh": ".png",
+    "1lam4pqGORWr4Jcoom_mdh2y7ve_ooDne": ".jpg",
+    "1nx3BNmVyYujFpNboh5YsQYLirUGTFirT": ".jpg",
+    "1p1PA8-9IWJ4nqaRS5f4HVoVCogmpud1b": ".jpg",
+    "1r9-TxXtNRV8HRkZGHh3VUAie3OodSAVP": ".jpg",
+    "1s0_6_9B0i5HemZz_3jTTJefzY2tjVxLP": ".jpg",
+    "1s22-GmFVArFhA9SR8ue3ORVyG2geJVV_": ".png",
+    "1sK83yGgm_G_1VyPWcgBwZ_-TvVvC3NhU": ".jpg",
+    "1wnuorQxrsgmv2y5z14G_qNJ2ks_1IScO": ".jpg",
+    "1xqto6CpYTqAeanQVVu9m1uCWPVEZJ4NQ": ".jpg",
+  },
+  2025: {
+    "12oDrtwYbZDRYa8OCplpXMPM9Cl30RzPR": ".jpg",
+    "12z6Tk6RJfZ69A9UYspluGSBsiNN3Ju_h": ".jpg",
+    "13CT3_imHhndKVYw-o7cpKozEzc6-UCF2": ".jpg",
+    "13s-KShnUR23SfPLx1ytcnkmhkdMYyWpd": ".jpg",
+    "14U7suoqSbGYCqXINRaowX_mnSlRKZi1c": ".jpg",
+    "15-Q4I3kI06WTlBNiw0uhkpO85bGhFlY9": ".jpg",
+    "16Gsy9YsXyOX94Wifg4Y5jgOQA6EOpefW": ".jpg",
+    "17jQTks7t1-0tpZlV7JPJBePmqZa_OHvE": ".jpg",
+    "1A731ml2GYcKUiLo8yZL8TO8z1THHcB4R": ".jpg",
+    "1EVdYU1riQF6zNGdiFp3MI4ruFcI-sW_4": ".jpg",
+    "1NaOgF1jdfvTbFGZB9_kJDzIMiliW3OnL": ".jpg",
+    "1P6V2K14yur1vhOWoZQq4GaWsfrNxuIZh": ".png",
+    "1QGJX70U9UlF0s4Bnn5cfOc9B-iB88aw9": ".jpg",
+    "1RTksENQInlyNWUprtX-K1DkOufya9Z-P": ".jpg",
+    "1SDpV7VLUe8UDdQN8ABsAIL192jaPYFKe": ".jpg",
+    "1U66Dsc-qCxio50NAr7DUzGHau2eguJO1": ".jpg",
+    "1WkcvRDFZAPOpiY0Njo_GdbXoOS_1ZFH-": ".jpg",
+    "1_x9kf16U0cPuK7pRBAXu946EwY7niZjb": ".jpg",
+    "1a7gWogan094orTc4vWZoGWpx5H1bFJDw": ".jpg",
+    "1aBl8J2fVhkr272zGgQLrCh7jCgeWaXMT": ".jpg",
+    "1aoTivT1BOxbaI1iyoWLj0ii6-OJdotyx": ".png",
+    "1b8PWmvoMcSrhpxEPe08a8-aJ3XS8B7vV": ".jpg",
+    "1cmc6hfmPFOdHpuHkPBkwiAgjnWUosqHg": ".jpg",
+    "1gVZy7lSJHfpbIeZ7CY2z7CD_rKlyMMH7": ".jpg",
+    "1iHX8HYcmDLCObj7RN0sDMRvWLFXXx71e": ".jpg",
+    "1lJ8Nr9SalCepEbAvG8n2jGKU-L6wLt-y": ".jpg",
+    "1oPoX3GjQU0GwCMSEFR_NVi57k328CGiu": ".png",
+    "1y31SGFB8W0kmAxDWYVIKTH3HBs99T_1k": ".jpg",
+    "1zSas3i5vTvMvwo3NF1Xn9WW6RYlyEFiZ": ".jpg",
+  },
+};
+
+export interface Team2024FolderMember {
+  angkatan: number | undefined;
+  file: string;
+  folder: "Electronic" | "Mechanic" | "Official" | "Software";
+  name: string;
+}
+
+export const TEAM_2024_FOLDER_MEMBERS: Team2024FolderMember[] = [
+  {
+    folder: "Electronic",
+    file: "Ainun Najib Khasbunallah_2021.JPG",
+    name: "Ainun Najib Khasbunallah",
+    angkatan: 2021,
+  },
+  {
+    folder: "Electronic",
+    file: "Febryana Mega Susanti_2022.JPG",
+    name: "Febryana Mega Susanti",
+    angkatan: 2022,
+  },
+  {
+    folder: "Electronic",
+    file: "Muhammad Fayyadh Ilham_2023.JPG",
+    name: "Muhammad Fayyadh Ilham",
+    angkatan: 2023,
+  },
+  {
+    folder: "Electronic",
+    file: "Yoke Mikal Ramadian_2022.JPG",
+    name: "Yoke Mikal Ramadian",
+    angkatan: 2022,
+  },
+  {
+    folder: "Mechanic",
+    file: "Ahmad Nadhif Masruri_2021.JPG",
+    name: "Ahmad Nadhif Masruri",
+    angkatan: 2021,
+  },
+  {
+    folder: "Mechanic",
+    file: "Albani Nanda Febryan Firmansyah_2023.JPG",
+    name: "Albani Nanda Febryan Firmansyah",
+    angkatan: 2023,
+  },
+  {
+    folder: "Mechanic",
+    file: "Bagaskoro Hendro Utomo_2022.JPG",
+    name: "Bagaskoro Hendro Utomo",
+    angkatan: 2022,
+  },
+  {
+    folder: "Mechanic",
+    file: "Dzakwan Hilmy Andira_2022.JPG",
+    name: "Dzakwan Hilmy Andira",
+    angkatan: 2022,
+  },
+  {
+    folder: "Mechanic",
+    file: "Enrico Julianto_2023.JPG",
+    name: "Enrico Julianto",
+    angkatan: 2023,
+  },
+  {
+    folder: "Mechanic",
+    file: "Karolus Adhimas Saputra_2021.JPG",
+    name: "Karolus Adhimas Saputra",
+    angkatan: 2021,
+  },
+  {
+    folder: "Official",
+    file: "Frili Cecilia Sijabat_2021.JPG",
+    name: "Frili Cecilia Sijabat",
+    angkatan: 2021,
+  },
+  {
+    folder: "Official",
+    file: "Hanadia Aulia Nisa_2023.JPG",
+    name: "Hanadia Aulia Nisa",
+    angkatan: 2023,
+  },
+  {
+    folder: "Official",
+    file: "Hanny Titania Muslimin_2023.JPG",
+    name: "Hanny Titania Muslimin",
+    angkatan: 2023,
+  },
+  {
+    folder: "Software",
+    file: "Achmad Javier Eka Caraka_2023.JPG",
+    name: "Achmad Javier Eka Caraka",
+    angkatan: 2023,
+  },
+  {
+    folder: "Software",
+    file: "Banar Pambudi_2023.JPG",
+    name: "Banar Pambudi",
+    angkatan: 2023,
+  },
+  {
+    folder: "Software",
+    file: "Bonaventura Emmanuel Raditya_2021.JPG",
+    name: "Bonaventura Emmanuel Raditya",
+    angkatan: 2021,
+  },
+  {
+    folder: "Software",
+    file: "Muhammad Afiq Ramadhan Oktaviyanto_2022.JPG",
+    name: "Muhammad Afiq Ramadhan Oktaviyanto",
+    angkatan: 2022,
+  },
+  {
+    folder: "Software",
+    file: "Muhammad Farhan Suri_2023.JPG",
+    name: "Muhammad Farhan Suri",
+    angkatan: 2023,
+  },
+  {
+    folder: "Software",
+    file: "Muhammad Gilman Haekal_2022.JPG",
+    name: "Muhammad Gilman Haekal",
+    angkatan: 2022,
+  },
+  {
+    folder: "Software",
+    file: "Nobel Al Maududy_2022.JPG",
+    name: "Nobel Al Maududy",
+    angkatan: 2022,
+  },
+  {
+    folder: "Software",
+    file: "Rafi Nur Ardiyansyah_2023.JPG",
+    name: "Rafi Nur Ardiyansyah",
+    angkatan: 2023,
+  },
+  {
+    folder: "Software",
+    file: "Salman Thoriq Aqil_2022.JPG",
+    name: "Salman Thoriq Aqil",
+    angkatan: 2022,
+  },
+  {
+    folder: "Software",
+    file: "Yusuf Nadim Irawan_2022.JPG",
+    name: "Yusuf Nadim Irawan",
+    angkatan: 2022,
+  },
+];
+
+export const TEAM_2024_FOLDER_TO_DIVISION: Record<
+  Team2024FolderMember["folder"],
+  TeamMember["division"]
+> = {
+  Electronic: "Electronic",
+  Mechanic: "Mechanic",
+  Official: "Official",
+  Software: "Software",
+};
