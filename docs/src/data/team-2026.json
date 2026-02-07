@@ -113,7 +113,7 @@
     "nim": "21060125130105",
     "divisionRaw": "Elektrik",
     "imageUrl": "https://drive.google.com/open?id=1iBxyxlmmgEIScXlj_mn1TlY--821sOGh",
-    "angkatan": 2025,
+    "angkatan": 25,
     "funFact": "sering dikira pendiam"
   },
   {
@@ -122,7 +122,7 @@
     "nim": "24060124120024",
     "divisionRaw": "Programming",
     "imageUrl": "https://drive.google.com/open?id=1NTrblWd1PnhgCDmDJ00HwtJZoDJjKJ-V",
-    "angkatan": 2024,
+    "angkatan": 24,
     "funFact": "Mulai merasa salah jurusan"
   },
   {
@@ -131,7 +131,7 @@
     "nim": "21060125140207",
     "divisionRaw": "Programming",
     "imageUrl": "https://drive.google.com/open?id=1SoQIIy3SYjRShAGHeKh90d2Tb3_KZne4",
-    "angkatan": 2025,
+    "angkatan": 25,
     "funFact": "Fans City Sejak kelas 1 SD"
   },
   {
@@ -176,7 +176,7 @@
     "nim": "21060125140070",
     "divisionRaw": "Official",
     "imageUrl": "https://drive.google.com/open?id=1XaJQPscxK6ZcjaXPclQ2JflCv0ow-5Ku",
-    "angkatan": 2025,
+    "angkatan": 25,
     "funFact": "Tidak suka kopi"
   },
   {
@@ -231,7 +231,7 @@
     "divisionRaw": "Programming",
     "imageUrl": "https://drive.google.com/open?id=1gVZy7lSJHfpbIeZ7CY2z7CD_rKlyMMH7",
     "angkatan": 2024,
-    "funFact": "anu itu adalah pokoknya"
+    "funFact": "wow"
   },
   {
     "fullName": "Muhammad Farhan Abdul Azis",
@@ -286,5 +286,32 @@
     "imageUrl": "https://drive.google.com/open?id=1xqto6CpYTqAeanQVVu9m1uCWPVEZJ4NQ",
     "angkatan": 2023,
     "funFact": "Suka dengan kesenian Jawa seperti wayang kulit, dll."
+  },
+  {
+    "fullName": "Jonathan Felix Christiawan",
+    "nickname": "",
+    "nim": "21060124130070",
+    "divisionRaw": "Official",
+    "imageUrl": "https://drive.google.com/open?id=17qQabUDl35NqkcnY59oU-aczZu1IZ1ZB",
+    "angkatan": 2024,
+    "funFact": "Kembar cowo cewe"
+  },
+  {
+    "fullName": "Sigit Pramana",
+    "nickname": "",
+    "nim": "40040123650097",
+    "divisionRaw": "Official",
+    "imageUrl": "https://drive.google.com/open?id=1wp4P62Ik63xWFnjwsjABfGWpAk33VmVS",
+    "angkatan": 2023,
+    "funFact": "Entahla"
+  },
+  {
+    "fullName": "Yulianesa",
+    "nickname": "",
+    "nim": "21060124120002",
+    "divisionRaw": "Elektrik",
+    "imageUrl": "https://drive.google.com/open?id=12kSvu7iXpeEaw_DMpD9pkS_JD72oFmhi",
+    "angkatan": 2024,
+    "funFact": "gasuka durian"
   }
 ]

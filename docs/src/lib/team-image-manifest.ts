@@ -3,6 +3,8 @@ import type { TeamMember } from "@/lib/team-data";
 export const TEAM_IMAGE_EXTENSION_BY_YEAR: Record<number, Record<string, string>> = {
   2026: {
     "1-OY1XwNWb9PPyUN7mYW94Ivgl-4wPR2H": ".jpg",
+    "12kSvu7iXpeEaw_DMpD9pkS_JD72oFmhi": ".jpg",
+    "17qQabUDl35NqkcnY59oU-aczZu1IZ1ZB": ".jpg",
     "17f1zuYFZmcDsmgP5MkHqpXuNdh2mvLZN": ".jpg",
     "18ozGDHODsYzVPR7-dpPUPStu1BNe8G0F": ".jpg",
     "18upjh1oTkA8yDUuu_UWhK-5huM9S90aH": ".jpg",
@@ -32,6 +34,7 @@ export const TEAM_IMAGE_EXTENSION_BY_YEAR: Record<number, Record<string, string>
     "1s0_6_9B0i5HemZz_3jTTJefzY2tjVxLP": ".jpg",
     "1s22-GmFVArFhA9SR8ue3ORVyG2geJVV_": ".png",
     "1sK83yGgm_G_1VyPWcgBwZ_-TvVvC3NhU": ".jpg",
+    "1wp4P62Ik63xWFnjwsjABfGWpAk33VmVS": ".jpg",
     "1wnuorQxrsgmv2y5z14G_qNJ2ks_1IScO": ".jpg",
     "1xqto6CpYTqAeanQVVu9m1uCWPVEZJ4NQ": ".jpg",
   },

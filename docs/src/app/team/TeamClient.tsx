@@ -189,7 +189,7 @@ export default function TeamClient({
                     </p>
                     <div className="space-y-1 text-[10px] sm:text-xs text-gray-500 mb-4">
                       {typeof member.angkatan === "number" && (
-                        <p>Angkatan: {member.angkatan}</p>
+                        <p>Gen: {member.angkatan}</p>
                       )}
                       {member.funFact && (
                         <p className="text-gray-400">Fun fact: {member.funFact}</p>
