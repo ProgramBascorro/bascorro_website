@@ -113,7 +113,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: "2025-11",
     name: "Alifiyah Afindina",
     role: "Head of Business Development",
-    division: "Management",
+    division: "Official",
     year: 2025,
     isLead: true,
     image: "/head_business_dev.jpeg",
