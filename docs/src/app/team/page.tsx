@@ -37,6 +37,18 @@ interface CsvMemberRecord {
   nim: string;
 }
 
+function normalizeAngkatanValue(angkatan: number | null): number | undefined {
+  if (typeof angkatan !== "number" || !Number.isFinite(angkatan)) {
+    return undefined;
+  }
+
+  if (angkatan >= 0 && angkatan < 100) {
+    return 2000 + angkatan;
+  }
+
+  return angkatan;
+}
+
 function extractDriveId(url: string) {
   if (!url) {
     return "";
@@ -136,11 +148,7 @@ function loadTeamFromRows(
   return rows.map((row, index) => {
     const divisionRaw = row.divisionRaw ?? "";
     const driveId = extractDriveId(row.imageUrl ?? "");
-    const angkatan = row.angkatan;
-    const normalizedAngkatan =
-      typeof angkatan === "number" && Number.isFinite(angkatan)
-        ? angkatan
-        : undefined;
+    const normalizedAngkatan = normalizeAngkatanValue(row.angkatan);
     const mappedDivision = mapDivision(divisionRaw);
 
     return {
