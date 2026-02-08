@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next';
 import { source } from '@/lib/source';
+import { getSiteUrl } from '@/lib/site-url';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://bascorro.undip.ac.id';
+const BASE_URL = getSiteUrl();
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Get all documentation pages

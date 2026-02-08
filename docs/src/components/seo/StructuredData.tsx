@@ -5,7 +5,7 @@
  * understanding and enable rich snippets in search results.
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://bascorro.undip.ac.id';
+const BASE_URL = getSiteUrl();
 
 interface StructuredDataProps {
   data: Record<string, unknown>;
@@ -47,8 +47,10 @@ export function OrganizationSchema() {
       url: 'https://www.undip.ac.id',
     },
     sameAs: [
-      'https://instagram.com/bascorro_undip',
-      'https://github.com/ProgramBascorro',
+      'https://www.instagram.com/ewsbascorroundip/',
+      'https://www.tiktok.com/search?q=ewsbascorro&t=1770203046348',
+      'https://www.linkedin.com/company/ewsbascorro/',
+      'https://www.youtube.com/@EWSBascorroUNDIP',
     ],
     contactPoint: {
       '@type': 'ContactPoint',
@@ -211,3 +213,4 @@ export function ArticleSchema({
 
   return <StructuredData data={data} />;
 }
+import { getSiteUrl } from '@/lib/site-url';

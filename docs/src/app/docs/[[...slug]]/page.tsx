@@ -14,8 +14,9 @@ import {
   BreadcrumbSchema,
   ArticleSchema,
 } from '@/components/seo/StructuredData';
+import { getSiteUrl } from '@/lib/site-url';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://bascorro.undip.ac.id';
+const BASE_URL = getSiteUrl();
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;

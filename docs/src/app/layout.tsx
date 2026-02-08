@@ -6,6 +6,7 @@ import {
   OrganizationSchema,
   WebSiteSchema,
 } from '@/components/seo/StructuredData';
+import { getSiteUrl } from '@/lib/site-url';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,26 +25,8 @@ const cinzel = Cinzel({
   weight: ['400', '700'],
 });
 
-// Determine the base URL for metadata
-// Priority: NEXT_PUBLIC_SITE_URL > VERCEL_PROJECT_PRODUCTION_URL > VERCEL_URL > production default
-const getBaseUrl = () => {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL;
-  }
-  // VERCEL_PROJECT_PRODUCTION_URL is the production domain (set automatically by Vercel)
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-  }
-  // VERCEL_URL is the deployment URL (preview or production)
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  // Fallback to production domain
-  return 'https://bascorro.com';
-};
-
 export const metadata: Metadata = {
-  metadataBase: new URL(getBaseUrl()),
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: 'EWS BASCORRO Robotics',
     template: '%s | EWS BASCORRO Robotics',
@@ -69,10 +52,19 @@ export const metadata: Metadata = {
     description: 'EWS BASCORRO Humanoid Robosoccer Team documentation.',
     images: ['/Logo_Bascorro.png'],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+    },
+  },
   icons: {
+    shortcut: [{ url: '/favicon.ico', type: 'image/x-icon' }],
     icon: [{ url: '/Bascorro.png', type: 'image/png' }],
-    shortcut: [{ url: '/Bascorro.png', type: 'image/png' }],
-    apple: [{ url: '/Bascorro.png', type: 'image/png' }],
+    apple: [{ url: '/apple-touch-icon.png', type: 'image/png' }],
   },
 };
 

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { BreadcrumbSchema } from '@/components/seo/StructuredData';
+import { getSiteUrl } from '@/lib/site-url';
 
-const BASE_URL =
-    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://bascorro.undip.ac.id';
+const BASE_URL = getSiteUrl();
 
 export const metadata: Metadata = {
     title: 'Competitions | EWS BASCORRO',
