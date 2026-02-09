@@ -57,7 +57,7 @@ export const TEAM_IMAGE_EXTENSION_BY_YEAR: Record<number, Record<string, string>
     "1U66Dsc-qCxio50NAr7DUzGHau2eguJO1": ".jpg",
     "1WkcvRDFZAPOpiY0Njo_GdbXoOS_1ZFH-": ".jpg",
     "1_x9kf16U0cPuK7pRBAXu946EwY7niZjb": ".jpg",
-    "1a7gWogan094orTc4vWZoGWpx5H1bFJDw": ".jpg",
+    "1a7gWogan094orTc4vWZoGWpx5H1bFJDw": ".jpeg",
     "1aBl8J2fVhkr272zGgQLrCh7jCgeWaXMT": ".jpg",
     "1aoTivT1BOxbaI1iyoWLj0ii6-OJdotyx": ".png",
     "1b8PWmvoMcSrhpxEPe08a8-aJ3XS8B7vV": ".jpg",
