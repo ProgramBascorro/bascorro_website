@@ -3,64 +3,8 @@
 import { motion } from "framer-motion";
 import { ExternalLink, Handshake } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
 
 const PARTNERS = [
-  {
-    name: "PLN MOBILE",
-    logo: "/pln_mobile.png",
-    type: "Mobile App",
-  },
-  {
-    name: "PERTAMINA GAS NEGARA",
-    logo: "/pertamina_gas_negara.png",
-    type: "Gas Utility",
-  },
-  {
-    name: "PERTAMINA GAS",
-    logo: "/pertamina_gas.jpeg",
-    type: "Gas Utility",
-  },
-  {
-    name: "PT ENVIROMATE TECHNOLOGY INTERNATIONAL",
-    logo: "/enviromate_technology_international.jpeg",
-    type: "Technology",
-  },
-  {
-    name: "KATUP INDUSTRI INDONESIA",
-    logo: "/katup_industri_indonesia.jpeg",
-    type: "Manufacturing",
-  },
-  {
-    name: "STREAMWORX",
-    logo: "/streamworx_reka_solusi.jpeg",
-    type: "Technology",
-  },
-  {
-    name: "PT DURAQUIPT CEMERLANG",
-    logo: "/pt_duraquipt_demerlang.png",
-    type: "Industrial",
-  },
-  {
-    name: "RECARE",
-    logo: "/recare.jpeg",
-    type: "Services",
-  },
-  {
-    name: "BUMI AGUNG PERKASA INDAH",
-    logo: "/bumi_agung_perkasa_indah.jpg",
-    type: "Construction",
-  },
-  {
-    name: "PELINDO JASA MARITIM",
-    logo: "/pelindo.png",
-    type: "Maritime",
-  },
-  {
-    name: "PT ARKHA JAYANTI PERSADA TBK",
-    logo: "/PT_Arka_Jayanti_Persada_Tbk.jpeg",
-    type: "Construction",
-  },
   {
     name: "PAKUWON JATI",
     logo: "/pakuwon_jati.jpeg",
@@ -69,8 +13,7 @@ const PARTNERS = [
 ];
 
 export default function Partners() {
-  const [showAll, setShowAll] = useState(false);
-  const visiblePartners = showAll ? PARTNERS : PARTNERS.slice(0, 4);
+  const visiblePartners = PARTNERS;
 
   return (
     <section className="py-24 px-8 bg-[#111111] border-t border-white/10 relative">
@@ -133,16 +76,6 @@ export default function Partners() {
             </motion.div>
           ))}
         </div>
-        <div className="mt-10 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setShowAll((prev) => !prev)}
-            className="px-6 py-3 rounded-full border border-white/20 text-sm font-bold text-gray-300 hover:text-white hover:border-white/40 transition-colors"
-          >
-            {showAll ? "Show Less Sponsors" : "View All Sponsors"}
-          </button>
-        </div>
-
         <div className="mt-20 p-8 md:p-12 rounded-3xl bg-gradient-to-br from-undip-blue/20 to-transparent border border-undip-blue/30 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 rounded-2xl bg-undip-blue flex items-center justify-center text-white shrink-0 shadow-lg shadow-undip-blue/20">

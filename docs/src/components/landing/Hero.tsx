@@ -477,13 +477,13 @@ const Hero: React.FC = () => {
             </div>
 
             {/* FAQ Preview */}
-            <div className="text-left border-t border-gray-200 pt-12">
+            <div className="border-t border-gray-200 pt-12 text-center">
               <h3 className="font-bold text-xl mb-6">
                 Frequently Asked Questions
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {FAQ_ITEMS.map((item, i) => (
-                  <div key={i}>
+                  <div key={i} className="text-center">
                     <h4 className="font-bold text-sm mb-2">{item.q}</h4>
                     <p className="text-xs text-gray-500 leading-relaxed">
                       {item.a}
