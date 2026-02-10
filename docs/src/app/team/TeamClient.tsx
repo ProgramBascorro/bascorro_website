@@ -14,6 +14,16 @@ type TeamClientProps = {
   members: TeamMember[];
 };
 
+const TEAM_IMAGE_VERSION = "20260210-orientation-fix";
+
+function getTeamImageSrc(src: string): string {
+  if (!src.startsWith("/")) {
+    return src;
+  }
+  const separator = src.includes("?") ? "&" : "?";
+  return `${src}${separator}v=${TEAM_IMAGE_VERSION}`;
+}
+
 export default function TeamClient({
   initialYear,
   years,
@@ -161,11 +171,12 @@ export default function TeamClient({
                 >
                   <div className="relative aspect-square bg-gray-200 overflow-hidden">
                     <Image
-                      src={member.image}
+                      src={getTeamImageSrc(member.image)}
                       alt={member.name}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      unoptimized
                     />
                     <div className="absolute top-4 right-4">
                       <span
@@ -244,11 +255,12 @@ export default function TeamClient({
                 >
                   <div className="relative aspect-square bg-gray-200 overflow-hidden">
                     <Image
-                      src={member.image}
+                      src={getTeamImageSrc(member.image)}
                       alt={member.name}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                       sizes="(max-width: 768px) 100vw, 400px"
+                      unoptimized
                     />
                   </div>
                   <div className="p-6 text-center">
@@ -287,11 +299,12 @@ export default function TeamClient({
               >
                 <div className="relative aspect-square bg-gray-200 overflow-hidden">
                   <Image
-                    src={mascotMember.image}
+                    src={getTeamImageSrc(mascotMember.image)}
                     alt={mascotMember.name}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, 400px"
+                    unoptimized
                   />
                 </div>
                 <div className="p-6 text-center">

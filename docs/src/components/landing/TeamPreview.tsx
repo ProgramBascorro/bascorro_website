@@ -18,6 +18,16 @@ import { useState } from "react";
 import { TEAM_MEMBERS } from "@/lib/team-data";
 import { TEAM_DIVISIONS } from "./constants";
 
+const TEAM_IMAGE_VERSION = "20260210-orientation-fix";
+
+function getTeamImageSrc(src: string): string {
+  if (!src.startsWith("/")) {
+    return src;
+  }
+  const separator = src.includes("?") ? "&" : "?";
+  return `${src}${separator}v=${TEAM_IMAGE_VERSION}`;
+}
+
 export default function TeamPreview() {
   const [expandedDivisions, setExpandedDivisions] = useState<Record<number, boolean>>({});
   // Show only 2025 leads or core members for preview
@@ -183,11 +193,12 @@ export default function TeamPreview() {
                 >
                   <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100 mb-4 md:mb-6">
                     <Image
-                      src={member.image}
+                      src={getTeamImageSrc(member.image)}
                       alt={member.name}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      unoptimized
                     />
 
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 md:gap-4 backdrop-blur-[2px]">
@@ -240,11 +251,12 @@ export default function TeamPreview() {
               >
                 <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100 mb-4 md:mb-6">
                   <Image
-                    src={member.image}
+                    src={getTeamImageSrc(member.image)}
                     alt={member.name}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    unoptimized
                   />
 
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 md:gap-4 backdrop-blur-[2px]">
