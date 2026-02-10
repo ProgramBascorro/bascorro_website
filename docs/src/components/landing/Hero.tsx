@@ -60,6 +60,8 @@ const SectionHeader = ({
 const Hero: React.FC = () => {
   const { setOpenSearch } = useSearchContext();
   const [show3D, setShow3D] = useState(false);
+  const [expandedRobots, setExpandedRobots] = useState<Record<number, boolean>>({});
+  const [expandedTech, setExpandedTech] = useState<Record<number, boolean>>({});
 
   return (
     <div className="w-full h-screen flex flex-col relative overflow-hidden bg-[#1a1a1a] ">
@@ -381,7 +383,26 @@ const Hero: React.FC = () => {
                     <h3 className="text-lg md:text-2xl font-bold font-display mb-1 md:mb-2">
                       {robot.name}
                     </h3>
-                    <p className="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm line-clamp-3 md:line-clamp-none">{robot.desc}</p>
+                    <p
+                      className={`text-gray-600 mb-1 md:mb-6 text-xs md:text-sm ${
+                        expandedRobots[index] ? "" : "line-clamp-3"
+                      } md:line-clamp-none`}
+                    >
+                      {robot.desc}
+                    </p>
+                    <button
+                      type="button"
+                      className="md:hidden mb-4 text-[11px] font-bold text-undip-blue"
+                      aria-expanded={Boolean(expandedRobots[index])}
+                      onClick={() =>
+                        setExpandedRobots((prev) => ({
+                          ...prev,
+                          [index]: !prev[index],
+                        }))
+                      }
+                    >
+                      {expandedRobots[index] ? "Show less" : "..."}
+                    </button>
 
                     <div className="space-y-2 md:space-y-3">
                       <div className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-400 mb-1 md:mb-2">
@@ -434,9 +455,26 @@ const Hero: React.FC = () => {
                     {tech.icon === "Monitor" && <Monitor className="w-5 h-5 md:w-6 md:h-6" />}
                   </div>
                   <h4 className="font-bold text-sm md:text-lg mb-1 md:mb-2">{tech.title}</h4>
-                  <p className="text-xs md:text-sm text-gray-400 leading-relaxed line-clamp-3 md:line-clamp-none">
+                  <p
+                    className={`text-xs md:text-sm text-gray-400 leading-relaxed ${
+                      expandedTech[i] ? "" : "line-clamp-3"
+                    } md:line-clamp-none`}
+                  >
                     {tech.desc}
                   </p>
+                  <button
+                    type="button"
+                    className="md:hidden mt-1 text-[11px] font-bold text-accent-yellow"
+                    aria-expanded={Boolean(expandedTech[i])}
+                    onClick={() =>
+                      setExpandedTech((prev) => ({
+                        ...prev,
+                        [i]: !prev[i],
+                      }))
+                    }
+                  >
+                    {expandedTech[i] ? "Show less" : "..."}
+                  </button>
                 </div>
               ))}
             </div>

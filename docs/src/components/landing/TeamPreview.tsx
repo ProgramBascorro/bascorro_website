@@ -14,10 +14,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { TEAM_MEMBERS } from "@/lib/team-data";
 import { TEAM_DIVISIONS } from "./constants";
 
 export default function TeamPreview() {
+  const [expandedDivisions, setExpandedDivisions] = useState<Record<number, boolean>>({});
   // Show only 2025 leads or core members for preview
   const leadMembers = TEAM_MEMBERS.filter(
     (m) => m.year === 2025 && m.isLead,
@@ -126,9 +128,26 @@ export default function TeamPreview() {
               <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 md:mb-4 block">
                 {div.role}
               </span>
-              <p className="text-xs md:text-sm text-gray-600 mb-4 md:mb-6 leading-relaxed line-clamp-3 md:line-clamp-none">
+              <p
+                className={`text-xs md:text-sm text-gray-600 mb-1 md:mb-6 leading-relaxed ${
+                  expandedDivisions[i] ? "" : "line-clamp-3"
+                } md:line-clamp-none`}
+              >
                 {div.description}
               </p>
+              <button
+                type="button"
+                className="md:hidden mb-4 text-[11px] font-bold text-undip-blue"
+                aria-expanded={Boolean(expandedDivisions[i])}
+                onClick={() =>
+                  setExpandedDivisions((prev) => ({
+                    ...prev,
+                    [i]: !prev[i],
+                  }))
+                }
+              >
+                {expandedDivisions[i] ? "Show less" : "..."}
+              </button>
               <div className="border-t border-gray-200 pt-3 md:pt-4">
                 <div className="text-[10px] md:text-xs font-bold text-gray-900 mb-2 md:mb-3">
                   Key Roles:
