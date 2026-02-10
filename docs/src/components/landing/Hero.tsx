@@ -164,10 +164,12 @@ const Hero: React.FC = () => {
 
             {/* Right Image */}
             <div className="w-full lg:w-[45%] relative h-[40vh] sm:h-[50vh] lg:h-auto border-b lg:border-b-0 lg:border-l border-gray-300 overflow-hidden bg-gray-200 order-1 lg:order-2">
-              <img
+              <Image
                 src="https://imgbascorro.myudak.com/WhatsApp%20Image%202024-09-06%20at%2021.16.15_3ab5d883.jpg"
                 alt="Robotics Lab"
+                fill
                 className="w-full h-full object-cover grayscale mix-blend-multiply opacity-80 hover:scale-105 transition-transform duration-1000"
+                sizes="(max-width: 1024px) 100vw, 45vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#f3f4f6] via-transparent to-transparent lg:hidden"></div>
               <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#f3f4f6]/50 hidden lg:block"></div>

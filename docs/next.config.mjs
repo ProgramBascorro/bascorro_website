@@ -30,6 +30,7 @@ const config = {
     remotePatterns: [
       { protocol: 'https', hostname: r2Host },
       { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'imgbascorro.myudak.com' },
       { protocol: 'https', hostname: 'www.google.com' },
       { protocol: 'https', hostname: 't3.gstatic.com' },
     ],
