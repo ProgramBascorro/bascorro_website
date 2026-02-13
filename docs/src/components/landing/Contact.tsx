@@ -73,7 +73,9 @@ export default function Contact() {
                   </a>
                   <div className="mt-2">
                     <a
-                      href="tel:+6287876638978"
+                      href="https://wa.me/6287876638978"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-gray-500 text-sm hover:text-undip-blue transition-colors"
                     >
                       +62 878-7663-8978 (Fia)
