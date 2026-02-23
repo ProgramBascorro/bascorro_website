@@ -25,6 +25,57 @@ Copy `.env.example` to `.env.local`, then fill in:
 - `R2_PUBLIC_BASE_URL`: Public URL used to serve images (your R2 custom domain or the public bucket URL).
 - `R2_GALLERY_PREFIX`: Folder prefix for gallery images (default `images/gallery/`).
 
+## Dataset Lab (Internal Tool)
+
+Route: `/dataset-lab`
+
+MVP scope:
+- Local uploads + local filesystem storage only
+- YOLO bounding-box labeling
+- Dataset splits + metadata export zip
+- Optional Gemini suggestions (if key is set)
+- No R2 integration in runtime (placeholder adapter file exists)
+- No ROS integration
+
+### Environment
+
+Add to `.env.local`:
+
+```bash
+DATASET_LAB_TOKEN=replace_with_internal_secret
+# optional, defaults to ./data
+DATASET_LAB_DATA_DIR=./data
+# optional Gemini assist
+GEMINI_API_KEY=
+```
+
+### Run
+
+```bash
+pnpm dev
+```
+
+Open:
+- `http://localhost:3000/dataset-lab`
+
+### Data Folder Structure
+
+```text
+data/<dataset>/
+├── classes.yaml
+├── manifest.json
+├── images/<session>/<id>.<ext>
+├── labels/<session>/<id>.txt
+├── labels_json/<session>/<id>.json
+└── splits/{train,val,test}.txt
+```
+
+### Unit Tests
+
+```bash
+pnpm test:unit
+```
+
 ## Explore
 
 In the project, you can see:

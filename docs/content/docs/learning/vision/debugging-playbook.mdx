@@ -1,0 +1,136 @@
+---
+title: Debugging Playbook
+description: Playbook troubleshooting vision stack dari gejala ke tindakan perbaikan
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Debugging Playbook
+
+Halaman ini adalah panduan cepat saat vision bermasalah di simulasi atau lapangan. Fokusnya symptom-first: mulai dari gejala, lalu cek paling berdampak terlebih dahulu.
+
+---
+
+## Symptom Flow
+
+### 1) No Detections
+
+1. Cek apakah image masuk:
+   `ros2 topic hz /camera/image_raw`
+2. Cek node vision hidup:
+   `ros2 node list`
+3. Cek HSV/model parameter aktif:
+   `ros2 param list /vision_detector`
+4. Lihat debug image:
+   `rqt_image_view` -> `/vision/debug_image`
+
+### 2) False Positives Meledak
+
+1. Tighten threshold (HSV confidence / detection confidence).
+2. Tambah ukuran minimum objek.
+3. Aktifkan filtering circularity/aspect ratio.
+4. Cek perubahan lighting dan white balance kamera.
+
+### 3) Distance Estimate Tidak Stabil
+
+1. Verifikasi calibration file benar.
+2. Cek frame ID output dan TF tree.
+3. Validasi timestamp input-output sinkron.
+4. Gunakan smoothing/tracking sebelum proyeksi 3D.
+
+### 4) FPS Rendah
+
+1. Turunkan resolusi input.
+2. Batasi ROI (region of interest).
+3. Kurangi publish debug image.
+4. Batasi rate inferensi.
+
+---
+
+## Core Command Checklist
+
+```bash
+# Topics and rates
+ros2 topic list
+ros2 topic hz /camera/image_raw
+ros2 topic hz /vision/ball
+
+# Message validity
+ros2 topic echo /vision/ball --once
+
+# Node and params
+ros2 node list
+ros2 param list /vision_detector
+ros2 param get /vision_detector publish_debug_image
+
+# TF sanity
+ros2 run tf2_ros tf2_echo base_link camera_optical_frame
+```
+
+---
+
+## Pre-Match 10-Minute Checklist
+
+1. Bersihkan lensa kamera.
+2. Jalankan quick lighting calibration (HSV/awb check).
+3. Pastikan topic rate sesuai target (>= 25 FPS pipeline vision).
+4. Cek minimal 10 sampel detection di debug image.
+5. Cek fallback mode aktif (HSV baseline atau lightweight model).
+
+<Callout type="tip">
+  Simpan parameter “known-good” per venue. Ini mempercepat recovery saat kondisi pencahayaan berubah drastis.
+</Callout>
+
+---
+
+## Lighting Calibration Routine
+
+Langkah cepat:
+
+1. Ambil 30 frame awal arena.
+2. Hitung histogram channel V (HSV).
+3. Jika median V terlalu rendah, longgarkan `V lower bound`.
+4. Jika noise tinggi, naikkan `S lower bound` atau tambah blur ringan.
+
+```python
+def auto_adjust_hsv(v_median, s_lower, v_lower):
+    if v_median < 80:
+        v_lower = max(40, v_lower - 20)
+    elif v_median > 180:
+        v_lower = min(140, v_lower + 10)
+    s_lower = max(40, min(140, s_lower))
+    return s_lower, v_lower
+```
+
+---
+
+## Safe Fallback Strategy
+
+Jika model utama gagal:
+
+1. Turunkan ke pipeline HSV baseline.
+2. Nonaktifkan class yang tidak kritikal.
+3. Prioritaskan hanya `ball` untuk menjaga gameplay dasar.
+4. Catat log issue untuk post-match analysis.
+
+Contoh saklar mode:
+
+```bash
+ros2 param set /vision_detector mode hsv_baseline
+```
+
+---
+
+## Incident Log Template
+
+| Time | Symptom | Root Cause | Action | Outcome |
+| --- | --- | --- | --- | --- |
+| 14:05 | Ball miss saat shadow | HSV range terlalu sempit | Turunkan `V lower` | Detection normal |
+| 14:12 | FPS drop 18 | Debug image full-res | Disable debug publish | FPS naik 29 |
+
+---
+
+## Next Steps
+
+- Perbaiki kontrak ROS node: [ROS 2 Integration](/docs/learning/vision/ros2-integration)
+- Verifikasi efek tuning: [Evaluation & Benchmarking](/docs/learning/vision/evaluation-benchmarking)

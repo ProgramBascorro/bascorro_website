@@ -1,0 +1,151 @@
+---
+title: Dataset & Labeling
+description: Panduan pengumpulan data, labeling, QA, dan split dataset untuk model vision RoboCup
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Dataset & Labeling
+
+Kualitas model vision sangat ditentukan data. Model bagus tidak akan stabil jika dataset sempit, label tidak konsisten, atau split bocor.
+
+---
+
+## Taxonomy Kelas
+
+Mulai dari label sederhana yang benar-benar dipakai di pertandingan:
+
+| Class | Definisi | Catatan |
+| --- | --- | --- |
+| `ball` | Bola oranye yang terlihat sebagian/utuh | Tetap label saat partial occlusion |
+| `goal` | Tiang/area gawang yang relevan | Hindari label ambigu di background |
+| `robot` | Robot lawan/teammate | Tidak perlu bedakan tim di awal |
+| `line` | Garis putih lapangan | Opsional jika pakai semantic segm |
+
+<Callout type="info">
+  Definisi kelas harus ditulis sejak awal agar annotator berbeda tetap menghasilkan label yang konsisten.
+</Callout>
+
+---
+
+## Data Collection Protocol
+
+Checklist minimal saat ambil data:
+
+1. Variasi jarak (dekat, sedang, jauh).
+2. Variasi angle kamera (tilt/pan berbeda).
+3. Variasi lighting (indoor terang, indoor redup, shadow).
+4. Variasi blur (robot diam vs walking).
+5. Variasi occlusion (bola tertutup sebagian).
+
+Target awal yang realistis:
+
+- `2,000-3,000` images total untuk baseline YOLO.
+- Minimal `400+` instance per kelas utama.
+
+---
+
+## Labeling Rules (Bounding Box)
+
+Aturan praktis:
+
+1. Bounding box mengikuti objek seketat mungkin.
+2. Objek < 30% terlihat tetap boleh dilabel jika masih identifiable.
+3. Jangan label objek yang benar-benar ambiguous.
+4. Konsisten antara annotator (gunakan guideline tertulis + contoh).
+
+Contoh struktur dataset:
+
+```text
+dataset/
+├── images/
+│   ├── train/
+│   ├── val/
+│   └── test/
+└── labels/
+    ├── train/
+    ├── val/
+    └── test/
+```
+
+---
+
+## dataset.yaml Example
+
+```yaml
+path: /data/robocup_vision_dataset
+train: images/train
+val: images/val
+test: images/test
+
+nc: 4
+names: ["ball", "goal", "robot", "line"]
+```
+
+---
+
+## Split Policy dan Leakage Prevention
+
+Default split:
+
+- `70%` train
+- `20%` val
+- `10%` test
+
+Rules:
+
+1. Jangan campur frame berurutan dari video yang sama ke train dan test.
+2. Pisahkan sesi perekaman berdasarkan waktu/lokasi jika memungkinkan.
+3. Simpan test set tetap (frozen) untuk komparasi eksperimen.
+
+---
+
+## QA Checklist
+
+Sebelum training:
+
+- Tidak ada file gambar tanpa label (kecuali memang negative sample).
+- Tidak ada label di luar image boundary.
+- Tidak ada kelas typo (`bal`, `goals`, dst).
+- Distribusi kelas tidak timpang ekstrem.
+
+Distribusi cepat bisa dicek dengan skrip sederhana:
+
+```python
+from collections import Counter
+from pathlib import Path
+
+counter = Counter()
+for p in Path("dataset/labels/train").glob("*.txt"):
+    for line in p.read_text().splitlines():
+        cls = int(line.split()[0])
+        counter[cls] += 1
+
+print(counter)
+```
+
+---
+
+## Imbalance Mitigation
+
+Jika kelas minor terlalu sedikit:
+
+1. Tambah data khusus kelas minor.
+2. Gunakan augmentation terarah (brightness, blur, scale).
+3. Oversample image yang berisi kelas minor.
+
+---
+
+## Link ke Training
+
+Setelah dataset rapi, lanjut ke training pipeline:
+
+- [Machine Learning untuk Vision](/docs/learning/vision/machine-learning)
+
+---
+
+## Acceptance Criteria
+
+- Dataset policy tertulis dan dipahami tim.
+- Label audit acak 100 sampel, error < 5%.
+- Split train/val/test sudah fixed dan reproducible.

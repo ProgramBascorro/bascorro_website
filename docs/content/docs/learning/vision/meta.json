@@ -5,11 +5,17 @@
     "index",
     "---Fundamentals---",
     "image-processing",
+    "camera-calibration",
     "---Detection---",
     "ball-detection",
     "field-detection",
-    "---Advanced---",
+    "object-tracking",
+    "---Machine Learning Ops---",
     "machine-learning",
-    "camera-calibration"
+    "dataset-labeling",
+    "evaluation-benchmarking",
+    "---Deployment---",
+    "ros2-integration",
+    "debugging-playbook"
   ]
 }

@@ -1,0 +1,130 @@
+---
+title: Evaluation & Benchmarking
+description: Mengukur akurasi dan performa runtime vision system secara konsisten
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Evaluation & Benchmarking
+
+Pipeline vision perlu dievaluasi dengan metrik yang jelas. Tanpa benchmark, perubahan parameter/model sulit dinilai apakah benar meningkatkan performa.
+
+---
+
+## Detection Metrics
+
+| Metric | Arti | Kapan Dipakai |
+| --- | --- | --- |
+| Precision | Prediksi benar dari semua prediksi | Mengurangi false positive |
+| Recall | Objek terdeteksi dari semua objek nyata | Mengurangi miss detection |
+| F1-score | Harmonic mean precision-recall | Tradeoff seimbang |
+| mAP | Rata-rata precision pada IoU tertentu | Perbandingan model deteksi |
+
+Target baseline untuk deployment awal:
+
+- Precision `>= 0.90`
+- Recall `>= 0.85`
+- F1 `>= 0.87`
+
+---
+
+## Runtime Metrics
+
+Selain akurasi, cek performa real-time:
+
+| Metric | Target Awal | Notes |
+| --- | --- | --- |
+| Latency p50 | <= 30 ms/frame | Median response |
+| Latency p95 | <= 60 ms/frame | Tail latency penting saat pertandingan |
+| Throughput | >= 25 FPS | Minimal nyaman untuk control loop |
+| CPU usage | <= 80% | Sisakan headroom modul lain |
+
+<Callout type="warning">
+  Model akurat tapi lambat bisa lebih berbahaya dari model sedikit kurang akurat tapi stabil real-time.
+</Callout>
+
+---
+
+## Offline Evaluation Loop (Pseudocode)
+
+```python
+metrics = init_metrics()
+
+for sample in dataset:
+    image, gt_boxes = sample.image, sample.labels
+    pred_boxes = model.infer(image)
+
+    metrics.update_detection(pred_boxes, gt_boxes)
+
+summary = metrics.compute()
+print(summary)  # precision, recall, f1, map
+```
+
+---
+
+## ROS 2 Runtime Benchmark Pattern
+
+```bash
+# Check effective publish rate
+ros2 topic hz /vision/ball
+
+# Spot-check timestamp and frame_id consistency
+ros2 topic echo /vision/ball --once
+
+# Profile latency indirectly via stamped debug logs
+ros2 run soccer_vision vision_detector --ros-args -p enable_timing_logs:=true
+```
+
+Log fields yang perlu disimpan per frame:
+
+- `frame_id`
+- `stamp_input`
+- `stamp_output`
+- `latency_ms`
+- `inference_ms`
+- `postprocess_ms`
+
+---
+
+## Field Test Protocol
+
+Protokol minimum:
+
+1. **Static test**: robot diam, bola bergerak.
+2. **Walking test**: robot jalan + head scan.
+3. **Occlusion test**: bola ditutup parsial.
+4. **Lighting test**: terang/redup/shadow.
+
+Setiap skenario jalankan minimal 3 kali dan ambil rata-rata.
+
+---
+
+## Regression Report Template
+
+Gunakan tabel ini setiap perubahan model/parameter:
+
+| Run ID | Model/Config | Precision | Recall | FPS | p95 Latency | Result |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2026-02-23-A | YOLOv8n + cfg_01 | 0.91 | 0.86 | 28 | 54 ms | PASS |
+| 2026-02-23-B | YOLOv8n + cfg_02 | 0.93 | 0.84 | 25 | 62 ms | REVIEW |
+
+Kriteria PASS default:
+
+1. Precision/Recall tidak turun >2% dari baseline.
+2. FPS tetap di atas target minimal.
+3. p95 latency tidak melewati batas.
+
+---
+
+## Acceptance Checklist
+
+- Ada baseline metrik tersimpan.
+- Setiap eksperimen punya report tabel.
+- Keputusan deploy berdasarkan data, bukan observasi visual saja.
+
+---
+
+## Next Steps
+
+- Perbaiki data jika metrik rendah: [Dataset & Labeling](/docs/learning/vision/dataset-labeling).
+- Jika runtime issue, ikuti [Debugging Playbook](/docs/learning/vision/debugging-playbook).

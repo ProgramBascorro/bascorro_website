@@ -1,0 +1,181 @@
+---
+title: ROS 2 Integration untuk Vision
+description: Integrasi pipeline vision ke ROS 2 topics, timestamps, TF, dan launch configuration
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# ROS 2 Integration untuk Vision
+
+Deteksi bagus di notebook belum tentu siap dipakai robot. Di lapangan, pipeline vision harus stabil di ROS 2: timestamp benar, frame ID konsisten, topic jelas, dan launch parameter mudah dituning.
+
+---
+
+## Node I/O Contract
+
+Contoh kontrak sederhana untuk node `vision_detector`:
+
+- **Input image**: `/camera/image_raw` (`sensor_msgs/msg/Image`)
+- **Input camera info**: `/camera/camera_info` (`sensor_msgs/msg/CameraInfo`)
+- **Output detection**: `/vision/ball` (`geometry_msgs/msg/PointStamped`)
+- **Output debug image**: `/vision/debug_image` (`sensor_msgs/msg/Image`)
+
+<Callout type="info">
+  Gunakan nama topic yang jelas dan konsisten antar package agar modul strategy/localization tidak perlu adapter tambahan.
+</Callout>
+
+---
+
+## cv_bridge Conversion Pattern
+
+```python
+import rclpy
+from rclpy.node import Node
+from cv_bridge import CvBridge
+from sensor_msgs.msg import Image, CameraInfo
+from geometry_msgs.msg import PointStamped
+
+class VisionDetectorNode(Node):
+    def __init__(self):
+        super().__init__("vision_detector")
+        self.bridge = CvBridge()
+
+        self.declare_parameter("camera_topic", "/camera/image_raw")
+        self.declare_parameter("publish_debug_image", True)
+        self.declare_parameter("min_ball_radius", 10)
+
+        camera_topic = self.get_parameter("camera_topic").value
+        self.publish_debug = self.get_parameter("publish_debug_image").value
+
+        self.image_sub = self.create_subscription(
+            Image, camera_topic, self.on_image, 10
+        )
+        self.info_sub = self.create_subscription(
+            CameraInfo, "/camera/camera_info", self.on_camera_info, 10
+        )
+        self.ball_pub = self.create_publisher(PointStamped, "/vision/ball", 10)
+        self.debug_pub = self.create_publisher(Image, "/vision/debug_image", 10)
+
+        self.camera_info = None
+
+    def on_camera_info(self, msg: CameraInfo):
+        self.camera_info = msg
+
+    def on_image(self, msg: Image):
+        frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
+        # TODO: detect ball from frame
+        detection = (120, 220)  # x_pixel, y_pixel example
+
+        out = PointStamped()
+        out.header = msg.header
+        out.header.frame_id = "camera_optical_frame"
+        out.point.x = float(detection[0])
+        out.point.y = float(detection[1])
+        out.point.z = 0.0
+        self.ball_pub.publish(out)
+
+        if self.publish_debug:
+            debug_msg = self.bridge.cv2_to_imgmsg(frame, encoding="bgr8")
+            debug_msg.header = msg.header
+            self.debug_pub.publish(debug_msg)
+
+def main():
+    rclpy.init()
+    node = VisionDetectorNode()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+```
+
+---
+
+## Timestamp dan Frame Hygiene
+
+Checklist penting:
+
+1. Copy `header.stamp` dari image input ke output detection.
+2. Gunakan `camera_optical_frame` untuk output berbasis pixel.
+3. Jangan publish detection tanpa `header`.
+4. Sinkronkan clock antar node (`use_sim_time` saat simulasi).
+
+Contoh verifikasi:
+
+```bash
+ros2 topic echo /vision/ball --once
+ros2 topic hz /vision/ball
+ros2 topic echo /camera/image_raw --once
+```
+
+---
+
+## Launch Template dan Parameter
+
+```python
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    return LaunchDescription([
+        DeclareLaunchArgument("camera_topic", default_value="/camera/image_raw"),
+        DeclareLaunchArgument("publish_debug_image", default_value="true"),
+        DeclareLaunchArgument("min_ball_radius", default_value="10"),
+        DeclareLaunchArgument("max_fps", default_value="30"),
+
+        Node(
+            package="soccer_vision",
+            executable="vision_detector",
+            name="vision_detector",
+            output="screen",
+            parameters=[{
+                "camera_topic": LaunchConfiguration("camera_topic"),
+                "publish_debug_image": LaunchConfiguration("publish_debug_image"),
+                "min_ball_radius": LaunchConfiguration("min_ball_radius"),
+                "max_fps": LaunchConfiguration("max_fps"),
+            }],
+            remappings=[
+                ("/vision/ball", "/perception/ball"),
+            ],
+        ),
+    ])
+```
+
+---
+
+## TF Alignment Minimal Checklist
+
+Sebelum deploy:
+
+1. Pastikan `camera_optical_frame` ada di tree:
+   `ros2 run tf2_tools view_frames`
+2. Pastikan transform `base_link -> camera_optical_frame` valid.
+3. Validasi arah sumbu optical (x right, y down, z forward).
+4. Saat head bergerak, transform tetap update dengan benar.
+
+---
+
+## Common Failure Modes
+
+| Symptom | Probable Cause | Fix |
+| --- | --- | --- |
+| Detection delay tinggi | Queue terlalu besar, FPS tidak dibatasi | Turunkan queue depth, set `max_fps` |
+| Posisi dunia loncat-loncat | Header stamp mismatch | Gunakan stamp dari image input |
+| Ball tidak muncul di strategy node | Topic name mismatch | Gunakan remapping konsisten |
+| Debug image blank | Encoding salah | Pakai `bgr8` atau `mono8` konsisten |
+
+---
+
+## Acceptance Checklist
+
+- `ros2 topic hz /perception/ball` stabil sesuai target.
+- `ros2 topic echo /perception/ball --once` menunjukkan `header` valid.
+- `rqt_image_view` menampilkan `/vision/debug_image`.
+- `tf2_echo base_link camera_optical_frame` menghasilkan transform yang masuk akal.
+
+---
+
+## Next Steps
+
+- Lanjut ke [Object Tracking](/docs/learning/vision/object-tracking) untuk stabilisasi deteksi antar frame.
+- Gunakan [Debugging Playbook](/docs/learning/vision/debugging-playbook) saat masalah muncul di lapangan.

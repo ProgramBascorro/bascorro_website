@@ -61,6 +61,11 @@ Pipeline ini penting karena setiap tahap membatasi noise dan mengubah data ke be
     href="/docs/learning/vision/image-processing"
   />
   <Card
+    title="Camera Calibration"
+    description="Intrinsics, extrinsics, 3D projection"
+    href="/docs/learning/vision/camera-calibration"
+  />
+  <Card
     title="Ball Detection"
     description="Color segmentation, circle detection, blob analysis"
     href="/docs/learning/vision/ball-detection"
@@ -71,16 +76,46 @@ Pipeline ini penting karena setiap tahap membatasi noise dan mengubah data ke be
     href="/docs/learning/vision/field-detection"
   />
   <Card
+    title="Object Tracking"
+    description="Kalman filter, dropout handling, smoother output"
+    href="/docs/learning/vision/object-tracking"
+  />
+  <Card
     title="Machine Learning"
     description="CNN, YOLO, training custom models"
     href="/docs/learning/vision/machine-learning"
   />
   <Card
-    title="Camera Calibration"
-    description="Intrinsics, extrinsics, 3D projection"
-    href="/docs/learning/vision/camera-calibration"
+    title="Dataset & Labeling"
+    description="Data collection, annotation QA, split strategy"
+    href="/docs/learning/vision/dataset-labeling"
+  />
+  <Card
+    title="Evaluation & Benchmarking"
+    description="Precision/recall/FPS/latency and regression checks"
+    href="/docs/learning/vision/evaluation-benchmarking"
+  />
+  <Card
+    title="ROS 2 Integration"
+    description="Topics, timestamps, TF alignment, launch params"
+    href="/docs/learning/vision/ros2-integration"
+  />
+  <Card
+    title="Debugging Playbook"
+    description="Symptom-first troubleshooting for match day"
+    href="/docs/learning/vision/debugging-playbook"
   />
 </Cards>
+
+---
+
+## Recommended Learning Path
+
+| Stage | Focus | Pages |
+| --- | --- | --- |
+| **Stage 1: Foundations** | Preprocessing dan geometri kamera | [Image Processing](/docs/learning/vision/image-processing), [Camera Calibration](/docs/learning/vision/camera-calibration) |
+| **Stage 2: Detection + Tracking** | Deteksi robust dan stabil antar frame | [Ball Detection](/docs/learning/vision/ball-detection), [Field Detection](/docs/learning/vision/field-detection), [Object Tracking](/docs/learning/vision/object-tracking) |
+| **Stage 3: ML Ops + Deployment** | Data pipeline, evaluasi, integrasi ROS 2 | [Machine Learning](/docs/learning/vision/machine-learning), [Dataset & Labeling](/docs/learning/vision/dataset-labeling), [Evaluation & Benchmarking](/docs/learning/vision/evaluation-benchmarking), [ROS 2 Integration](/docs/learning/vision/ros2-integration), [Debugging Playbook](/docs/learning/vision/debugging-playbook) |
 
 ---
 
@@ -249,8 +284,10 @@ Processing harus cepat (~30 fps minimum):
 ## Next Steps
 
 1. **Pemula**: Mulai dengan [Image Processing Basics](/docs/learning/vision/image-processing)
-2. **Intermediate**: Lanjut ke [Ball Detection](/docs/learning/vision/ball-detection)
-3. **Advanced**: Explore [Machine Learning](/docs/learning/vision/machine-learning)
+2. **Geometry**: Pelajari [Camera Calibration](/docs/learning/vision/camera-calibration)
+3. **Detection**: Lanjut ke [Ball Detection](/docs/learning/vision/ball-detection) dan [Field Detection](/docs/learning/vision/field-detection)
+4. **Stability**: Tambahkan [Object Tracking](/docs/learning/vision/object-tracking)
+5. **Deployment**: Tutup dengan [ROS 2 Integration](/docs/learning/vision/ros2-integration) dan [Debugging Playbook](/docs/learning/vision/debugging-playbook)
 
 <Callout type="tip">
   Praktik adalah kunci! Coba implementasi langsung dengan webcam atau dataset
