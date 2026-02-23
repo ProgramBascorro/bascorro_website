@@ -22,9 +22,9 @@ Pipeline vision perlu dievaluasi dengan metrik yang jelas. Tanpa benchmark, peru
 
 Target baseline untuk deployment awal:
 
-- Precision `>= 0.90`
-- Recall `>= 0.85`
-- F1 `>= 0.87`
+- Precision `&gt;= 0.90`
+- Recall `&gt;= 0.85`
+- F1 `&gt;= 0.87`
 
 ---
 
@@ -34,10 +34,10 @@ Selain akurasi, cek performa real-time:
 
 | Metric | Target Awal | Notes |
 | --- | --- | --- |
-| Latency p50 | <= 30 ms/frame | Median response |
-| Latency p95 | <= 60 ms/frame | Tail latency penting saat pertandingan |
-| Throughput | >= 25 FPS | Minimal nyaman untuk control loop |
-| CPU usage | <= 80% | Sisakan headroom modul lain |
+| Latency p50 | &lt;= 30 ms/frame | Median response |
+| Latency p95 | &lt;= 60 ms/frame | Tail latency penting saat pertandingan |
+| Throughput | &gt;= 25 FPS | Minimal nyaman untuk control loop |
+| CPU usage | &lt;= 80% | Sisakan headroom modul lain |
 
 <Callout type="warning">
   Model akurat tapi lambat bisa lebih berbahaya dari model sedikit kurang akurat tapi stabil real-time.
@@ -46,6 +46,16 @@ Selain akurasi, cek performa real-time:
 ---
 
 ## Offline Evaluation Loop (Pseudocode)
+
+**Purpose**: Menghitung metrik deteksi secara offline untuk dataset tetap.
+**Inputs**: dataset berlabel dan model inference.
+**Outputs**: ringkasan precision, recall, f1, mAP.
+**Steps**:
+1. Loop semua sample dan jalankan inference.
+2. Update metrik dengan prediksi dan ground truth.
+3. Hitung summary di akhir.
+**Pitfalls**: label tidak konsisten membuat metrik bias.
+**Validation**: baseline metrik konsisten antar run yang sama.
 
 ```python
 metrics = init_metrics()
@@ -63,6 +73,16 @@ print(summary)  # precision, recall, f1, map
 ---
 
 ## ROS 2 Runtime Benchmark Pattern
+
+**Purpose**: Mengecek performa runtime di ROS 2 tanpa tooling berat.
+**Inputs**: node vision aktif dan topic yang dipublish.
+**Outputs**: rate topic, timestamp check, dan indikasi latency.
+**Steps**:
+1. Cek `topic hz` untuk rate.
+2. `topic echo` untuk validasi header.
+3. Aktifkan log timing jika tersedia.
+**Pitfalls**: rate turun karena debug image terlalu berat.
+**Validation**: rate stabil sesuai target dan timestamp konsisten.
 
 ```bash
 # Check effective publish rate

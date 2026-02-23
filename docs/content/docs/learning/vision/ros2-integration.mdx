@@ -28,6 +28,16 @@ Contoh kontrak sederhana untuk node `vision_detector`:
 
 ## cv_bridge Conversion Pattern
 
+**Purpose**: Contoh node ROS 2 untuk convert image dan publish deteksi.
+**Inputs**: `/camera/image_raw` dan `CameraInfo`.
+**Outputs**: `/vision/ball` dan `/vision/debug_image`.
+**Steps**:
+1. Subscribe image dan camera info.
+2. Convert ke OpenCV via `cv_bridge`.
+3. Jalankan deteksi dan publish hasil.
+**Pitfalls**: encoding salah membuat image terdistorsi.
+**Validation**: debug image tampil benar di `rqt_image_view`.
+
 ```python
 import rclpy
 from rclpy.node import Node
@@ -109,6 +119,16 @@ ros2 topic echo /camera/image_raw --once
 ---
 
 ## Launch Template dan Parameter
+
+**Purpose**: Menyediakan launch file yang mudah di-tuning tanpa edit kode.
+**Inputs**: launch arguments seperti `camera_topic` dan `max_fps`.
+**Outputs**: node vision berjalan dengan parameter yang benar.
+**Steps**:
+1. Declare launch arguments.
+2. Pass parameter ke node.
+3. Gunakan remap untuk topic downstream.
+**Pitfalls**: parameter string vs numeric yang salah tipe.
+**Validation**: `ros2 param get` menampilkan nilai sesuai launch.
 
 ```python
 from launch import LaunchDescription

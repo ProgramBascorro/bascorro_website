@@ -79,6 +79,17 @@ class BallKalmanTracker:
 
 ## Tracking Loop
 
+**Purpose**: Menunjukkan alur predict-update dan handling miss detection.
+**Inputs**: stream frame dan output deteksi per frame.
+**Outputs**: track posisi bola yang stabil.
+**Steps**:
+1. Prediksi posisi dengan Kalman.
+2. Update jika ada deteksi baru.
+3. Jika miss, pakai prediksi dan hitung `missed`.
+4. Reset tracker jika miss terlalu lama.
+**Pitfalls**: `max_missed_frames` terlalu kecil membuat reset sering.
+**Validation**: posisi tetap stabil saat bola tertutup sementara.
+
 ```python
 tracker = BallKalmanTracker(dt=1.0 / 30.0)
 max_missed_frames = 8

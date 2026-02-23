@@ -1,0 +1,70 @@
+---
+title: Git Fundamentals
+description: "Dasar Git sampai level kerja tim: commit, branch, undo, dan kolaborasi"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Cards, Card } from "fumadocs-ui/components/card";
+
+# Git Fundamentals
+
+Track ini dibuat untuk anggota BASCORRO yang baru mulai bekerja dengan repository tim. Fokusnya: **kebiasaan kerja yang benar** agar kamu bisa kontribusi tanpa merusak branch orang lain.
+
+<Callout type="info">
+  Git adalah alat untuk **mencatat perubahan**, bukan hanya sekadar backup. Kalau kamu paham konsep ini, semua perintah Git jadi masuk akal.
+</Callout>
+
+---
+
+## Learning Outcomes
+
+Setelah track ini, kamu bisa:
+
+- Membuat commit yang rapi dan mudah direview.
+- Kerja di branch sendiri tanpa ganggu branch utama.
+- Sinkronisasi dengan remote (`origin` dan `upstream`).
+- Undo kesalahan tanpa merusak history tim.
+- Menangani konflik sederhana saat merge.
+
+---
+
+## Learning Path
+
+<Cards>
+  <Card
+    title="Git Basics"
+    description="Status, add, commit, log, dan diff"
+    href="/docs/learning/git/git-basics"
+  />
+  <Card
+    title="Branching"
+    description="Branch, merge, rebase, dan konflik"
+    href="/docs/learning/git/branching"
+  />
+  <Card
+    title="Remote Collaboration"
+    description="origin/upstream, fetch, pull, push"
+    href="/docs/learning/git/remote-collab"
+  />
+  <Card
+    title="Undo & Recovery"
+    description="revert, reset, restore, stash, reflog"
+    href="/docs/learning/git/undo-recover"
+  />
+</Cards>
+
+---
+
+## Quick Glossary
+
+- **Repository**: folder proyek yang sudah di-inisialisasi Git.
+- **Commit**: snapshot perubahan yang punya pesan dan ID.
+- **Branch**: jalur kerja terpisah dari branch utama.
+- **Remote**: copy repository di server (misalnya GitHub).
+- **HEAD**: posisi kerja kamu sekarang.
+
+---
+
+## Next Steps
+
+Mulai dari [Git Basics](/docs/learning/git/git-basics).

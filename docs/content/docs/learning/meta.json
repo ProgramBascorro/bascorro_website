@@ -3,6 +3,8 @@
   "icon": "GraduationCap",
   "pages": [
     "index",
+    "---Git---",
+    "git",
     "---ROS 2---",
     "ros",
     "---Robotics---",

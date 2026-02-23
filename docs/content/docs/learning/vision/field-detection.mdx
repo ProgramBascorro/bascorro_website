@@ -17,6 +17,16 @@ Pada praktiknya, kita mulai dengan **segmentation** untuk memisahkan area lapang
 
 ### Green Field Detection
 
+**Purpose**: Membuat mask area lapangan agar deteksi objek lain lebih bersih.
+**Inputs**: image BGR.
+**Outputs**: mask biner area hijau.
+**Steps**:
+1. Konversi image ke HSV.
+2. Threshold warna hijau.
+3. Bersihkan mask dengan morphology.
+**Pitfalls**: lighting ekstrem membuat warna hijau bergeser.
+**Validation**: mask menutup area lapangan, bukan penonton atau robot.
+
 ```python
 import cv2
 import numpy as np
@@ -47,6 +57,17 @@ Setelah field mask didapat, garis putih bisa dicari dengan threshold pada intens
 
 ### White Line Extraction
 
+**Purpose**: Menemukan garis putih di atas mask lapangan.
+**Inputs**: image dan optional `field_mask`.
+**Outputs**: garis hasil Hough dan `white_mask`.
+**Steps**:
+1. Konversi ke grayscale.
+2. Terapkan field mask.
+3. Threshold putih dan Canny.
+4. HoughLinesP untuk segment garis.
+**Pitfalls**: threshold terlalu rendah memunculkan noise.
+**Validation**: garis lapangan muncul sebagai segmen pendek.
+
 ```python
 def detect_white_lines(image, field_mask=None):
     """Detect white lines on the field."""
@@ -70,6 +91,16 @@ def detect_white_lines(image, field_mask=None):
 ```
 
 ### Line Classification
+
+**Purpose**: Mengelompokkan garis berdasarkan orientasi.
+**Inputs**: satu segment garis dan ukuran image.
+**Outputs**: label `horizontal`, `vertical`, atau `diagonal`.
+**Steps**:
+1. Hitung `dx` dan `dy`.
+2. Tentukan angle dalam derajat.
+3. Klasifikasikan berdasarkan ambang angle.
+**Pitfalls**: segment pendek memberi angle tidak stabil.
+**Validation**: garis samping lapangan dominan `vertical`.
 
 ```python
 def classify_line(line, image_width, image_height):
@@ -99,6 +130,16 @@ def classify_line(line, image_width, image_height):
 Landmark seperti gawang dan lingkaran tengah membantu robot menentukan posisi relatifnya di lapangan. Deteksi landmark biasanya lebih sulit karena bentuknya tipis/parsial dan bisa tertutup robot lain.
 
 ### Goal Post Detection
+
+**Purpose**: Mendeteksi tiang gawang sebagai kontur putih tinggi.
+**Inputs**: image dan `field_mask`.
+**Outputs**: daftar `goal_posts` dengan bbox dan center.
+**Steps**:
+1. Threshold putih.
+2. Cari kontur.
+3. Filter berdasarkan rasio aspek dan tinggi.
+**Pitfalls**: robot putih bisa terdeteksi sebagai gawang.
+**Validation**: bbox sempit dan tinggi di lokasi gawang.
 
 ```python
 def detect_goal_posts(image, field_mask):
@@ -130,6 +171,16 @@ def detect_goal_posts(image, field_mask):
 
 ### Center Circle Detection
 
+**Purpose**: Mendeteksi lingkaran tengah menggunakan Hough Circle.
+**Inputs**: edge image dan `field_mask`.
+**Outputs**: daftar lingkaran atau `None`.
+**Steps**:
+1. Mask edge dengan field mask.
+2. Jalankan HoughCircles.
+3. Pilih hasil pertama yang valid.
+**Pitfalls**: noise pada edge membuat false circle.
+**Validation**: lingkaran muncul saat robot berada dekat tengah.
+
 ```python
 def detect_center_circle(edges, field_mask):
     """Detect center circle using Hough Circle."""
@@ -157,6 +208,16 @@ def detect_center_circle(edges, field_mask):
 ---
 
 ## Complete Field Analyzer
+
+**Purpose**: Menggabungkan field, line, dan landmark menjadi satu pipeline.
+**Inputs**: image BGR.
+**Outputs**: dict hasil analisis dan debug overlay.
+**Steps**:
+1. Detect field mask.
+2. Detect lines dan goal posts.
+3. Kembalikan hasil untuk lokalisasi.
+**Pitfalls**: urutan langkah salah membuat mask tidak konsisten.
+**Validation**: overlay menampilkan garis dan gawang dengan stabil.
 
 ```python
 class FieldAnalyzer:

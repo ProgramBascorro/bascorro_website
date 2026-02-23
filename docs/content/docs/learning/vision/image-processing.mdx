@@ -163,6 +163,16 @@ Coba berbagai filter dan lihat efeknya secara real-time:
 
 ### Filter Comparison
 
+**Purpose**: Membandingkan efek filter pada image noisy.
+**Inputs**: image noisy.
+**Outputs**: visual perbandingan hasil filter.
+**Steps**:
+1. Baca image noisy.
+2. Terapkan Gaussian, Median, dan Bilateral.
+3. Tampilkan hasil secara berdampingan.
+**Pitfalls**: ukuran kernel tidak konsisten membuat perbandingan bias.
+**Validation**: terlihat tradeoff antara smoothing dan edge preservation.
+
 ```python
 import matplotlib.pyplot as plt
 
@@ -243,6 +253,16 @@ Operasi berbasis shape untuk membersihkan binary masks. Ini sering dipakai setel
 
 ### Structuring Elements
 
+**Purpose**: Membuat kernel dasar untuk operasi morphology.
+**Inputs**: ukuran kernel dan bentuk elemen.
+**Outputs**: kernel rect, ellipse, dan cross.
+**Steps**:
+1. Pilih ukuran kernel sesuai skala objek.
+2. Buat kernel dengan bentuk berbeda.
+3. Uji di mask untuk memilih yang paling stabil.
+**Pitfalls**: kernel terlalu besar menghapus detail objek kecil.
+**Validation**: mask tetap mempertahankan bentuk bola/garis.
+
 ```python
 # Create kernels
 kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
@@ -284,6 +304,16 @@ closed = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
 
 ### Combined Pipeline
 
+**Purpose**: Menyatukan operasi morphology untuk membersihkan mask.
+**Inputs**: mask biner dan ukuran kernel.
+**Outputs**: mask bersih tanpa noise kecil dan lubang.
+**Steps**:
+1. Buat kernel ellipse.
+2. Jalankan opening untuk noise.
+3. Jalankan closing untuk menutup lubang.
+**Pitfalls**: kernel terlalu kecil membuat noise masih muncul.
+**Validation**: mask terlihat halus saat ditampilkan.
+
 ```python
 def clean_mask(mask, kernel_size=5):
     """Clean binary mask using morphological operations."""
@@ -304,6 +334,15 @@ def clean_mask(mask, kernel_size=5):
 ## Histogram Analysis
 
 ### Histogram Calculation
+
+**Purpose**: Melihat distribusi intensitas untuk menentukan threshold.
+**Inputs**: image grayscale.
+**Outputs**: histogram intensitas.
+**Steps**:
+1. Hitung histogram 256 bin.
+2. Plot untuk melihat puncak dominan.
+**Pitfalls**: histogram tanpa normalisasi bisa menyesatkan saat bandingkan image berbeda.
+**Validation**: puncak histogram sesuai dengan area dominan image.
 
 ```python
 # Calculate histogram
@@ -340,6 +379,16 @@ clahe_result = clahe.apply(gray)
 ## Thresholding
 
 ### Simple Thresholding
+
+**Purpose**: Membuat mask biner sederhana dari grayscale.
+**Inputs**: image grayscale dan nilai threshold.
+**Outputs**: mask biner atau variasinya.
+**Steps**:
+1. Pilih threshold awal.
+2. Terapkan threshold binary dan variasi lain.
+3. Evaluasi mask hasilnya.
+**Pitfalls**: threshold statis gagal saat lighting berubah.
+**Validation**: objek utama muncul jelas di mask.
 
 ```python
 # Binary threshold
@@ -381,6 +430,17 @@ _, otsu = cv2.threshold(gray, 0, 255,
 ---
 
 ## Complete Processing Pipeline
+
+**Purpose**: Contoh class pipeline lengkap untuk preprocessing hingga mask warna.
+**Inputs**: image BGR dan parameter HSV.
+**Outputs**: image preprocess, mask warna, dan edges jika dipakai.
+**Steps**:
+1. Resize dan blur untuk stabilitas.
+2. CLAHE untuk kontras.
+3. Buat mask HSV dan bersihkan.
+4. Deteksi edges jika dibutuhkan.
+**Pitfalls**: resize mengubah skala; sesuaikan parameter radius dan threshold.
+**Validation**: mask bola stabil dan edges konsisten di lapangan.
 
 ```python
 import cv2

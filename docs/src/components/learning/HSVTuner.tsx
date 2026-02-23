@@ -40,14 +40,23 @@ const presets: Record<string, HSVValues> = {
   blue: { hLow: 100, hHigh: 130, sLow: 100, sHigh: 255, vLow: 100, vHigh: 255 },
 };
 
-// Generate sample pixels for visualization
-const generatePixels = (count: number) => {
+// Generate sample pixels for visualization (deterministic)
+const createSeededRandom = (seed: number) => {
+  let current = seed >>> 0;
+  return () => {
+    current = (current * 1664525 + 1013904223) % 0x100000000;
+    return current / 0x100000000;
+  };
+};
+
+const generatePixels = (count: number, seed = 12345) => {
+  const rand = createSeededRandom(seed);
   const pixels = [];
   for (let i = 0; i < count; i++) {
     pixels.push({
-      h: Math.floor(Math.random() * 180),
-      s: Math.floor(Math.random() * 256),
-      v: Math.floor(Math.random() * 256),
+      h: Math.floor(rand() * 180),
+      s: Math.floor(rand() * 256),
+      v: Math.floor(rand() * 256),
     });
   }
   return pixels;

@@ -1,0 +1,121 @@
+---
+title: Git Basics
+description: "Workflow dasar Git: status, add, commit, log, dan diff"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { GitCommitGraphDemo } from "@/components/learning";
+
+# Git Basics
+
+Di halaman ini kamu belajar workflow dasar Git yang dipakai sehari-hari di tim BASCORRO.
+
+---
+
+## Setup Awal
+
+**Purpose**: Menyiapkan identitas Git agar commit bisa dilacak ke penulisnya.
+**Inputs**: nama dan email kamu.
+**Outputs**: konfigurasi Git lokal.
+**Steps**:
+1. Set nama dan email.
+2. Verifikasi dengan `git config --list`.
+**Pitfalls**: lupa set email membuat commit tidak terhubung ke akun GitHub.
+**Validation**: `user.name` dan `user.email` muncul di output.
+
+```bash
+git config --global user.name "Nama Kamu"
+git config --global user.email "email@domain.com"
+```
+
+---
+
+## Membuat Repo Baru atau Clone
+
+**Purpose**: Membuat repository Git atau mengambil repo tim dari remote.
+**Inputs**: path lokal atau URL remote.
+**Outputs**: folder proyek dengan `.git`.
+**Steps**:
+1. Gunakan `git init` untuk repo baru, atau `git clone` untuk repo existing.
+2. Masuk ke folder proyek.
+**Pitfalls**: menjalankan `git init` di folder yang salah.
+**Validation**: `git status` menampilkan branch aktif.
+
+```bash
+# Buat repo baru
+git init
+
+# Clone repo tim
+git clone https://github.com/ProgramBascorro/motion_webots.git
+```
+
+---
+
+## Cek Status, Add, Commit
+
+**Purpose**: Melihat perubahan, memilih file, lalu menyimpan snapshot.
+**Inputs**: file yang sudah kamu edit.
+**Outputs**: commit baru di branch aktif.
+**Steps**:
+1. `git status` untuk melihat perubahan.
+2. `git add` untuk staging file.
+3. `git commit` untuk membuat snapshot.
+**Pitfalls**: commit tanpa pesan jelas membuat review sulit.
+**Validation**: `git log --oneline` menampilkan commit baru.
+
+```bash
+git status
+git add .
+git commit -m "feat: update walking params"
+```
+
+<Callout type="tip">
+  Gunakan pesan commit singkat dan jelas: `feat:`, `fix:`, atau `docs:`.
+</Callout>
+
+---
+
+## Melihat Riwayat dan Perubahan
+
+**Purpose**: Mengecek apa saja yang berubah dan kapan.
+**Inputs**: repo lokal.
+**Outputs**: log commit dan diff perubahan.
+**Steps**:
+1. `git log --oneline` untuk ringkasan.
+2. `git diff` untuk melihat perubahan yang belum di-commit.
+**Pitfalls**: lupa cek diff membuat perubahan besar lolos tanpa review.
+**Validation**: perubahan yang kamu buat terlihat di diff.
+
+```bash
+git log --oneline --decorate --graph
+
+git diff
+```
+
+---
+
+## Interactive Demo: Commit Graph Simulator
+
+Demo ini membantu kamu memahami **HEAD**, branch pointer, dan commit graph secara visual.
+
+**Cara pakai**:
+1. Klik `Edit file` lalu `git add .`.
+2. Buat commit dan lihat posisi HEAD pindah.
+3. Buat branch baru dan checkout.
+4. Lakukan merge untuk melihat commit dengan dua parent.
+
+<GitCommitGraphDemo />
+
+---
+
+## Checklist Minimal Sebelum Push
+
+- `git status` bersih (tidak ada perubahan tersisa).
+- Commit message jelas.
+- Branch aktif bukan `main`.
+
+---
+
+## Next Steps
+
+- Lanjut ke [Branching](/docs/learning/git/branching).

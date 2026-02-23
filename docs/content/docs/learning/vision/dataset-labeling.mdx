@@ -72,6 +72,16 @@ dataset/
 
 ## dataset.yaml Example
 
+**Purpose**: Menjelaskan struktur file konfigurasi dataset untuk training YOLO.
+**Inputs**: lokasi dataset dan daftar kelas.
+**Outputs**: file YAML yang dipakai saat training.
+**Steps**:
+1. Set `path` ke root dataset.
+2. Isi `train`, `val`, `test` relatif terhadap `path`.
+3. Pastikan `nc` sama dengan jumlah `names`.
+**Pitfalls**: `train` atau `val` salah path membuat training gagal.
+**Validation**: training membaca dataset tanpa warning kelas.
+
 ```yaml
 path: /data/robocup_vision_dataset
 train: images/train

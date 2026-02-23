@@ -5,6 +5,7 @@ description: Pusat pembelajaran untuk BASCORRO - dari dasar robotika hingga Robo
 
 import { Cards, Card } from "fumadocs-ui/components/card";
 import { Callout } from "fumadocs-ui/components/callout";
+import { LearningProgressSummary } from "@/components/learning";
 
 # Learning Hub
 
@@ -19,7 +20,14 @@ Selamat datang di Learning Hub BASCORRO! Pilih track pembelajaran sesuai dengan 
 
 ## Learning Tracks
 
+<LearningProgressSummary />
+
 <Cards>
+  <Card
+    title="Git Fundamentals"
+    description="Commit, branch, undo, push/pull, dan workflow tim"
+    href="/docs/learning/git"
+  />
   <Card
     title="ROS 2 Fundamentals"
     description="Dasar-dasar Robot Operating System 2. Wajib untuk pemula."

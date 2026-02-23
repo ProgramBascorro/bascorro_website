@@ -17,3 +17,11 @@ export { FormationVisualizer } from "./FormationVisualizer";
 export { HSVTuner } from "./HSVTuner";
 export { BallDetectionVisualizer } from "./BallDetectionVisualizer";
 export { ImageFilterDemo } from "./ImageFilterDemo";
+
+// Git Components
+export { GitCommitGraphDemo } from "./GitCommitGraphDemo";
+
+// Learning Progress
+export { LearningProgressBar } from "./LearningProgressBar";
+export { LearningProgressSummary } from "./LearningProgressSummary";
+export { LearningCompletionMarker } from "./LearningCompletionMarker";

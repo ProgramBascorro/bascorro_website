@@ -49,6 +49,17 @@ Halaman ini adalah panduan cepat saat vision bermasalah di simulasi atau lapanga
 
 ## Core Command Checklist
 
+**Purpose**: Checklist cepat untuk memastikan pipeline vision hidup dan sinkron.
+**Inputs**: ROS 2 CLI tools pada robot atau simulasi.
+**Outputs**: informasi rate, message, dan TF.
+**Steps**:
+1. Cek daftar topic dan rate.
+2. Verifikasi message sekali.
+3. Cek node dan parameter aktif.
+4. Validasi TF antara base dan kamera.
+**Pitfalls**: lupa `source install/setup.bash` membuat `ros2` tidak menemukan node.
+**Validation**: semua command menghasilkan output tanpa error.
+
 ```bash
 # Topics and rates
 ros2 topic list

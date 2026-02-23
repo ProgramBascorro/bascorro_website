@@ -28,6 +28,16 @@ cx, cy = principal point (image center)
 
 ### Calibration dengan OpenCV
 
+**Purpose**: Menghitung intrinsic matrix dan distortion coefficients dari checkerboard.
+**Inputs**: path gambar checkerboard, ukuran board, ukuran kotak.
+**Outputs**: `mtx` (intrinsic), `dist` (distortion), `rvecs`, `tvecs`.
+**Steps**:
+1. Bangun koordinat 3D papan checkerboard.
+2. Deteksi corner di setiap image.
+3. Kalibrasi kamera dari pasangan 3D ke 2D.
+**Pitfalls**: jumlah gambar terlalu sedikit atau sudut terbatas membuat hasil bias.
+**Validation**: reprojection error kecil dan undistort terlihat lurus.
+
 ```python
 import cv2
 import numpy as np
@@ -75,6 +85,16 @@ def calibrate_camera(images_path, board_size=(9, 6), square_size=0.025):
 
 Posisi dan orientasi kamera relatif terhadap frame referensi (robot base). Ini penting karena kamera bergerak mengikuti head, sehingga pose kamera berubah setiap saat.
 
+**Purpose**: Menghitung pose kamera dari sudut head pan dan tilt.
+**Inputs**: sudut pan, tilt, dan offset kamera ke head.
+**Outputs**: rotasi `R` dan translasi `t`.
+**Steps**:
+1. Hitung matriks rotasi per sumbu.
+2. Gabungkan rotasi sesuai urutan kinematika.
+3. Gunakan offset kamera sebagai translasi.
+**Pitfalls**: urutan rotasi terbalik menghasilkan posisi kamera salah.
+**Validation**: arah `camera_optical_frame` sesuai visualisasi TF.
+
 ```python
 def get_camera_pose(robot_head_tilt, robot_head_pan, camera_offset):
     """Get camera pose from head angles."""
@@ -95,6 +115,16 @@ def get_camera_pose(robot_head_tilt, robot_head_pan, camera_offset):
 Bagian ini menjelaskan bagaimana koordinat pixel diproyeksikan ke lapangan. Hasil ini dipakai untuk menghitung jarak dan posisi objek secara geometris.
 
 ### Ground Plane Intersection
+
+**Purpose**: Memproyeksikan pixel ke koordinat lapangan di bidang ground.
+**Inputs**: pixel `(u, v)`, `camera_matrix`, rotasi `R`, translasi `t`.
+**Outputs**: titik `(x, y)` di ground atau `None`.
+**Steps**:
+1. Normalisasi pixel ke koordinat kamera.
+2. Bentuk arah ray di dunia.
+3. Hitung titik potong dengan ground.
+**Pitfalls**: salah definisi sumbu membuat hasil terbalik.
+**Validation**: titik hasil berada di depan kamera dan masuk akal dengan posisi robot.
 
 ```python
 def pixel_to_ground(u, v, camera_matrix, R, t, ground_height=0):
@@ -127,6 +157,15 @@ def pixel_to_ground(u, v, camera_matrix, R, t, ground_height=0):
 
 ### Ball 3D Position
 
+**Purpose**: Estimasi jarak bola dari ukuran radius di image.
+**Inputs**: `radius_pixels`, `camera_matrix`, `ball_diameter`.
+**Outputs**: jarak bola dari kamera (meter).
+**Steps**:
+1. Ambil `fx` dari intrinsic.
+2. Hitung jarak dengan model pinhole.
+**Pitfalls**: bola tidak bulat sempurna atau occlusion membuat radius bias.
+**Validation**: jarak terukur mendekati ground truth pada jarak tertentu.
+
 ```python
 def ball_position_from_size(radius_pixels, camera_matrix, ball_diameter=0.065):
     """Estimate ball distance from apparent size."""
@@ -138,6 +177,16 @@ def ball_position_from_size(radius_pixels, camera_matrix, ball_diameter=0.065):
 ---
 
 ## Distortion Correction
+
+**Purpose**: Menghapus distorsi lensa sebelum deteksi dan proyeksi.
+**Inputs**: image, `camera_matrix`, `dist_coeffs`.
+**Outputs**: image yang sudah undistort.
+**Steps**:
+1. Hitung matrix baru dengan FOV optimal.
+2. Jalankan `undistort`.
+3. Crop ke ROI valid.
+**Pitfalls**: crop mengubah ukuran image; sesuaikan downstream pipeline.
+**Validation**: garis lurus di scene terlihat lurus setelah undistort.
 
 ```python
 def undistort_image(image, camera_matrix, dist_coeffs):
@@ -162,6 +211,16 @@ def undistort_image(image, camera_matrix, dist_coeffs):
 ---
 
 ## Complete Calibration Pipeline
+
+**Purpose**: Membungkus workflow load, save, undistort, dan proyeksi.
+**Inputs**: path file kalibrasi dan image.
+**Outputs**: image undistort dan koordinat world.
+**Steps**:
+1. Load atau hitung kalibrasi.
+2. Simpan kalibrasi per kamera.
+3. Gunakan untuk undistort dan proyeksi pixel.
+**Pitfalls**: file kalibrasi tertukar antar kamera membuat hasil meleset.
+**Validation**: hasil proyeksi stabil di beberapa posisi bola.
 
 ```python
 class CameraCalibrator:
@@ -193,6 +252,15 @@ class CameraCalibrator:
 ---
 
 ## ROS 2 Camera Info
+
+**Purpose**: Membuat message `CameraInfo` agar node lain tahu parameter kamera.
+**Inputs**: `camera_matrix`, `dist_coeffs`, `width`, `height`.
+**Outputs**: `sensor_msgs/msg/CameraInfo`.
+**Steps**:
+1. Isi ukuran image.
+2. Set model distorsi dan param K, D.
+**Pitfalls**: ukuran image tidak cocok dengan stream membuat proyeksi salah.
+**Validation**: node downstream tidak error saat membaca CameraInfo.
 
 ```python
 from sensor_msgs.msg import CameraInfo
