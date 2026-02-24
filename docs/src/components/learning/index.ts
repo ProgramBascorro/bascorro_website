@@ -20,6 +20,9 @@ export { ImageFilterDemo } from "./ImageFilterDemo";
 
 // Git Components
 export { GitCommitGraphDemo } from "./GitCommitGraphDemo";
+export { ShellNavigationDemo } from "./ShellNavigationDemo";
+export { ShellPipesDemo } from "./ShellPipesDemo";
+export { BashScriptBuilderDemo } from "./BashScriptBuilderDemo";
 
 // Learning Progress
 export { LearningProgressBar } from "./LearningProgressBar";

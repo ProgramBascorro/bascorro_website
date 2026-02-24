@@ -4,6 +4,7 @@ description: "Gabungkan command Linux untuk filter, cari, dan simpan output"
 ---
 
 import { Callout } from "fumadocs-ui/components/callout";
+import { ShellPipesDemo } from "@/components/learning";
 
 # Pipes, Search & Redirection
 
@@ -52,6 +53,14 @@ rg "source install/setup.bash" docs/content/docs | wc -l
   Untuk pencarian teks di repo, prioritaskan `rg` karena lebih cepat dari `grep`
   untuk codebase besar.
 </Callout>
+
+---
+
+## Interactive Demo: Filter & Redirect Lab
+
+Gunakan simulator berikut untuk latihan command `|`, `>`, dan `>>` dengan skenario yang mirip workflow real.
+
+<ShellPipesDemo />
 
 ---
 
