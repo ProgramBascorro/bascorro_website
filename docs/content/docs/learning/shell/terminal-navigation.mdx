@@ -1,0 +1,105 @@
+---
+title: Terminal Navigation
+description: "Belajar navigasi Linux shell: path, folder, history, dan workflow cepat"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Terminal Navigation
+
+Navigasi adalah skill paling dasar. Sebelum build ROS atau jalankan script, kamu harus tahu kamu sedang berada di folder mana.
+
+---
+
+## Cek Posisi dan Isi Folder
+
+**Purpose**: Mengetahui lokasi kerja saat ini dan isi folder.
+**Inputs**: terminal aktif.
+**Outputs**: path aktif dan daftar file/folder.
+**Steps**:
+1. Jalankan `pwd` untuk melihat posisi sekarang.
+2. Jalankan `ls -la` untuk melihat semua isi folder.
+**Pitfalls**: menjalankan command di folder yang salah.
+**Validation**: path output sesuai repo yang kamu maksud.
+
+```bash
+pwd
+ls -la
+```
+
+---
+
+## Pindah Folder dengan Aman
+
+**Purpose**: Berpindah antar folder project dengan cepat.
+**Inputs**: nama folder tujuan.
+**Outputs**: working directory baru.
+**Steps**:
+1. Gunakan `cd` dengan path relatif atau absolut.
+2. Verifikasi lagi dengan `pwd`.
+**Pitfalls**: typo path atau salah asumsi posisi awal.
+**Validation**: output `pwd` sesuai target.
+
+```bash
+cd docs
+pwd
+cd ../ros_ws
+pwd
+cd /data/data/com.termux/files/home/projects/bascorro_web
+```
+
+<Callout type="tip">
+  Pakai tombol `Tab` untuk auto-complete nama file/folder agar lebih cepat dan minim typo.
+</Callout>
+
+---
+
+## Relative vs Absolute Path
+
+**Purpose**: Memahami kapan pakai path pendek atau path penuh.
+**Inputs**: path tujuan.
+**Outputs**: command yang tepat dan konsisten.
+**Steps**:
+1. Relative path: dihitung dari posisi folder sekarang.
+2. Absolute path: dimulai dari root (`/`) dan selalu eksplisit.
+**Pitfalls**: relative path sering gagal jika posisi awal berubah.
+**Validation**: command jalan konsisten di shell baru.
+
+```bash
+# Relative path (dari root repo)
+cd docs/content/docs/learning
+
+# Absolute path
+cd /data/data/com.termux/files/home/projects/bascorro_web/docs/content/docs/learning
+```
+
+---
+
+## History dan Re-run Command
+
+**Purpose**: Menghemat waktu dengan command history.
+**Inputs**: command yang pernah dijalankan.
+**Outputs**: command bisa dipakai ulang.
+**Steps**:
+1. Gunakan panah atas untuk recall command terakhir.
+2. Gunakan `history` lalu cari dengan `grep`.
+3. Jalankan ulang command via `!nomor`.
+**Pitfalls**: menjalankan ulang command lama tanpa cek konteks folder.
+**Validation**: command sukses dan sesuai folder aktif.
+
+```bash
+history | grep colcon
+history | grep ros2
+```
+
+---
+
+## Mini Checklist Harian
+
+- `pwd` benar.
+- `ls` masuk akal.
+- path command sudah diverifikasi.
+
+## Next Steps
+
+Lanjut ke [File Operations & Permissions](/docs/learning/shell/file-operations-permissions).

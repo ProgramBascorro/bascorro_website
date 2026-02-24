@@ -1,0 +1,11 @@
+{
+  "title": "Shell & Linux Basics",
+  "icon": "Terminal",
+  "pages": [
+    "index",
+    "terminal-navigation",
+    "file-operations-permissions",
+    "pipes-search-redirection",
+    "bash-scripting-basics"
+  ]
+}

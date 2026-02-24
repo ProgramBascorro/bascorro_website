@@ -1,0 +1,117 @@
+---
+title: File Operations & Permissions
+description: "Operasi file/folder Linux dan dasar permission untuk workflow aman"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# File Operations & Permissions
+
+Di halaman ini kamu belajar command inti untuk membuat, memindah, menyalin, dan menghapus file secara aman.
+
+---
+
+## Membuat dan Menata File
+
+**Purpose**: Membuat struktur folder kerja yang rapi.
+**Inputs**: nama file/folder baru.
+**Outputs**: file/folder terbentuk sesuai struktur.
+**Steps**:
+1. Buat folder dengan `mkdir -p`.
+2. Buat file kosong dengan `touch`.
+3. Verifikasi struktur dengan `ls -R`.
+**Pitfalls**: typo nama folder menghasilkan struktur tidak konsisten.
+**Validation**: file muncul di folder yang benar.
+
+```bash
+mkdir -p notes/shell
+touch notes/shell/commands.txt
+ls -R notes
+```
+
+---
+
+## Copy, Move, Rename
+
+**Purpose**: Mengelola file tanpa kehilangan data.
+**Inputs**: file sumber dan target.
+**Outputs**: file tersalin atau berpindah.
+**Steps**:
+1. Gunakan `cp` untuk copy.
+2. Gunakan `mv` untuk pindah atau rename.
+3. Saat ragu gunakan mode interaktif (`-i`).
+**Pitfalls**: overwrite file penting tanpa sadar.
+**Validation**: cek hasil dengan `ls -la`.
+
+```bash
+cp -i notes/shell/commands.txt notes/shell/commands.bak
+mv -i notes/shell/commands.bak notes/shell/commands-backup.txt
+ls -la notes/shell
+```
+
+---
+
+## Hapus File dengan Aman
+
+**Purpose**: Membersihkan file/folder tanpa menghapus yang salah.
+**Inputs**: path file/folder target.
+**Outputs**: file/folder terhapus.
+**Steps**:
+1. Cek dulu target dengan `ls`.
+2. Hapus file dengan `rm -i`.
+3. Hapus folder kosong dengan `rmdir`, folder berisi dengan `rm -ri`.
+**Pitfalls**: `rm -rf` tanpa verifikasi path.
+**Validation**: target benar-benar hilang, file lain tetap ada.
+
+```bash
+ls notes/shell
+rm -i notes/shell/commands-backup.txt
+rmdir notes/shell  # hanya jika kosong
+```
+
+<Callout type="warning">
+  Hindari `rm -rf` kalau belum yakin 100% pada target path.
+</Callout>
+
+---
+
+## Baca Isi File Cepat
+
+**Purpose**: Inspeksi isi file dari terminal.
+**Inputs**: file target.
+**Outputs**: ringkasan atau isi lengkap file.
+**Steps**:
+1. Gunakan `cat` untuk file pendek.
+2. Gunakan `less` untuk file panjang.
+3. Pakai `head` dan `tail` untuk bagian awal/akhir.
+**Pitfalls**: membuka file log besar dengan editor GUI bisa lambat.
+**Validation**: konten penting terlihat.
+
+```bash
+cat README.md
+head -n 20 docs/README.md
+tail -n 30 docs/README.md
+```
+
+---
+
+## Dasar Permissions
+
+**Purpose**: Memahami kenapa file bisa/tidak bisa dieksekusi atau diedit.
+**Inputs**: file dengan permission tertentu.
+**Outputs**: permission yang sesuai kebutuhan.
+**Steps**:
+1. Cek permission dengan `ls -l`.
+2. Ubah mode dengan `chmod`.
+3. Gunakan `sudo` hanya jika memang perlu hak admin.
+**Pitfalls**: memberi permission terlalu longgar (mis. `777`) tanpa alasan.
+**Validation**: file bisa diakses sesuai role user.
+
+```bash
+ls -l scripts
+chmod +x docs/scripts/generate-gallery-metadata.sh
+```
+
+## Next Steps
+
+Lanjut ke [Pipes, Search & Redirection](/docs/learning/shell/pipes-search-redirection).

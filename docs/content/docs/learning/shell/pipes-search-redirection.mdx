@@ -1,0 +1,93 @@
+---
+title: Pipes, Search & Redirection
+description: "Gabungkan command Linux untuk filter, cari, dan simpan output"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Pipes, Search & Redirection
+
+Skill ini penting saat debugging: kamu jarang butuh semua output, biasanya hanya bagian tertentu.
+
+---
+
+## Redirection Dasar
+
+**Purpose**: Menyimpan output command ke file.
+**Inputs**: output command.
+**Outputs**: file log atau catatan.
+**Steps**:
+1. `>` menimpa isi file.
+2. `>>` menambahkan di akhir file.
+3. `2>` menyimpan error output.
+**Pitfalls**: tidak sengaja overwrite file penting.
+**Validation**: cek isi file hasil redirect.
+
+```bash
+ls -la > notes_ls.txt
+date >> notes_ls.txt
+ls /path/yang/salah 2> errors.txt
+```
+
+---
+
+## Pipe untuk Filtering
+
+**Purpose**: Mengalirkan output dari satu command ke command lain.
+**Inputs**: output command pertama.
+**Outputs**: hasil filter yang lebih fokus.
+**Steps**:
+1. Jalankan command utama.
+2. Pipe ke `grep` untuk kata kunci.
+3. Tambahkan `wc -l` untuk hitung jumlah.
+**Pitfalls**: kata kunci terlalu umum, hasil terlalu banyak.
+**Validation**: output sesuai keyword yang dicari.
+
+```bash
+history | grep ros2
+rg "source install/setup.bash" docs/content/docs | wc -l
+```
+
+<Callout type="tip">
+  Untuk pencarian teks di repo, prioritaskan `rg` karena lebih cepat dari `grep`
+  untuk codebase besar.
+</Callout>
+
+---
+
+## Sorting dan Dedup
+
+**Purpose**: Merapikan data list dari output command.
+**Inputs**: daftar item dari file atau command.
+**Outputs**: list terurut dan unik.
+**Steps**:
+1. Pipe output ke `sort`.
+2. Lanjutkan ke `uniq`.
+**Pitfalls**: `uniq` hanya menghapus duplikat berurutan, jadi biasanya perlu `sort` dulu.
+**Validation**: tidak ada item duplikat di output akhir.
+
+```bash
+rg --files docs/content/docs/learning | sed 's#.*/##' | sort | uniq
+```
+
+---
+
+## Pola Debug Cepat
+
+**Purpose**: Mengambil informasi penting dari output panjang.
+**Inputs**: output command runtime.
+**Outputs**: ringkasan error/warning.
+**Steps**:
+1. Jalankan command.
+2. Pipe ke `grep -i` untuk error/warn.
+3. Simpan hasil ke file log.
+**Pitfalls**: hanya mencari `error` bisa melewatkan warning kritis.
+**Validation**: file log hanya berisi baris relevan.
+
+```bash
+pnpm -C docs exec tsc --noEmit 2>&1 | grep -Ei "error|warning" > tsc-issues.log
+```
+
+## Next Steps
+
+Lanjut ke [Bash Scripting Basics](/docs/learning/shell/bash-scripting-basics).

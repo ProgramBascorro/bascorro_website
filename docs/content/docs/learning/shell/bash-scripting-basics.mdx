@@ -1,0 +1,144 @@
+---
+title: Bash Scripting Basics
+description: "Menulis script Bash sederhana untuk otomatisasi task harian"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Bash Scripting Basics
+
+Setelah paham command satu-satu, langkah berikutnya adalah menggabungkannya dalam script supaya task berulang bisa otomatis.
+
+---
+
+## Struktur Script Minimal
+
+**Purpose**: Membuat script Bash yang bisa dieksekusi.
+**Inputs**: file `.sh`.
+**Outputs**: script runnable.
+**Steps**:
+1. Tulis shebang.
+2. Aktifkan mode aman ringan (`set -eu`).
+3. Beri executable permission.
+**Pitfalls**: lupa `chmod +x` membuat script tidak bisa dijalankan langsung.
+**Validation**: script bisa dieksekusi tanpa error sintaks.
+
+```bash
+#!/usr/bin/env bash
+set -eu
+
+echo "Hello BASCORRO"
+```
+
+```bash
+chmod +x scripts/hello.sh
+./scripts/hello.sh
+```
+
+---
+
+## Variables dan Argumen
+
+**Purpose**: Membuat script menerima input dinamis.
+**Inputs**: argumen dari command line.
+**Outputs**: output sesuai argumen.
+**Steps**:
+1. Ambil argumen dengan `$1`, `$2`.
+2. Simpan ke variabel yang jelas.
+3. Tampilkan usage jika argumen kosong.
+**Pitfalls**: tidak validasi argumen membuat script error di tengah.
+**Validation**: script menolak input kosong dan sukses saat input valid.
+
+```bash
+#!/usr/bin/env bash
+set -eu
+
+TARGET_DIR="${1:-}"
+if [ -z "$TARGET_DIR" ]; then
+  echo "Usage: ./scripts/check-dir.sh <dir>"
+  exit 1
+fi
+
+echo "Checking: $TARGET_DIR"
+ls -la "$TARGET_DIR"
+```
+
+---
+
+## Conditional dan Loop
+
+**Purpose**: Menjalankan logika berdasarkan kondisi.
+**Inputs**: list file atau folder.
+**Outputs**: laporan sederhana.
+**Steps**:
+1. Gunakan `if` untuk cek eksistensi.
+2. Gunakan `for` untuk iterasi.
+3. Cetak hasil tiap item.
+**Pitfalls**: lupa quote variable yang mengandung spasi.
+**Validation**: loop memproses semua item tanpa error parse.
+
+```bash
+#!/usr/bin/env bash
+set -eu
+
+for path in docs ros_ws scripts; do
+  if [ -d "$path" ]; then
+    echo "[OK] directory exists: $path"
+  else
+    echo "[MISS] directory not found: $path"
+  fi
+done
+```
+
+---
+
+## Mini Project: Workspace Health Check
+
+Buat script `scripts/workspace-check.sh` yang:
+1. Mengecek folder `docs`, `ros_ws`, `scripts`.
+2. Menampilkan branch Git aktif.
+3. Menampilkan 3 commit terakhir.
+
+Contoh isi script:
+
+```bash
+#!/usr/bin/env bash
+set -eu
+
+echo "== Workspace Check =="
+for path in docs ros_ws scripts; do
+  [ -d "$path" ] && echo "[OK] $path" || echo "[MISS] $path"
+done
+
+echo "== Git =="
+git rev-parse --abbrev-ref HEAD
+git log --oneline -n 3
+```
+
+Jalankan:
+
+```bash
+chmod +x scripts/workspace-check.sh
+./scripts/workspace-check.sh
+```
+
+<Callout type="warning">
+  Jangan menjalankan script yang belum kamu baca isinya. Selalu audit command
+  terlebih dahulu, terutama jika ada `rm`, `mv`, atau `sudo`.
+</Callout>
+
+---
+
+## Challenge
+
+Modifikasi `workspace-check.sh` agar menerima argumen jumlah commit:
+
+```bash
+./scripts/workspace-check.sh 5
+```
+
+Jika argumen kosong, gunakan default `3`.
+
+## Next Steps
+
+Setelah track ini, lanjut ke [ROS 2 Fundamentals](/docs/learning/ros).

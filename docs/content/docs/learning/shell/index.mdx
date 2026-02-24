@@ -1,0 +1,74 @@
+---
+title: Shell & Linux Basics
+description: "Dasar command line Linux dan Bash untuk workflow harian BASCORRO"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Cards, Card } from "fumadocs-ui/components/card";
+
+# Shell & Linux Basics
+
+Track ini untuk anggota BASCORRO yang masih baru dengan terminal. Fokusnya: command line yang dipakai setiap hari saat setup, debugging, dan development robot.
+
+<Callout type="info">
+  Kalau kamu nyaman pakai terminal, workflow ROS 2 dan Git akan jauh lebih cepat.
+</Callout>
+
+---
+
+## Learning Outcomes
+
+Setelah menyelesaikan track ini, kamu bisa:
+
+- Navigasi file system Linux tanpa bingung.
+- Kelola file dan folder dengan aman dari terminal.
+- Pakai pipe dan redirection untuk analisis output command.
+- Cari file atau teks penting dengan cepat (`rg`, `grep`).
+- Menulis script Bash sederhana untuk otomatisasi task rutin.
+
+---
+
+## Learning Path
+
+<Cards>
+  <Card
+    title="Terminal Navigation"
+    description="pwd, ls, cd, path absolut/relatif, history, tab completion"
+    href="/docs/learning/shell/terminal-navigation"
+  />
+  <Card
+    title="File Operations & Permissions"
+    description="touch, mkdir, cp, mv, rm, chmod, dan praktik aman"
+    href="/docs/learning/shell/file-operations-permissions"
+  />
+  <Card
+    title="Pipes, Search & Redirection"
+    description="|, >, >>, grep/rg, sort, uniq, wc"
+    href="/docs/learning/shell/pipes-search-redirection"
+  />
+  <Card
+    title="Bash Scripting Basics"
+    description="script sederhana dengan variable, argumen, kondisi, dan loop"
+    href="/docs/learning/shell/bash-scripting-basics"
+  />
+</Cards>
+
+---
+
+## Safety Rules
+
+- Selalu cek folder aktif dengan `pwd` sebelum menjalankan command perubahan file.
+- Hindari command destruktif tanpa verifikasi (`rm -r`, `mv` ke path yang tidak jelas).
+- Pakai `-i` saat ragu (`cp -i`, `mv -i`, `rm -i`).
+- Gunakan `sudo` hanya ketika memang diperlukan dan kamu paham efeknya.
+
+<Callout type="warning">
+  Command di terminal langsung mengubah sistem. Biasakan verifikasi command
+  sebelum tekan Enter.
+</Callout>
+
+---
+
+## Next Steps
+
+Mulai dari [Terminal Navigation](/docs/learning/shell/terminal-navigation).
