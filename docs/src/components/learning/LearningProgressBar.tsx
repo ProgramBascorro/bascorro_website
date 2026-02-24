@@ -19,8 +19,7 @@ export function LearningProgressBar({ currentSlug, track }: LearningProgressBarP
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [isHydrated, setIsHydrated] = useState(false);
-  const prevCompletedRef = useRef(false);
-  const didInitRef = useRef(false);
+  const prevProgressRef = useRef<LearningProgressMap | null>(null);
 
   useEffect(() => {
     setProgress(readLearningProgress());
@@ -52,12 +51,19 @@ export function LearningProgressBar({ currentSlug, track }: LearningProgressBarP
 
   useEffect(() => {
     if (!isHydrated || !currentSlug) return;
+
+    // First hydrated snapshot is baseline; don't celebrate historical completions.
+    if (prevProgressRef.current === null) {
+      prevProgressRef.current = progress;
+      return;
+    }
+
+    const wasCompleted = Boolean(prevProgressRef.current[currentSlug]);
     const nowCompleted = Boolean(progress[currentSlug]);
-    if (didInitRef.current && nowCompleted && !prevCompletedRef.current) {
+    if (!wasCompleted && nowCompleted) {
       setShowConfetti(true);
     }
-    prevCompletedRef.current = nowCompleted;
-    if (!didInitRef.current) didInitRef.current = true;
+    prevProgressRef.current = progress;
   }, [currentSlug, isHydrated, progress]);
 
   return (
