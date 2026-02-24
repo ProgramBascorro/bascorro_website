@@ -1,0 +1,121 @@
+---
+title: Undo & Recovery
+description: Cara aman mengembalikan perubahan tanpa merusak history tim
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Undo & Recovery
+
+Bagian ini fokus pada cara **aman** membatalkan perubahan dan memulihkan kesalahan.
+
+---
+
+## Revert Commit (Aman untuk Tim)
+
+**Purpose**: Membatalkan efek commit dengan commit baru.
+**Inputs**: ID commit yang ingin dibatalkan.
+**Outputs**: commit baru yang membalik perubahan.
+**Steps**:
+1. Temukan ID commit.
+2. Jalankan `git revert`.
+3. Push hasilnya.
+**Pitfalls**: revert tidak menghapus commit lama, hanya membalik isi.
+**Validation**: `git log` menunjukkan commit revert baru.
+
+```bash
+git log --oneline
+
+git revert <commit_id>
+```
+
+---
+
+## Reset (Hati-hati)
+
+**Purpose**: Memindahkan pointer HEAD ke commit tertentu.
+**Inputs**: target commit.
+**Outputs**: posisi HEAD berubah.
+**Steps**:
+1. Pilih mode reset sesuai kebutuhan.
+2. Jalankan reset.
+**Pitfalls**: `--hard` bisa menghapus perubahan lokal.
+**Validation**: `git log --oneline` menunjukkan HEAD berpindah.
+
+```bash
+# Soft: commit batal, perubahan tetap staged
+git reset --soft HEAD~1
+
+# Mixed: commit batal, perubahan jadi unstaged
+git reset --mixed HEAD~1
+
+# Hard: commit batal, perubahan hilang
+git reset --hard HEAD~1
+```
+
+<Callout type="warning">
+  Hindari `git reset --hard` pada branch yang sudah di-push.
+</Callout>
+
+---
+
+## Restore File
+
+**Purpose**: Mengembalikan file ke kondisi terakhir yang di-commit.
+**Inputs**: path file.
+**Outputs**: file kembali ke state sebelumnya.
+**Steps**:
+1. Tentukan file yang ingin di-restore.
+2. Jalankan `git restore`.
+**Pitfalls**: perubahan lokal hilang setelah restore.
+**Validation**: `git status` menunjukkan file bersih.
+
+```bash
+git restore path/to/file
+```
+
+---
+
+## Stash (Simpan Sementara)
+
+**Purpose**: Menyimpan perubahan sementara tanpa commit.
+**Inputs**: perubahan lokal.
+**Outputs**: stash baru di stack.
+**Steps**:
+1. `git stash` untuk menyimpan.
+2. `git stash pop` untuk mengembalikan.
+**Pitfalls**: lupa pop stash membuat perubahan tertinggal.
+**Validation**: `git stash list` menunjukkan stash ada atau sudah kosong.
+
+```bash
+git stash
+
+git stash list
+
+git stash pop
+```
+
+---
+
+## Reflog (Recovery Terakhir)
+
+**Purpose**: Menemukan commit yang “hilang” setelah reset atau rebase.
+**Inputs**: reflog lokal.
+**Outputs**: ID commit yang bisa dipulihkan.
+**Steps**:
+1. Cek reflog.
+2. Reset ke commit yang diinginkan.
+**Pitfalls**: reflog hanya ada di lokal.
+**Validation**: HEAD kembali ke commit yang hilang.
+
+```bash
+git reflog
+
+git reset --hard <reflog_commit_id>
+```
+
+---
+
+## Next Steps
+
+- Kembali ke [Git Fundamentals](/docs/learning/git).

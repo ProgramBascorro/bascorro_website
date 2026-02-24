@@ -10,11 +10,13 @@ import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocActions } from '@/components/docs/DocActions';
+import { LearningCompletionMarker, LearningProgressBar } from '@/components/learning';
 import {
   BreadcrumbSchema,
   ArticleSchema,
 } from '@/components/seo/StructuredData';
 import { getSiteUrl } from '@/lib/site-url';
+import { getLearningTracks } from '@/lib/learning-pages';
 
 const BASE_URL = getSiteUrl();
 
@@ -43,6 +45,11 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   ];
 
   const pageUrl = `${BASE_URL}/docs/${page.slugs.join('/')}`;
+  const isLearningPage = page.slugs[0] === 'learning' && page.slugs.length >= 2;
+  const learningTrack = isLearningPage
+    ? getLearningTracks().find((track) => track.id === page.slugs[1])
+    : undefined;
+  const currentLearningSlug = isLearningPage ? page.slugs.join('/') : '';
 
   return (
     <>
@@ -60,6 +67,12 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           filePath={filePath}
           title={page.data.title}
         />
+        {learningTrack && (
+          <LearningProgressBar
+            currentSlug={currentLearningSlug}
+            track={learningTrack}
+          />
+        )}
         <DocsBody>
           <MDX
             components={getMDXComponents({
@@ -67,6 +80,9 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
               a: createRelativeLink(source, page),
             })}
           />
+          {learningTrack && (
+            <LearningCompletionMarker currentSlug={currentLearningSlug} />
+          )}
         </DocsBody>
       </DocsPage>
     </>

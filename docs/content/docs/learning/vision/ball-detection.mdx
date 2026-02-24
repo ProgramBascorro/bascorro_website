@@ -23,6 +23,17 @@ Coba visualisasi ball detection pipeline secara interaktif:
 
 ## Overview
 
+**Purpose**: Memberi gambaran cepat alur deteksi bola dari input kamera sampai validasi bentuk.
+**Inputs**: frame kamera BGR dari OP3.
+**Outputs**: kandidat bola terverifikasi (pusat, radius, confidence).
+**Steps**:
+1. Color filter untuk mengisolasi warna bola.
+2. Morphology untuk membersihkan mask.
+3. Contour untuk menemukan kandidat.
+4. Validation untuk cek bentuk dan ukuran.
+**Pitfalls**: lighting berubah, blur saat walking, dan objek oranye lain bisa menipu.
+**Validation**: cek `/vision/debug_image` apakah mask putih hanya muncul di bola.
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    BALL DETECTION PIPELINE                  │
@@ -36,6 +47,8 @@ Coba visualisasi ball detection pipeline secara interaktif:
 └─────────────────────────────────────────────────────────────┘
 ```
 
+![asd](/ball_detection_pipeline.png)
+
 ---
 
 ## Method 1: HSV Color Segmentation
@@ -45,6 +58,16 @@ Metode paling umum dan cepat untuk deteksi bola berwarna.
 Intinya kita membuat **mask biner** berdasarkan range HSV. Hasilnya adalah gambar hitam/putih: putih berarti kandidat bola. Tantangan utamanya adalah menentukan range HSV yang stabil di berbagai pencahayaan.
 
 ### Step 1: Define Color Range
+
+**Purpose**: Menentukan batas HSV agar mask hanya menangkap bola.
+**Inputs**: sampel frame di beberapa kondisi lighting.
+**Outputs**: `BALL_HSV_LOWER` dan `BALL_HSV_UPPER` per kondisi.
+**Steps**:
+1. Ambil 20 sampai 30 frame di arena.
+2. Sampling warna bola dan catat nilai HSV.
+3. Tetapkan range untuk kondisi terang, normal, redup.
+**Pitfalls**: range terlalu sempit membuat bola hilang, terlalu lebar membuat false positive.
+**Validation**: mask menutup bola secara konsisten saat head pan.
 
 ```python
 import cv2
@@ -64,6 +87,16 @@ BALL_HSV_RANGES = {
 
 ### Step 2: Create Mask
 
+**Purpose**: Menghasilkan mask biner dan membersihkan noise sebelum contour.
+**Inputs**: image BGR, HSV lower dan upper.
+**Outputs**: mask biner dengan bola berwarna putih.
+**Steps**:
+1. Konversi ke HSV.
+2. `inRange` untuk membuat mask.
+3. Morphology open dan close untuk noise cleanup.
+**Pitfalls**: kernel terlalu besar dapat menghapus bola kecil.
+**Validation**: debug mask harus halus, bukan bintik-bintik acak.
+
 ```python
 def create_ball_mask(image, lower, upper):
     """Create binary mask for ball color."""
@@ -82,6 +115,17 @@ def create_ball_mask(image, lower, upper):
 ```
 
 ### Step 3: Find Ball Contour
+
+**Purpose**: Memilih kontur terbaik yang paling mirip bola.
+**Inputs**: mask biner.
+**Outputs**: `best_ball` berisi center, radius, circularity, area.
+**Steps**:
+1. Cari kontur eksternal.
+2. Hitung enclosing circle.
+3. Filter berdasarkan radius dan circularity.
+4. Pilih skor tertinggi.
+**Pitfalls**: occlusion membuat circularity turun; objek oranye lain bisa menang.
+**Validation**: overlay circle pada debug image harus pas di bola.
 
 ```python
 def find_ball(mask, min_radius=10, max_radius=200):
@@ -123,6 +167,17 @@ def find_ball(mask, min_radius=10, max_radius=200):
 ```
 
 ### Complete Pipeline
+
+**Purpose**: Menggabungkan semua langkah menjadi class yang bisa dipakai di node ROS 2.
+**Inputs**: image BGR per frame.
+**Outputs**: tuple `(ball, mask)` untuk dipublish atau ditampilkan.
+**Steps**:
+1. Buat mask HSV.
+2. Bersihkan mask dengan morphology.
+3. Cari ball terbaik.
+4. Gambar overlay untuk debug.
+**Pitfalls**: lupa mengembalikan mask membuat debugging sulit.
+**Validation**: `ball` tidak `None` saat bola terlihat, dan mask stabil saat head scan.
 
 ```python
 class BallDetector:
@@ -273,11 +328,29 @@ Menggunakan YOLO untuk deteksi yang lebih robust.
 
 ### Installation
 
+**Purpose**: Menyiapkan dependency YOLO agar training dan inference bisa berjalan.
+**Inputs**: environment Python aktif.
+**Outputs**: paket `ultralytics` terpasang.
+**Steps**:
+1. Aktifkan venv atau conda env.
+2. Jalankan install via pip.
+**Pitfalls**: versi Python tidak kompatibel akan memicu error install.
+**Validation**: `python -c "from ultralytics import YOLO"` sukses.
+
 ```bash
 pip install ultralytics
 ```
 
 ### Training Custom Model
+
+**Purpose**: Fine-tune YOLO dengan dataset RoboCup agar lebih robust di lapangan.
+**Inputs**: `yolov8n.pt`, `robocup_ball.yaml`, jumlah epoch.
+**Outputs**: weights hasil training di `runs/detect/train/weights/`.
+**Steps**:
+1. Load pretrained model.
+2. Jalankan `train` dengan dataset dan hyperparameter.
+**Pitfalls**: path dataset salah membuat training berhenti.
+**Validation**: log training menunjukkan loss turun dan mAP naik.
 
 ```python
 from ultralytics import YOLO
@@ -296,6 +369,15 @@ results = model.train(
 
 ### Dataset YAML (robocup_ball.yaml)
 
+**Purpose**: Mendefinisikan lokasi dataset dan daftar kelas untuk YOLO.
+**Inputs**: path dataset dan daftar kelas.
+**Outputs**: file YAML yang dipakai training.
+**Steps**:
+1. Isi `path`, `train`, `val`.
+2. Set `nc` sesuai jumlah kelas.
+**Pitfalls**: `nc` tidak sesuai `names` membuat label mismatch.
+**Validation**: training membaca dataset tanpa error.
+
 ```yaml
 # RoboCup Ball Dataset
 path: /path/to/dataset
@@ -307,6 +389,16 @@ names: ["ball"]
 ```
 
 ### Inference
+
+**Purpose**: Menjalankan deteksi cepat untuk verifikasi kualitas model.
+**Inputs**: weights hasil training dan image uji.
+**Outputs**: dict hasil deteksi berisi center, radius, confidence.
+**Steps**:
+1. Load model dari `best.pt`.
+2. Jalankan inference pada image.
+3. Ambil bounding box dan confidence.
+**Pitfalls**: confidence threshold terlalu tinggi membuat bola tidak muncul.
+**Validation**: bounding box konsisten pada beberapa frame berbeda.
 
 ```python
 from ultralytics import YOLO
@@ -364,6 +456,16 @@ Gunakan tuner interaktif untuk eksperimen dengan nilai HSV:
 <HSVTuner />
 
 ### Python Tuning Script
+
+**Purpose**: Tuning HSV secara real-time dengan slider.
+**Inputs**: stream kamera atau video.
+**Outputs**: nilai HSV lower dan upper yang bisa disimpan.
+**Steps**:
+1. Buat trackbar untuk H, S, V.
+2. Update mask setiap frame.
+3. Simpan nilai saat bola terlihat stabil.
+**Pitfalls**: lupa lock exposure kamera membuat HSV berubah-ubah.
+**Validation**: mask menangkap bola saat head pan.
 
 ```python
 import cv2
@@ -433,6 +535,16 @@ create_hsv_tuner(0)  # Use webcam
 
 Setelah mendeteksi bola di image, kita perlu menghitung posisi 3D.
 
+**Purpose**: Mengubah radius pixel menjadi estimasi jarak dan posisi 3D bola.
+**Inputs**: `camera_matrix`, radius pixel, diameter bola.
+**Outputs**: posisi 3D di frame kamera dan jarak.
+**Steps**:
+1. Hitung jarak dengan model pinhole.
+2. Proyeksikan pixel ke koordinat kamera.
+3. Kembalikan posisi 3D.
+**Pitfalls**: occlusion membuat radius terlalu kecil dan jarak terlalu jauh.
+**Validation**: jarak mendekati nilai ground truth saat jarak terukur.
+
 ```python
 class BallPositionEstimator:
     def __init__(self, camera_matrix, ball_diameter=0.065):
@@ -483,6 +595,16 @@ class BallPositionEstimator:
 ## ROS 2 Integration
 
 ### Ball Detector Node
+
+**Purpose**: Contoh node ROS 2 untuk publish posisi bola dan debug image.
+**Inputs**: `/camera/image_raw` dari kamera OP3.
+**Outputs**: `/ball_position` dan `/ball_debug`.
+**Steps**:
+1. Subscribe image.
+2. Jalankan HSV detection.
+3. Publish `PointStamped` dan debug image.
+**Pitfalls**: lupa set `header.stamp` membuat sinkronisasi TF gagal.
+**Validation**: `ros2 topic echo /ball_position --once` menunjukkan header valid.
 
 ```python
 import rclpy
@@ -575,6 +697,16 @@ if __name__ == '__main__':
 
 ### 1. Region of Interest (ROI)
 
+**Purpose**: Meningkatkan FPS dengan membatasi area pencarian.
+**Inputs**: posisi terakhir dan radius pencarian.
+**Outputs**: deteksi dari ROI atau fallback full image.
+**Steps**:
+1. Buat ROI di sekitar posisi terakhir.
+2. Deteksi hanya pada ROI.
+3. Jika gagal, kembali ke full frame.
+**Pitfalls**: ROI terlalu kecil membuat bola hilang saat bergerak cepat.
+**Validation**: FPS naik dan recall tetap stabil.
+
 ```python
 def detect_with_roi(image, last_position=None, search_radius=100):
     """Detect ball using ROI from last known position."""
@@ -604,6 +736,16 @@ def detect_with_roi(image, last_position=None, search_radius=100):
 ```
 
 ### 2. Multi-scale Detection
+
+**Purpose**: Menangkap bola jauh dan dekat dengan beberapa skala.
+**Inputs**: image dan list `scales`.
+**Outputs**: kandidat terbaik dari semua skala.
+**Steps**:
+1. Resize image ke beberapa skala.
+2. Deteksi di setiap skala.
+3. Pilih kandidat dengan confidence terbaik.
+**Pitfalls**: terlalu banyak skala menurunkan FPS.
+**Validation**: bola kecil di kejauhan tetap terdeteksi.
 
 ```python
 def detect_multiscale(image, scales=[1.0, 0.5, 0.25]):

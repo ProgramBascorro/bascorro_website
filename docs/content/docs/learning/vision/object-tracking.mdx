@@ -1,0 +1,171 @@
+---
+title: Object Tracking
+description: Tracking bola antar frame dengan Kalman Filter untuk deteksi yang lebih stabil
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Object Tracking
+
+Frame-by-frame detection sering noisy. Tracking menambahkan konteks waktu agar robot mendapat estimasi posisi bola yang lebih halus dan tahan dropout.
+
+---
+
+## Kenapa Tracking Penting?
+
+- **Smoothing**: mengurangi jitter dari deteksi per-frame.
+- **Prediction**: tetap punya estimasi saat bola tertutup robot lain.
+- **Control-friendly**: output lebih stabil untuk head control dan walking.
+
+<Callout type="info">
+  Untuk RoboCup, tracking sederhana yang stabil biasanya lebih berguna daripada model kompleks tapi rapuh.
+</Callout>
+
+---
+
+## Single-Ball Kalman Filter
+
+State yang dipakai:
+
+- `x, y`: posisi pixel
+- `vx, vy`: kecepatan pixel/frame
+
+```python
+import numpy as np
+
+class BallKalmanTracker:
+    def __init__(self, dt=1.0):
+        self.dt = dt
+        self.x = np.zeros((4, 1))  # [x, y, vx, vy]
+
+        self.F = np.array([
+            [1, 0, dt, 0],
+            [0, 1, 0, dt],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+        ], dtype=float)
+        self.H = np.array([
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+        ], dtype=float)
+
+        self.P = np.eye(4) * 100.0
+        self.Q = np.eye(4) * 0.1   # process noise
+        self.R = np.eye(2) * 5.0   # measurement noise
+
+        self.initialized = False
+
+    def predict(self):
+        self.x = self.F @ self.x
+        self.P = self.F @ self.P @ self.F.T + self.Q
+        return self.x[:2].flatten()
+
+    def update(self, meas_xy):
+        z = np.array([[meas_xy[0]], [meas_xy[1]]], dtype=float)
+        if not self.initialized:
+            self.x[0, 0], self.x[1, 0] = meas_xy
+            self.initialized = True
+            return
+
+        y = z - self.H @ self.x
+        S = self.H @ self.P @ self.H.T + self.R
+        K = self.P @ self.H.T @ np.linalg.inv(S)
+        self.x = self.x + K @ y
+        I = np.eye(4)
+        self.P = (I - K @ self.H) @ self.P
+```
+
+---
+
+## Tracking Loop
+
+**Purpose**: Menunjukkan alur predict-update dan handling miss detection.
+**Inputs**: stream frame dan output deteksi per frame.
+**Outputs**: track posisi bola yang stabil.
+**Steps**:
+1. Prediksi posisi dengan Kalman.
+2. Update jika ada deteksi baru.
+3. Jika miss, pakai prediksi dan hitung `missed`.
+4. Reset tracker jika miss terlalu lama.
+**Pitfalls**: `max_missed_frames` terlalu kecil membuat reset sering.
+**Validation**: posisi tetap stabil saat bola tertutup sementara.
+
+```python
+tracker = BallKalmanTracker(dt=1.0 / 30.0)
+max_missed_frames = 8
+missed = 0
+
+for frame in video_stream():
+    det = detect_ball(frame)  # return (x, y) or None
+
+    pred_x, pred_y = tracker.predict()
+
+    if det is not None:
+        tracker.update(det)
+        missed = 0
+        track_xy = det
+        confidence = "measured"
+    else:
+        missed += 1
+        track_xy = (pred_x, pred_y)
+        confidence = "predicted"
+
+    if missed > max_missed_frames:
+        # re-init tracker when target is lost too long
+        tracker.initialized = False
+```
+
+---
+
+## Gating dan Outlier Rejection
+
+Sebelum `update()`, cek apakah deteksi masih masuk akal:
+
+```python
+def is_measurement_valid(pred, meas, gate_px=80.0):
+    dx = meas[0] - pred[0]
+    dy = meas[1] - pred[1]
+    return (dx * dx + dy * dy) <= gate_px * gate_px
+```
+
+Jika tidak valid, abaikan measurement dan pakai prediksi saja untuk frame itu.
+
+---
+
+## Multi-Object Concept (Ringkas)
+
+Untuk banyak objek (ball, robot, goal post):
+
+1. Jalankan tracker per target.
+2. Lakukan assignment detection-to-track (misalnya Hungarian/SORT).
+3. Hapus track lama jika `age > threshold`.
+4. Buat track baru jika deteksi tidak terpasang.
+
+---
+
+## Failure Modes dan Mitigasi
+
+| Problem | Penyebab | Mitigasi |
+| --- | --- | --- |
+| ID switch | Crossing objects, assignment lemah | Tambah gating + ukuran/warna fitur |
+| Tracker lag | Q terlalu kecil | Naikkan process noise |
+| Posisi bergetar | R terlalu kecil, deteksi noisy | Naikkan measurement noise |
+| Sering reset | `max_missed_frames` terlalu rendah | Naikkan toleransi dropout |
+
+---
+
+## Practice Exercise
+
+1. Rekam 2 klip: pencahayaan terang dan redup.
+2. Tuning `Q`, `R`, dan `gate_px`.
+3. Catat:
+   - jitter rata-rata (pixel),
+   - jumlah lost-track per menit,
+   - waktu recovery setelah occlusion.
+
+---
+
+## Next Steps
+
+- Integrasikan ke ROS 2 di [ROS 2 Integration](/docs/learning/vision/ros2-integration).
+- Uji robustness dengan checklist di [Evaluation & Benchmarking](/docs/learning/vision/evaluation-benchmarking).

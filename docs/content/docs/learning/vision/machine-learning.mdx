@@ -17,6 +17,16 @@ CNN cocok untuk tugas klasifikasi sederhana (misalnya bola vs bukan bola). Ia be
 
 ### Convolutional Neural Network Architecture
 
+**Purpose**: Visualisasi alur umum CNN untuk klasifikasi sederhana.
+**Inputs**: image 2D sebagai tensor.
+**Outputs**: skor kelas (ball vs not ball).
+**Steps**:
+1. Conv + ReLU untuk ekstraksi fitur.
+2. MaxPool untuk downsample.
+3. Flatten dan Dense untuk klasifikasi.
+**Pitfalls**: input size tidak cocok dengan layer akhir.
+**Validation**: output shape sesuai jumlah kelas.
+
 ```
 Input Image (640x480x3)
        │
@@ -46,6 +56,16 @@ Input Image (640x480x3)
 ```
 
 ### Simple CNN dengan PyTorch
+
+**Purpose**: Contoh implementasi CNN sederhana untuk baseline.
+**Inputs**: batch tensor shape `[B, 3, H, W]`.
+**Outputs**: logits per kelas.
+**Steps**:
+1. Tumpuk conv, ReLU, maxpool.
+2. Flatten dan dense untuk output.
+3. Return logits untuk loss function.
+**Pitfalls**: ukuran input harus cocok dengan `Linear`.
+**Validation**: forward pass berjalan tanpa error ukuran.
 
 ```python
 import torch
@@ -91,11 +111,30 @@ YOLO cocok untuk deteksi multi-objek (bola, robot, gawang) dalam satu frame. Kel
 
 ### Installation
 
+**Purpose**: Menyiapkan library YOLO untuk training dan inference.
+**Inputs**: environment Python aktif.
+**Outputs**: paket `ultralytics` terpasang.
+**Steps**:
+1. Aktifkan venv atau conda.
+2. Install paket via pip.
+**Pitfalls**: versi Python tidak kompatibel.
+**Validation**: import YOLO berhasil.
+
 ```bash
 pip install ultralytics
 ```
 
 ### Quick Start
+
+**Purpose**: Menjalankan inference cepat untuk cek model pretrained.
+**Inputs**: image uji.
+**Outputs**: hasil deteksi dan visualisasi.
+**Steps**:
+1. Load model pretrained.
+2. Jalankan inference.
+3. Tampilkan hasil.
+**Pitfalls**: image path salah membuat inference gagal.
+**Validation**: bounding box terlihat di output.
 
 ```python
 from ultralytics import YOLO
@@ -111,6 +150,15 @@ results[0].show()
 ```
 
 ### Training Custom Model
+
+**Purpose**: Melatih YOLO dengan dataset RoboCup.
+**Inputs**: dataset YAML, jumlah epoch, ukuran image.
+**Outputs**: weights hasil training.
+**Steps**:
+1. Siapkan struktur dataset.
+2. Panggil `train` dengan parameter.
+**Pitfalls**: label tidak sesuai format YOLO.
+**Validation**: training log menunjukkan loss menurun.
 
 ```python
 from ultralytics import YOLO
@@ -137,6 +185,15 @@ model.train(
 
 ### Dataset YAML
 
+**Purpose**: Menjelaskan konfigurasi dataset untuk training YOLO.
+**Inputs**: path dataset dan daftar kelas.
+**Outputs**: file YAML.
+**Steps**:
+1. Isi `path`, `train`, `val`.
+2. Set `nc` sesuai jumlah `names`.
+**Pitfalls**: `nc` tidak sesuai jumlah kelas.
+**Validation**: training berjalan tanpa error kelas.
+
 ```yaml
 # dataset.yaml
 path: /path/to/dataset
@@ -154,6 +211,16 @@ names: ["ball", "goal", "robot"]
 Transfer learning mempercepat training karena kita memanfaatkan model yang sudah belajar fitur dasar (tepi, tekstur). Biasanya hanya layer terakhir yang dilatih ulang untuk kelas RoboCup, sehingga butuh data lebih sedikit.
 
 ### Using Pretrained Models
+
+**Purpose**: Memanfaatkan model pretrained untuk transfer learning.
+**Inputs**: model pretrained dan jumlah kelas baru.
+**Outputs**: model dengan head baru.
+**Steps**:
+1. Load ResNet pretrained.
+2. Freeze parameter awal.
+3. Ganti layer terakhir.
+**Pitfalls**: lupa `requires_grad=False` membuat training lambat.
+**Validation**: hanya layer akhir yang terupdate saat training.
 
 ```python
 import torchvision.models as models

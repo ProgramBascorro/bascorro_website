@@ -1,0 +1,104 @@
+---
+title: Branching
+description: Membuat branch, merge, rebase, dan menangani konflik sederhana
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Branching
+
+Branch adalah jalur kerja terpisah agar kamu bisa eksperimen tanpa mengganggu branch utama.
+
+---
+
+## Membuat dan Pindah Branch
+
+**Purpose**: Membuat branch kerja dan berpindah ke branch tersebut.
+**Inputs**: nama branch.
+**Outputs**: branch baru dengan HEAD berpindah.
+**Steps**:
+1. Buat branch dengan nama yang jelas.
+2. Pindah ke branch itu.
+**Pitfalls**: lupa pindah branch membuat commit masuk ke `main`.
+**Validation**: `git status` menampilkan branch baru.
+
+```bash
+git checkout -b feature/ball-tracking
+# atau
+
+git switch -c feature/ball-tracking
+```
+
+---
+
+## Merge Branch
+
+**Purpose**: Menggabungkan perubahan dari branch lain ke branch aktif.
+**Inputs**: branch sumber.
+**Outputs**: commit merge atau fast-forward.
+**Steps**:
+1. Pastikan kamu berada di branch tujuan.
+2. Jalankan `git merge`.
+3. Selesaikan konflik jika ada.
+**Pitfalls**: merge ke branch yang salah.
+**Validation**: `git log --oneline --graph` menunjukkan dua branch sudah menyatu.
+
+```bash
+git checkout main
+git merge feature/ball-tracking
+```
+
+<Callout type="info">
+  Jika tidak ada commit baru di `main`, merge bisa menjadi fast-forward dan tidak membuat commit merge.
+</Callout>
+
+---
+
+## Rebase (Ringkas)
+
+**Purpose**: Menaruh commit branch kamu di atas commit terbaru dari `main`.
+**Inputs**: branch aktif dan target branch.
+**Outputs**: history yang lebih linear.
+**Steps**:
+1. Checkout branch kerja.
+2. Jalankan `git rebase main`.
+3. Jika konflik, resolve lalu `git rebase --continue`.
+**Pitfalls**: jangan rebase commit yang sudah di-push dan dipakai tim.
+**Validation**: `git log --oneline --graph` terlihat lebih rapi.
+
+```bash
+git checkout feature/ball-tracking
+git rebase main
+```
+
+---
+
+## Menangani Konflik
+
+**Purpose**: Menyelesaikan perubahan yang bentrok saat merge atau rebase.
+**Inputs**: file konflik.
+**Outputs**: file terselesaikan dan proses merge lanjut.
+**Steps**:
+1. Buka file konflik dan pilih perubahan yang benar.
+2. Hapus marker konflik.
+3. `git add` file yang sudah selesai.
+4. Lanjutkan merge atau rebase.
+**Pitfalls**: lupa remove marker konflik membuat build gagal.
+**Validation**: `git status` menunjukkan konflik selesai.
+
+```bash
+# Setelah edit file konflik
+git add path/to/file
+
+# Jika rebase
+git rebase --continue
+
+# Jika merge
+# git commit (jika diperlukan)
+```
+
+---
+
+## Next Steps
+
+- Lanjut ke [Remote Collaboration](/docs/learning/git/remote-collab).

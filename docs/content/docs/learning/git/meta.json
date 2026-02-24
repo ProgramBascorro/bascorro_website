@@ -1,0 +1,11 @@
+{
+  "title": "Git Fundamentals",
+  "icon": "GitBranch",
+  "pages": [
+    "index",
+    "git-basics",
+    "branching",
+    "remote-collab",
+    "undo-recover"
+  ]
+}

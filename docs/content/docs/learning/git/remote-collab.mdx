@@ -1,0 +1,95 @@
+---
+title: Remote Collaboration
+description: "Bekerja dengan origin dan upstream: fetch, pull, dan push"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# Remote Collaboration
+
+Remote adalah copy repository yang berada di server (GitHub). Kamu bekerja lokal, lalu sinkron ke remote.
+
+---
+
+## Menambahkan Remote
+
+**Purpose**: Menyetel remote agar repo lokal terhubung ke server.
+**Inputs**: URL remote.
+**Outputs**: remote bernama `origin` dan optional `upstream`.
+**Steps**:
+1. Cek remote yang sudah ada.
+2. Tambahkan `origin` dan `upstream` jika perlu.
+**Pitfalls**: remote salah URL membuat push gagal.
+**Validation**: `git remote -v` menampilkan URL benar.
+
+```bash
+git remote -v
+
+git remote add origin https://github.com/yourname/motion_webots.git
+git remote add upstream https://github.com/ProgramBascorro/motion_webots.git
+```
+
+---
+
+## Fetch dan Pull
+
+**Purpose**: Mengambil update terbaru dari remote.
+**Inputs**: nama remote.
+**Outputs**: branch lokal tersinkron.
+**Steps**:
+1. `git fetch` untuk update data remote.
+2. `git pull` untuk update sekaligus merge.
+**Pitfalls**: pull langsung tanpa melihat perubahan bisa menimbulkan konflik.
+**Validation**: `git status` menunjukkan branch up to date.
+
+```bash
+git fetch upstream
+
+git pull origin main
+```
+
+---
+
+## Push Branch Kerja
+
+**Purpose**: Mengirim commit ke remote agar bisa dibuka sebagai PR atau direview.
+**Inputs**: branch aktif.
+**Outputs**: branch di remote.
+**Steps**:
+1. Pastikan commit sudah rapi.
+2. Push branch ke origin.
+**Pitfalls**: push ke `main` tanpa izin tim.
+**Validation**: branch muncul di GitHub.
+
+```bash
+git push origin feature/ball-tracking
+```
+
+<Callout type="warning">
+  Jangan push langsung ke `main` tanpa koordinasi. Gunakan branch kerja.
+</Callout>
+
+---
+
+## Sinkron dengan Main (Workflow Tim)
+
+**Purpose**: Menjaga branch kamu tetap update dengan perubahan tim.
+**Inputs**: branch kerja dan `upstream`.
+**Outputs**: branch kerja dengan commit terbaru dari `main`.
+**Steps**:
+1. Fetch update dari upstream.
+2. Rebase atau merge ke branch kerja.
+**Pitfalls**: rebase setelah push bisa mengubah history remote.
+**Validation**: `git log --oneline --graph` menunjukkan history terbaru.
+
+```bash
+git fetch upstream
+git checkout feature/ball-tracking
+git rebase upstream/main
+```
+
+---
+
+## Next Steps
+
+- Lanjut ke [Undo & Recovery](/docs/learning/git/undo-recover).
