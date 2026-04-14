@@ -66,7 +66,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     division: "Motion",
     year: 2025,
     isLead: true,
-    image: "/head_motion.jpg",
+    image: "/head_motion.jpeg",
     socials: { linkedin: "https://www.linkedin.com/in/muhammad-fauzi-isnanto/" },
   },
   {
