@@ -42,7 +42,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "2025-1",
     name: "Muhammad Farhan Suri",
-    role: "Team Leader",
+    role: "Research Leader",
     division: "Management",
     year: 2025,
     isLead: true,
@@ -52,7 +52,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "2025-9",
     name: "Hanadia Aulia Nisa",
-    role: "Manager",
+    role: "Official Leader",
     division: "Management",
     year: 2025,
     isLead: true,
