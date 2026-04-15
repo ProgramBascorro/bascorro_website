@@ -71,13 +71,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: "2025-2b",
-    name: "Banar Pambudi",
+    name: "Muhammad Miftah Mahasin Munif",
     role: "Head of Vision",
     division: "Vision",
     year: 2025,
     isLead: true,
-    image: "/head_vision.jpg",
-    socials: { linkedin: "https://www.linkedin.com/in/banarpambudi/" },
+    image: "/head_vision.jpeg",
+    socials: { linkedin: "https://www.linkedin.com/in/muhammad-miftah-461b17315/" },
   },
   {
     id: "2025-3",
