@@ -7,7 +7,7 @@ const PUBLICATIONS = [
   {
     title:
       "Team Description Paper - EWS BASCORRO Humanoid Robosoccer Team",
-    authors: "EWS BASCORRO Research Division",
+    authors: "EWS BASCORRO Research Team",
     conference: "RoboCup Humanoid League 2026",
     year: "2026",
     link: "/TDP%20EWS%20Bascorro.pdf",
@@ -16,7 +16,7 @@ const PUBLICATIONS = [
   {
     title:
       "Performance Analysis of YOLOv8, YOLOv11, and Dfine for Robocup Humanoid Kidsize Object Detection",
-    authors: "EWS BASCORRO Research Division",
+    authors: "EWS BASCORRO Vision Division",
     conference: "RoboCup Humanoid League",
     year: "2026",
     link: "/Performance%20Analysis%20of%20YOLOv8%2C%20YOLOv11%2C%20and%20Dfine%20for%20Robocup%20Humanoid%20Kidsize%20Object%20Detection.pdf",
