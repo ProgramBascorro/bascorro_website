@@ -117,6 +117,13 @@ export const FAQ_ITEMS = [
 
 export const TEAM_ACHIEVEMENTS = [
   {
+    year: "2025",
+    competition: "Indonesia International Invention Expo",
+    result: "Gold Medal",
+    category: "Physics and Engineering",
+    level: "International"
+  },
+  {
     year: "2024",
     competition: "Kontes Robot Indonesia (KRI) National",
     result: "Top 8th National Competition",
