@@ -10,7 +10,8 @@ export interface TeamMember {
     | "Official"
     | "Advisor"
     | "Motion"
-    | "Vision";
+    | "Vision"
+    | "Leader";
   year: number;
   image: string;
   nidn?: string;
@@ -28,7 +29,18 @@ export interface TeamMember {
 export const TEAM_YEARS = [2026, 2025, 2024, 2023];
 
 export const TEAM_MEMBERS: TeamMember[] = [
-  // 2025 Team (Current)
+  // 2026 Team (Current)
+  {
+    id: "2026-0",
+    name: "Laily Asna Safira, S.T., M.T.",
+    role: "Team Advisor",
+    division: "Advisor",
+    year: 2026,
+    isLead: true,
+    image: "/laily_asna_safira.png",
+    socials: { linkedin: "https://www.linkedin.com/in/laily-asna-safira-bb323a169/" },
+  },
+  // 2025 Team (Past)
   {
     id: "2025-0",
     name: "Laily Asna Safira, S.T., M.T.",
@@ -118,72 +130,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     isLead: true,
     image: "/head_business_dev.jpeg",
     socials: { linkedin: "https://www.linkedin.com/in/alifiyah-afindina-296540330/" },
-  },
-  {
-    id: "2025-5",
-    name: "Budi Santoso",
-    role: "Computer Vision Lead",
-    division: "Vision",
-    year: 2025,
-    image:
-      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1887&auto=format&fit=crop",
-  },
-  {
-    id: "2025-6",
-    name: "Dewi Lestari",
-    role: "Public Relations",
-    division: "Official",
-    year: 2025,
-    image:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",
-  },
-  {
-    id: "2025-7",
-    name: "Kevin Chen",
-    role: "AI Engineer",
-    division: "Motion",
-    year: 2025,
-    image:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop",
-  },
-  {
-    id: "2025-8",
-    name: "Maria Garcia",
-    role: "Mechanical Design",
-    division: "Mechanic",
-    year: 2025,
-    image:
-      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1887&auto=format&fit=crop",
-  },
-
-  // 2024 Team (Alumni/Past)
-  {
-    id: "2024-1",
-    name: "Rizky Ramadhan",
-    role: "Ex-Captain",
-    division: "Management",
-    year: 2024,
-    isLead: true,
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop",
-  },
-  {
-    id: "2024-2",
-    name: "Jessica Wu",
-    role: "Software Lead",
-    division: "Software",
-    year: 2024,
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1888&auto=format&fit=crop",
-  },
-  {
-    id: "2024-3",
-    name: "Ahmad Faisal",
-    role: "Electrical Lead",
-    division: "Electronic",
-    year: 2024,
-    image:
-      "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?q=80&w=1887&auto=format&fit=crop",
   },
   {
     id: "2024-4",

@@ -1,5 +1,14 @@
 [
   {
+    "fullName": "Muhammad Farhan Suri",
+    "nickname": "",
+    "nim": "21060123140147",
+    "divisionRaw": "Team Leader",
+    "imageUrl": "https://drive.google.com/open?id=1RrK8m3a8Kt3iaaUg8E_PR0UNLstEYZ6l",
+    "angkatan": 2023,
+    "funFact": "minum kopi till i die"
+  },
+  {
     "fullName": "Muhammad Fayyadh Ilham",
     "nickname": "",
     "nim": "21060123130091",
@@ -7,15 +16,6 @@
     "imageUrl": "https://drive.google.com/open?id=1F_vn5mi-qNpouSPAO5NnXKxdVUpb8ujl",
     "angkatan": 2023,
     "funFact": "ga suka undip"
-  },
-  {
-    "fullName": "Muhammad Farhan Suri",
-    "nickname": "",
-    "nim": "21060123140147",
-    "divisionRaw": "Programming, Official, Mekanik, Elektrik",
-    "imageUrl": "https://drive.google.com/open?id=1RrK8m3a8Kt3iaaUg8E_PR0UNLstEYZ6l",
-    "angkatan": 2023,
-    "funFact": "minum kopi till i die"
   },
   {
     "fullName": "Lutfi Nurfauzi",

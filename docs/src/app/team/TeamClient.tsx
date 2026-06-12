@@ -44,21 +44,11 @@ export default function TeamClient({
       matchesQuery(member.division);
     return matchesYear && matchesSearch;
   });
-  const mascotMember = members.find(
-    (member) => member.isMascot && member.year === selectedYear,
-  );
   const advisorMembers = members.filter(
     (member) =>
-      !member.isMascot &&
       member.division === "Advisor" &&
       member.year === selectedYear,
   );
-  const showMascot =
-    mascotMember &&
-    (normalizedQuery.length === 0 ||
-      matchesQuery(mascotMember.name) ||
-      matchesQuery(mascotMember.role) ||
-      matchesQuery(mascotMember.division));
   const showAdvisors =
     advisorMembers.length > 0 &&
     (normalizedQuery.length === 0 ||
@@ -69,9 +59,12 @@ export default function TeamClient({
           matchesQuery(member.division),
       ));
   const visibleMembers = filteredMembers.filter(
-    (member) => !member.isMascot && member.division !== "Advisor",
+    (member) => member.division !== "Advisor",
   );
   const sortedVisibleMembers = [...visibleMembers].sort((a, b) => {
+    if (a.isLead && !b.isLead) return -1;
+    if (!a.isLead && b.isLead) return 1;
+
     const aAngkatan =
       typeof a.angkatan === "number" ? a.angkatan : Number.POSITIVE_INFINITY;
     const bAngkatan =
@@ -144,7 +137,52 @@ export default function TeamClient({
 
       {/* Grid */}
       <main className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-16">
-        {visibleMembers.length === 0 && !showMascot && !showAdvisors ? (
+        {showAdvisors && (
+          <div className="mb-12">
+            <div className="text-center mb-8">
+              <div className="inline-block px-4 py-1.5 mb-4 border border-gray-200 rounded-full text-sm font-mono text-gray-600 bg-white">
+                ADVISOR
+              </div>
+            </div>
+            <div className="flex justify-center">
+              {advisorMembers.map((member) => (
+                <motion.div
+                  layout
+                  key={member.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="group bg-white rounded-3xl overflow-hidden border border-gray-100 hover:shadow-xl hover:border-undip-blue/20 transition-all duration-300 w-full max-w-sm"
+                >
+                  <div className="relative aspect-square bg-gray-200 overflow-hidden">
+                    <Image
+                      src={getTeamImageSrc(member.image)}
+                      alt={member.name}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      unoptimized
+                    />
+                  </div>
+                  <div className="p-6 text-center">
+                    <h3 className="font-display font-bold text-xl text-gray-900 mb-1 group-hover:text-undip-blue transition-colors">
+                      {member.name}
+                    </h3>
+                    {member.nidn && (
+                      <p className="text-xs font-mono text-gray-400 mb-1">
+                        NIDN: {member.nidn}
+                      </p>
+                    )}
+                    <p className="text-sm font-mono text-gray-500">
+                      {member.role}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+        {visibleMembers.length === 0 && !showAdvisors ? (
           <div className="text-center py-20">
             <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
               <Filter size={24} />
@@ -234,89 +272,6 @@ export default function TeamClient({
                 </motion.div>
               ))}
             </AnimatePresence>
-          </div>
-        )}
-        {showAdvisors && (
-          <div className="mt-12">
-            <div className="text-center mb-8">
-              <div className="inline-block px-4 py-1.5 mb-4 border border-gray-200 rounded-full text-sm font-mono text-gray-600 bg-white">
-                ADVISOR
-              </div>
-            </div>
-            <div className="flex justify-center">
-              {advisorMembers.map((member) => (
-                <motion.div
-                  layout
-                  key={member.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="group bg-white rounded-3xl overflow-hidden border border-gray-100 hover:shadow-xl hover:border-undip-blue/20 transition-all duration-300 w-full max-w-sm"
-                >
-                  <div className="relative aspect-square bg-gray-200 overflow-hidden">
-                    <Image
-                      src={getTeamImageSrc(member.image)}
-                      alt={member.name}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      sizes="(max-width: 768px) 100vw, 400px"
-                      unoptimized
-                    />
-                  </div>
-                  <div className="p-6 text-center">
-                    <h3 className="font-display font-bold text-xl text-gray-900 mb-1 group-hover:text-undip-blue transition-colors">
-                      {member.name}
-                    </h3>
-                    {member.nidn && (
-                      <p className="text-xs font-mono text-gray-400 mb-1">
-                        NIDN: {member.nidn}
-                      </p>
-                    )}
-                    <p className="text-sm font-mono text-gray-500">
-                      {member.role}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        )}
-        {showMascot && mascotMember && (
-          <div className="mt-16">
-            <div className="text-center mb-8">
-              <div className="inline-block px-4 py-1.5 mb-4 border border-gray-200 rounded-full text-sm font-mono text-gray-600 bg-white">
-                TEAM MASCOT
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <motion.div
-                layout
-                key={mascotMember.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="group bg-white rounded-3xl overflow-hidden border border-gray-100 hover:shadow-xl hover:border-undip-blue/20 transition-all duration-300 w-full max-w-sm"
-              >
-                <div className="relative aspect-square bg-gray-200 overflow-hidden">
-                  <Image
-                    src={getTeamImageSrc(mascotMember.image)}
-                    alt={mascotMember.name}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    sizes="(max-width: 768px) 100vw, 400px"
-                    unoptimized
-                  />
-                </div>
-                <div className="p-6 text-center">
-                  <h3 className="font-display font-bold text-xl text-gray-900 mb-1 group-hover:text-undip-blue transition-colors">
-                    {mascotMember.name}
-                  </h3>
-                  <p className="text-sm font-mono text-gray-500">
-                    {mascotMember.role}
-                  </p>
-                </div>
-              </motion.div>
-            </div>
           </div>
         )}
       </main>

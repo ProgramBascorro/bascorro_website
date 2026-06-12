@@ -22,9 +22,10 @@ const TEAM_2024_ROLE_MAP: Record<TeamMember["division"], string> = {
   Advisor: "Advisor",
   Motion: "Motion",
   Vision: "Vision",
+  Leader: "Team Leader",
 };
 const TEAM_2024_ROLE_OVERRIDES: Record<string, string> = {
-  "ahmad nadhif masruri": "Programming / Electronic / Mechanic / Official",
+  "ahmad nadhif masruri": "Team Leader",
 };
 
 interface CsvMemberRecord {
@@ -78,6 +79,9 @@ function resolveLocalImage(fileId: string, imageDir: string, year: number) {
 
 function mapDivision(rawDivision: string): TeamMember["division"] {
   const value = rawDivision.toLowerCase();
+  if (value.includes("leader")) {
+    return "Leader";
+  }
   if (value.includes("programming") || value.includes("software")) {
     return "Software";
   }
@@ -98,6 +102,9 @@ function mapDivision(rawDivision: string): TeamMember["division"] {
 
 function normalizeRoleToken(token: string): string | null {
   const value = token.toLowerCase().trim();
+  if (value.includes("leader")) {
+    return "Team Leader";
+  }
   if (value.includes("programming") || value.includes("software")) {
     return "Programming";
   }
@@ -160,13 +167,17 @@ function loadTeamFromRows(
       image: resolveLocalImage(driveId, imageDir, year),
       angkatan: normalizedAngkatan,
       funFact: row.funFact || undefined,
+      isLead: mappedDivision === "Leader",
     } satisfies TeamMember;
   });
 }
 
 function loadTeamFromFolder(year: number, imageDir: string): TeamMember[] {
   return TEAM_2024_FOLDER_MEMBERS.map((member) => {
-    const division = TEAM_2024_FOLDER_TO_DIVISION[member.folder];
+    let division = TEAM_2024_FOLDER_TO_DIVISION[member.folder];
+    if (member.name.toLowerCase() === "ahmad nadhif masruri") {
+      division = "Leader";
+    }
     const encodedFolder = encodeURIComponent(member.folder);
     const encodedFile = encodeURIComponent(member.file);
     return {
@@ -179,6 +190,7 @@ function loadTeamFromFolder(year: number, imageDir: string): TeamMember[] {
       year,
       image: `/${imageDir}/${encodedFolder}/${encodedFile}`,
       angkatan: member.angkatan,
+      isLead: division === "Leader",
     } satisfies TeamMember;
   }).sort((a, b) => a.name.localeCompare(b.name));
 }
@@ -187,26 +199,18 @@ export default function TeamPage() {
   const team2026 = loadTeamFromRows(team2026Data as CsvMemberRecord[], 2026, IMAGE_DIR_2026);
   const team2025 = loadTeamFromRows(team2025Data as CsvMemberRecord[], 2025, IMAGE_DIR_2025);
   const team2024 = loadTeamFromFolder(2024, IMAGE_DIR_2024);
-  const advisors2024 = TEAM_MEMBERS.filter(
-    (member) => member.year === 2024 && member.division === "Advisor",
+  const advisors = TEAM_MEMBERS.filter(
+    (member) => member.division === "Advisor",
   );
-  const legacyMembers = TEAM_MEMBERS.filter((member) => member.year < 2024);
-  const mascot2026: TeamMember = {
-    id: "2026-mascot",
-    name: "Tammy",
-    role: "Emotional Support",
-    division: "Official",
-    year: 2026,
-    image: "/Tammy.jpeg",
-    isMascot: true,
-  };
+  const legacyMembers = TEAM_MEMBERS.filter(
+    (member) => member.year < 2024 && member.division !== "Advisor"
+  );
 
   const members = [
     ...team2026,
-    mascot2026,
     ...team2025,
     ...team2024,
-    ...advisors2024,
+    ...advisors,
     ...legacyMembers,
   ];
   const years = Array.from(new Set(members.map((member) => member.year))).sort(
