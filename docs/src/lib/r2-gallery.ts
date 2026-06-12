@@ -63,7 +63,16 @@ const resolveMetadata = (key: string) => {
 };
 
 export async function listGalleryImages(): Promise<GalleryImage[]> {
-  const s3 = client();
+  let s3: S3Client;
+  try {
+    s3 = client();
+  } catch (error) {
+    console.warn(
+      `[Gallery] ${error instanceof Error ? error.message : "Missing R2 env vars"}. Returning empty gallery.`
+    );
+    return [];
+  }
+
   const images: Array<GalleryImage & { sortTime: number }> = [];
   const baseUrl = (env.publicBaseUrl as string).replace(/\/$/, '');
   let continuationToken: string | undefined;
