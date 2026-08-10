@@ -1,0 +1,818 @@
+TUTORIAL MENJALANKAN DAN MENGEDIT WEBSITE BASCORRO DI LOCALHOST
+=================================================================
+
+Dokumen ini menjelaskan cara menyalakan website di komputer lokal,
+software yang diperlukan, cara mengedit isi website, dan cara mengatasi
+error umum.
+
+Project ini adalah website Next.js dengan Fumadocs. Artinya:
+- Halaman website dibuat dengan React/TypeScript di folder src/app.
+- Konten dokumentasi dibuat dengan file MDX di folder content/docs.
+- Gambar, logo, PDF, dan aset publik disimpan di folder public.
+- Dependency dikelola dengan pnpm.
+
+
+1. SOFTWARE YANG DIPERLUKAN
+===========================
+
+Install software berikut sebelum menjalankan website.
+
+1. Node.js
+----------
+Gunakan Node.js versi LTS terbaru. Rekomendasi aman:
+- Node.js 20 LTS, atau
+- Node.js 22 LTS
+
+Cek versi Node.js:
+
+  node -v
+
+Kalau command tersebut belum ada, install Node.js dari:
+
+  https://nodejs.org/
+
+Di Linux, lebih rapi memakai nvm:
+
+  https://github.com/nvm-sh/nvm
+
+
+2. pnpm
+-------
+Project ini memakai pnpm. Di package.json tertulis package manager:
+
+  pnpm@10.15.1
+
+Cara paling aman mengaktifkan pnpm adalah lewat Corepack:
+
+  corepack enable
+  corepack prepare pnpm@10.15.1 --activate
+
+Cek versi pnpm:
+
+  pnpm -v
+
+
+3. Git
+------
+Git diperlukan untuk clone project, melihat perubahan, dan commit.
+
+Cek Git:
+
+  git --version
+
+
+4. Code Editor
+--------------
+Rekomendasi:
+- Visual Studio Code
+- Cursor
+- Zed
+- WebStorm
+
+Extension yang berguna di VS Code:
+- ESLint
+- Biome
+- Tailwind CSS IntelliSense
+- MDX
+- TypeScript and JavaScript Language Features
+
+
+5. Browser
+----------
+Gunakan browser modern:
+- Google Chrome
+- Microsoft Edge
+- Firefox
+
+
+2. LOKASI PROJECT
+=================
+
+Project berada di:
+
+  /home/farhan/Projects/bascorro_website/docs
+
+Masuk ke folder project:
+
+  cd /home/farhan/Projects/bascorro_website/docs
+
+
+3. PERSIAPAN PERTAMA KALI
+=========================
+
+1. Masuk ke folder project:
+
+  cd /home/farhan/Projects/bascorro_website/docs
+
+2. Install dependency:
+
+  pnpm install
+
+Kalau folder node_modules sudah ada, command ini tetap aman dijalankan.
+pnpm akan memastikan dependency sesuai dengan pnpm-lock.yaml.
+
+3. Buat file environment lokal:
+
+  cp .env.example .env.local
+
+Untuk membuka halaman utama website, biasanya env lengkap belum wajib.
+Tetapi beberapa fitur seperti gallery R2, dataset lab, dan Gemini assist
+membutuhkan env tertentu.
+
+
+4. CARA MENYALAKAN WEBSITE LOCALHOST
+====================================
+
+1. Masuk ke folder project:
+
+  cd /home/farhan/Projects/bascorro_website/docs
+
+2. Jalankan development server:
+
+  pnpm dev
+
+3. Buka browser ke:
+
+  http://localhost:3000
+
+Kalau port 3000 sedang dipakai aplikasi lain, Next.js biasanya akan
+menawarkan atau memakai port lain, misalnya:
+
+  http://localhost:3001
+
+Ikuti URL yang muncul di terminal.
+
+
+5. ROUTE/HALAMAN PENTING
+========================
+
+Halaman utama:
+
+  http://localhost:3000
+
+Halaman docs:
+
+  http://localhost:3000/docs
+
+Halaman team:
+
+  http://localhost:3000/team
+
+Halaman gallery:
+
+  http://localhost:3000/gallery
+
+Halaman competitions:
+
+  http://localhost:3000/competitions
+
+Halaman robocup:
+
+  http://localhost:3000/robocup
+
+Dataset lab:
+
+  http://localhost:3000/dataset-lab
+
+
+6. CARA MEMATIKAN SERVER LOCALHOST
+==================================
+
+Di terminal yang sedang menjalankan:
+
+  pnpm dev
+
+Tekan:
+
+  Ctrl + C
+
+Kalau ditanya konfirmasi, tekan:
+
+  y
+
+
+7. CARA MENGEDIT WEBSITE
+========================
+
+Gunakan code editor lalu buka folder:
+
+  /home/farhan/Projects/bascorro_website/docs
+
+Saat pnpm dev masih menyala, perubahan file biasanya otomatis muncul
+di browser melalui hot reload. Kalau tidak berubah, refresh browser.
+
+
+8. STRUKTUR FOLDER PENTING
+==========================
+
+package.json
+------------
+Berisi script command dan daftar dependency.
+
+Script penting:
+
+  pnpm dev          menjalankan website untuk development
+  pnpm build        membuat production build
+  pnpm start        menjalankan hasil production build
+  pnpm lint         cek format/lint dengan Biome
+  pnpm format       format code
+  pnpm test:unit    menjalankan unit test
+  pnpm types:check  cek MDX, Next typegen, dan TypeScript
+
+
+src/app
+-------
+Berisi route utama website.
+
+Contoh:
+
+  src/app/(home)/page.tsx
+  src/app/team/page.tsx
+  src/app/gallery/page.tsx
+  src/app/competitions/page.tsx
+  src/app/robocup/page.tsx
+  src/app/dataset-lab/page.tsx
+
+Kalau ingin membuat halaman baru, biasanya buat folder baru di src/app.
+Contoh membuat halaman contact:
+
+  src/app/contact/page.tsx
+
+Maka URL-nya menjadi:
+
+  http://localhost:3000/contact
+
+
+src/components
+--------------
+Berisi komponen React yang dipakai oleh halaman.
+
+Contoh:
+
+  src/components/landing
+  src/components/dataset-lab
+  src/components/docs
+  src/components/learning
+  src/components/shared
+  src/components/ui
+
+Kalau ada bagian halaman yang berulang atau besar, sebaiknya dibuat
+sebagai component di folder ini.
+
+
+content/docs
+------------
+Berisi konten dokumentasi dalam format MDX.
+
+MDX mirip Markdown, tetapi bisa memakai komponen React.
+
+Contoh file:
+
+  content/docs/index.mdx
+  content/docs/getting-started/installation.mdx
+  content/docs/software/vision.mdx
+  content/docs/learning/ros/ros2-basics.mdx
+
+Kalau ingin mengedit isi halaman docs, edit file MDX di folder ini.
+
+
+public
+------
+Berisi file statis yang bisa diakses langsung oleh browser.
+
+Contoh:
+
+  public/Logo_Bascorro.png
+  public/robot1.jpeg
+  public/robot2.jpeg
+  public/team/2025
+  public/team/2026
+
+Contoh penggunaan gambar dari public:
+
+  /Logo_Bascorro.png
+  /robot1.jpeg
+  /team/2026/nama-file.jpg
+
+
+src/data
+--------
+Berisi data JSON yang dipakai website.
+
+Contoh:
+
+  src/data/team-2025.json
+  src/data/team-2026.json
+
+Kalau ingin mengedit data anggota tim, cek file JSON di folder ini.
+
+
+src/app/global.css
+------------------
+Berisi style global website.
+
+Edit file ini kalau ingin mengubah style global, warna umum, typography,
+atau utility CSS yang berlaku luas.
+
+
+9. CARA EDIT HALAMAN UTAMA
+==========================
+
+Halaman utama berada di:
+
+  src/app/(home)/page.tsx
+
+Komponen landing page berada di:
+
+  src/components/landing/LandingPage.tsx
+
+Bagian-bagian landing page berada di folder:
+
+  src/components/landing
+
+Contoh file penting:
+
+  src/components/landing/Hero.tsx
+  src/components/landing/Intro.tsx
+  src/components/landing/Achievements.tsx
+  src/components/landing/Partners.tsx
+  src/components/landing/Contact.tsx
+  src/components/landing/Navbar.tsx
+
+Kalau ingin mengubah teks hero, cari di Hero.tsx atau LandingPage.tsx.
+Kalau ingin mengubah daftar partner/sponsor, cek Partners.tsx dan
+data/constants yang dipakai komponen landing.
+
+
+10. CARA EDIT DOKUMENTASI
+=========================
+
+Konten docs ada di:
+
+  content/docs
+
+Contoh mengedit halaman instalasi:
+
+  content/docs/getting-started/installation.mdx
+
+Contoh mengedit halaman vision:
+
+  content/docs/software/vision.mdx
+
+Setelah diedit, buka:
+
+  http://localhost:3000/docs
+
+Kalau halaman docs tidak muncul setelah menambah file baru, cek file:
+
+  meta.json
+
+Beberapa folder docs memiliki meta.json untuk mengatur urutan dan judul
+halaman di sidebar.
+
+Contoh:
+
+  content/docs/getting-started/meta.json
+  content/docs/software/meta.json
+  content/docs/learning/ros/meta.json
+
+
+11. CARA MENAMBAH HALAMAN DOCS BARU
+===================================
+
+Contoh ingin menambah halaman:
+
+  /docs/software/navigation
+
+Buat file:
+
+  content/docs/software/navigation.mdx
+
+Isi minimal:
+
+  ---
+  title: Navigation
+  description: Catatan sistem navigasi robot.
+  ---
+
+  # Navigation
+
+  Isi dokumentasi di sini.
+
+Lalu update meta.json di folder yang sama kalau ingin halaman muncul
+di sidebar dengan urutan tertentu.
+
+
+12. CARA EDIT DATA TEAM
+=======================
+
+Data team ada di:
+
+  src/data/team-2025.json
+  src/data/team-2026.json
+
+Foto team ada di:
+
+  public/team/2025
+  public/team/2026
+
+Langkah umum:
+
+1. Masukkan foto ke folder public/team/2026.
+2. Edit data anggota di src/data/team-2026.json.
+3. Pastikan path gambar sesuai dengan file di public.
+4. Buka:
+
+  http://localhost:3000/team
+
+5. Cek apakah kartu member tampil benar.
+
+
+13. CARA EDIT GAMBAR DAN ASET
+=============================
+
+Semua aset publik simpan di:
+
+  public
+
+Contoh menambah gambar robot:
+
+  public/robot-baru.jpeg
+
+Di React/Next.js, gambar dari folder public dipanggil dengan path:
+
+  /robot-baru.jpeg
+
+Jangan panggil dengan:
+
+  public/robot-baru.jpeg
+
+Karena folder public adalah root untuk file statis di browser.
+
+
+14. CARA EDIT GALLERY
+=====================
+
+Halaman gallery ada di:
+
+  src/app/gallery/page.tsx
+  src/app/gallery/GalleryClient.tsx
+
+Ada script metadata gallery:
+
+  scripts/gallery.metadata.json
+  scripts/gallery.metadata.ts
+  scripts/generate-gallery-metadata.sh
+
+Gallery juga punya env R2 di:
+
+  .env.example
+
+Variable yang terkait gallery:
+
+  R2_ACCESS_KEY_ID
+  R2_SECRET_ACCESS_KEY
+  R2_ENDPOINT
+  R2_BUCKET
+  R2_PUBLIC_BASE_URL
+  R2_GALLERY_PREFIX
+
+Kalau gallery mengambil data dari Cloudflare R2, pastikan .env.local
+sudah diisi sesuai akun dan bucket yang benar.
+
+
+15. CARA EDIT DATASET LAB
+=========================
+
+Halaman dataset lab:
+
+  src/app/dataset-lab/page.tsx
+
+Komponen UI dataset lab:
+
+  src/components/dataset-lab
+
+API dataset lab:
+
+  src/app/api/datasets
+
+Library/helper dataset lab:
+
+  src/lib/dataset-lab
+
+Env yang dibutuhkan:
+
+  DATASET_LAB_TOKEN
+  DATASET_LAB_DATA_DIR
+  GEMINI_API_KEY
+
+DATASET_LAB_TOKEN wajib untuk akses internal. GEMINI_API_KEY opsional,
+hanya diperlukan jika ingin fitur assist dari Gemini.
+
+
+16. CARA CEK WEBSITE SIAP PRODUCTION
+====================================
+
+Sebelum deploy atau push perubahan besar, jalankan:
+
+  pnpm lint
+  pnpm types:check
+  pnpm test:unit
+  pnpm build
+
+Penjelasan:
+
+  pnpm lint         cek masalah format/lint
+  pnpm types:check  cek MDX dan TypeScript
+  pnpm test:unit    cek unit test
+  pnpm build        cek apakah website bisa dibuild
+
+Kalau semua command berhasil, perubahan biasanya aman untuk direview.
+
+
+17. CARA MENJALANKAN MODE PRODUCTION DI LOCAL
+=============================================
+
+Development mode:
+
+  pnpm dev
+
+Production local mode:
+
+  pnpm build
+  pnpm start
+
+Setelah pnpm start, buka:
+
+  http://localhost:3000
+
+Catatan:
+- pnpm start hanya bisa jalan setelah pnpm build berhasil.
+- Untuk development harian, gunakan pnpm dev.
+
+
+18. TROUBLESHOOTING ERROR UMUM
+==============================
+
+Error: command not found: pnpm
+------------------------------
+Solusi:
+
+  corepack enable
+  corepack prepare pnpm@10.15.1 --activate
+
+Lalu cek:
+
+  pnpm -v
+
+
+Error: command not found: node
+------------------------------
+Solusi:
+- Install Node.js 20 LTS atau 22 LTS.
+- Tutup dan buka ulang terminal.
+- Cek lagi dengan:
+
+  node -v
+
+
+Error: port 3000 already in use
+-------------------------------
+Artinya port 3000 sedang dipakai aplikasi lain.
+
+Solusi 1:
+- Ikuti port lain yang ditawarkan Next.js.
+
+Solusi 2:
+- Cari proses yang memakai port 3000:
+
+  ss -ltnp | grep 3000
+
+atau:
+
+  lsof -i :3000
+
+Lalu matikan proses yang tidak diperlukan.
+
+
+Website tidak berubah setelah diedit
+------------------------------------
+Solusi:
+1. Refresh browser.
+2. Pastikan file yang diedit memang file yang dipakai halaman tersebut.
+3. Cek terminal pnpm dev apakah ada error.
+4. Stop server dengan Ctrl + C, lalu jalankan ulang:
+
+  pnpm dev
+
+
+Error dependency atau module tidak ditemukan
+--------------------------------------------
+Solusi:
+
+  pnpm install
+
+Kalau masih error, hapus cache build Next.js:
+
+  rm -rf .next
+  pnpm dev
+
+Catatan: jangan hapus folder lain seperti src, content, public, atau
+file project penting.
+
+
+Error dari env atau variable kosong
+-----------------------------------
+Solusi:
+1. Pastikan file .env.local ada.
+2. Bandingkan dengan .env.example.
+3. Isi variable yang diperlukan.
+4. Restart pnpm dev setelah mengubah .env.local.
+
+Next.js membaca env saat server dinyalakan. Jadi perubahan .env.local
+sering butuh restart server.
+
+
+Halaman docs error setelah menambah MDX
+---------------------------------------
+Cek:
+1. Frontmatter MDX benar.
+2. Heading Markdown benar.
+3. Komponen React yang dipakai sudah diimport.
+4. meta.json valid JSON.
+5. Tidak ada koma berlebih di JSON.
+
+Jalankan:
+
+  pnpm types:check
+
+
+19. ALUR KERJA EDIT YANG DISARANKAN
+===================================
+
+Untuk perubahan kecil:
+
+1. Jalankan:
+
+  pnpm dev
+
+2. Edit file.
+3. Cek di browser.
+4. Jalankan:
+
+  pnpm lint
+  pnpm types:check
+
+
+Untuk perubahan besar:
+
+1. Jalankan:
+
+  pnpm dev
+
+2. Edit file secara bertahap.
+3. Cek tiap halaman yang terdampak di browser.
+4. Jalankan:
+
+  pnpm lint
+  pnpm types:check
+  pnpm test:unit
+  pnpm build
+
+5. Review perubahan Git:
+
+  git status
+  git diff
+
+
+20. RINGKASAN COMMAND PENTING
+=============================
+
+Masuk project:
+
+  cd /home/farhan/Projects/bascorro_website/docs
+
+Install dependency:
+
+  pnpm install
+
+Buat env lokal:
+
+  cp .env.example .env.local
+
+Jalankan localhost:
+
+  pnpm dev
+
+Buka website:
+
+  http://localhost:3000
+
+Format code:
+
+  pnpm format
+
+Cek lint:
+
+  pnpm lint
+
+Cek TypeScript dan MDX:
+
+  pnpm types:check
+
+Jalankan unit test:
+
+  pnpm test:unit
+
+Build production:
+
+  pnpm build
+
+Jalankan production build:
+
+  pnpm start
+
+
+21. FILE YANG PALING SERING DIEDIT
+==================================
+
+Landing page:
+
+  src/app/(home)/page.tsx
+  src/components/landing/LandingPage.tsx
+  src/components/landing/Hero.tsx
+  src/components/landing/Contact.tsx
+  src/components/landing/Partners.tsx
+
+Docs:
+
+  content/docs
+
+Team:
+
+  src/app/team/page.tsx
+  src/app/team/TeamClient.tsx
+  src/data/team-2025.json
+  src/data/team-2026.json
+  public/team
+
+Gallery:
+
+  src/app/gallery/page.tsx
+  src/app/gallery/GalleryClient.tsx
+  scripts/gallery.metadata.json
+
+Style global:
+
+  src/app/global.css
+
+Aset gambar/PDF:
+
+  public
+
+
+22. CATATAN PENTING UNTUK EDITOR
+================================
+
+1. Jangan edit folder ini secara manual kecuali paham efeknya:
+
+  node_modules
+  .next
+
+2. Jangan commit file rahasia:
+
+  .env.local
+
+3. Simpan gambar publik di folder public.
+4. Simpan konten docs di content/docs.
+5. Simpan komponen React di src/components.
+6. Simpan route halaman di src/app.
+7. Setelah mengubah .env.local, restart pnpm dev.
+8. Setelah menambah dependency baru, pastikan pnpm-lock.yaml ikut berubah.
+
+
+23. CHECKLIST CEPAT UNTUK MENYALAKAN WEBSITE
+============================================
+
+1. Buka terminal.
+2. Jalankan:
+
+  cd /home/farhan/Projects/bascorro_website/docs
+
+3. Jalankan:
+
+  pnpm install
+
+4. Jalankan:
+
+  cp .env.example .env.local
+
+5. Jalankan:
+
+  pnpm dev
+
+6. Buka browser:
+
+  http://localhost:3000
+
+Selesai.
