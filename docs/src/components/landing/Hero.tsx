@@ -35,6 +35,7 @@ import Publications from "./Publications";
 import Contact from "./Contact";
 import ModelViewer from "./ModelViewer";
 import Navbar from "./Navbar";
+import JoinCountdown from "./JoinCountdown";
 import SiteFooter from "../shared/SiteFooter";
 
 const SectionHeader = ({
@@ -73,6 +74,9 @@ const Hero: React.FC = () => {
         transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
       >
         <Navbar />
+
+        {/* --- RECRUITMENT BANNER --- */}
+        <JoinCountdown />
 
         {/* --- SECTION 1: HERO --- */}
         <header className="relative flex flex-col ">
@@ -495,42 +499,21 @@ const Hero: React.FC = () => {
         {/* --- SECTION 6.75: PUBLICATIONS --- */}
         <Publications />
 
-        {/* --- SECTION 7: JOIN --- */}
-        <section id="join" className="px-8 py-24 md:px-16 bg-white relative">
+        {/* --- SECTION 7: FAQ --- */}
+        <section id="faq" className="px-8 py-20 md:px-16 bg-white relative border-t border-gray-100">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-display font-black text-5xl md:text-7xl text-gray-900 mb-8 tracking-tighter">
-              BUILD THE FUTURE
-            </h2>
-            <p className="text-xl text-gray-500 mb-12 max-w-2xl mx-auto">
-              We are recruiting students from Universitas Diponegoro for the
-              2025 season. No prior robotics experience required—just a hunger
-              to learn.
-            </p>
-
-            <div className="flex flex-col md:flex-row justify-center gap-4 mb-16">
-              <button className="px-8 py-4 bg-black text-white font-bold rounded-full hover:bg-gray-800 transition-all transform hover:-translate-y-1">
-                Apply Now (Google Form)
-              </button>
-              <button className="px-8 py-4 border border-gray-300 font-bold rounded-full hover:bg-gray-50 transition-colors">
-                View Open Roles
-              </button>
-            </div>
-
-            {/* FAQ Preview */}
-            <div className="border-t border-gray-200 pt-12 text-center">
-              <h3 className="font-bold text-xl mb-6">
-                Frequently Asked Questions
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {FAQ_ITEMS.map((item, i) => (
-                  <div key={i} className="text-center">
-                    <h4 className="font-bold text-sm mb-2">{item.q}</h4>
-                    <p className="text-xs text-gray-500 leading-relaxed">
-                      {item.a}
-                    </p>
-                  </div>
-                ))}
-              </div>
+            <h3 className="font-bold text-3xl mb-10 text-gray-900">
+              Frequently Asked Questions
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {FAQ_ITEMS.map((item, i) => (
+                <div key={i} className="text-center">
+                  <h4 className="font-bold text-sm mb-2">{item.q}</h4>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    {item.a}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
