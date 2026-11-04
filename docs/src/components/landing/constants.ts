@@ -117,6 +117,13 @@ export const FAQ_ITEMS = [
 
 export const TEAM_ACHIEVEMENTS = [
   {
+    year: "2026",
+    competition: "Unlimited Undip",
+    result: "3rd Winner",
+    category: "KRSBI-Humanoid",
+    level: "National"
+  },
+  {
     year: "2025",
     competition: "Indonesia International Invention Expo",
     result: "Gold Medal",
