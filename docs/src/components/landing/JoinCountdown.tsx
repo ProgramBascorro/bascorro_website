@@ -24,8 +24,8 @@ export default function JoinCountdown() {
   useEffect(() => {
     setMounted(true);
 
-    // Target: 18 November 00:00:00 WIB (UTC+7)
-    const targetDate = new Date('2026-11-18T00:00:00+07:00').getTime();
+    // Target: 17 November 23:59:00 WIB (UTC+7)
+    const targetDate = new Date('2026-11-17T23:59:00+07:00').getTime();
 
     const calculateTime = () => {
       const now = Date.now();
@@ -73,7 +73,7 @@ export default function JoinCountdown() {
         <div className="mb-10">
           <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold tracking-wide uppercase text-gray-500 mb-4">
             <Clock size={16} className="text-accent-yellow" />
-            <span>Registration closes in (Ends on Nov 18, 00:00 WIB)</span>
+            <span>Registration closes in (Ends on Nov 17, 23:59 WIB)</span>
           </div>
 
           <div className="flex justify-center items-center gap-2 sm:gap-4 md:gap-6 font-mono">
