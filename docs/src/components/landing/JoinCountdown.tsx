@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight, Clock, ExternalLink } from 'lucide-react';
 
 interface TimeLeft {
   days: number;
@@ -125,16 +125,26 @@ export default function JoinCountdown() {
           </div>
         </div>
 
-        {/* CTA Button */}
-        <div className="flex justify-center">
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
           <a
             href="https://forms.gle/Bbe5BqmFPrggyty3A"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 sm:px-10 py-3.5 sm:py-4 bg-black text-white font-bold rounded-full hover:bg-gray-800 transition-all transform hover:-translate-y-1 shadow-md hover:shadow-lg text-base sm:text-lg group"
+            className="inline-flex items-center justify-center gap-3 px-8 sm:px-10 py-3.5 sm:py-4 bg-black text-white font-bold rounded-full hover:bg-gray-800 transition-all transform hover:-translate-y-1 shadow-md hover:shadow-lg text-base sm:text-lg group w-full sm:w-auto"
           >
             Apply Now (Google Form)
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          </a>
+
+          <a
+            href="https://drive.google.com/drive/folders/1ySQP3rSKjCNm7NzWyIdvbWn0hdc7I_US?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-3.5 sm:py-4 bg-white text-gray-900 font-bold rounded-full border-2 border-gray-200 hover:border-gray-900 hover:bg-gray-50 transition-all transform hover:-translate-y-1 shadow-sm hover:shadow-md text-base sm:text-lg group w-full sm:w-auto"
+          >
+            <span>Twibbon</span>
+            <ExternalLink size={18} className="text-gray-500 group-hover:text-gray-900 transition-colors" />
           </a>
         </div>
       </div>
